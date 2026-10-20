@@ -133,6 +133,32 @@ function maliciousRun() {
       message: evil,
     },
   });
+  // Compaction, skills and the compaction policy.
+  e.add("root", {
+    case: "compaction",
+    value: {
+      model: evil,
+      summarizedTurns: 3,
+      keptTurns: 1,
+      contextTokens: 9000n,
+      summary: evil,
+      usage: { currency: evil },
+    },
+  });
+  e.add("root", {
+    case: "toolStarted",
+    value: { callId: "k1", tool: "skill", input: JSON.stringify({ name: evil, file: evil }) },
+  });
+  e.add("root", { case: "toolFinished", value: { callId: "k1", tool: "skill", output: evil } });
+  e.add("", {
+    case: "sessionInfo",
+    value: {
+      taskId: evil,
+      config: JSON.stringify({ compaction: { strategy: evil, model: evil, threshold_percent: 50, keep_turns: 2 } }),
+      tools: [{ name: "skill", policy: evil, description: evil }],
+      budgets: [{ kind: 2, limit: 1, currency: evil }],
+    },
+  });
   return e.out;
 }
 

@@ -809,3 +809,25 @@
   color: var(--actlet-muted);
   cursor: pointer;
 }
+
+/* System lines with more to show, such as a compaction's summary. */
+.actlet-detail summary {
+  cursor: pointer;
+  list-style: none;
+}
+.actlet-detail summary::-webkit-details-marker {
+  display: none;
+}
+.actlet-detail summary::after {
+  content: " ▸";
+  color: var(--actlet-faint);
+}
+.actlet-detail[open] summary::after {
+  content: " ▾";
+}
+.actlet-detail-body {
+  margin: 0.3em 0 0.3em 1em;
+  padding: 0.4em 0.7em;
+  border-left: 2px solid var(--actlet-border);
+  color: var(--actlet-fg);
+}

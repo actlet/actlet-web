@@ -76,6 +76,7 @@ export function toolLabel(name: string): string {
     budget_status: "Budget",
     decide: "Decide",
     llm: "LLM",
+    skill: "Skill",
   };
   return Object.hasOwn(labels, name) ? labels[name] : name;
 }
@@ -135,6 +136,8 @@ export function keyArgs(c: ToolCall): string {
       return str("model") !== "" ? str("model") + " · " + str("prompt") : str("prompt");
     case "budget_status":
       return "";
+    case "skill":
+      return str("file") !== "" ? `${str("name")} · ${str("file")}` : str("name");
   }
   return firstLine(c.input);
 }
@@ -335,4 +338,65 @@ export function usageLine(u: Usage): string {
 /** A progress report in a line: "40% · Summary drafted", or just the message. */
 export function progressText(p: Progress): string {
   return p.percent >= 0 ? `${p.percent}% · ${p.message}` : p.message;
+}
+
+/** How the session compacts its workers' context, from its effective configuration. */
+export interface CompactionPolicy {
+  strategy: string;
+  thresholdPercent: number;
+  model: string;
+  keepTurns: number;
+}
+
+/** Reads the compaction policy from the run's configuration JSON; null if it has none. */
+export function compactionPolicy(s: Session): CompactionPolicy | null {
+  let config: unknown;
+  try {
+    config = JSON.parse(s.info?.config ?? "");
+  } catch {
+    return null;
+  }
+  const c = (config as { compaction?: unknown } | null)?.compaction;
+  if (c === null || typeof c !== "object") return null;
+  const o = c as Record<string, unknown>;
+  const text = (k: string) => (typeof o[k] === "string" ? (o[k] as string) : "");
+  const num = (k: string) => (typeof o[k] === "number" ? (o[k] as number) : 0);
+  return {
+    strategy: text("strategy"),
+    thresholdPercent: num("threshold_percent"),
+    model: text("model"),
+    keepTurns: num("keep_turns"),
+  };
+}
+
+/** A skill the agent loaded, and the files of it it read. */
+export interface SkillUse {
+  name: string;
+  loads: number;
+  files: string[];
+}
+
+/**
+ * The skills the session's workers loaded with the skill tool, in the
+ * order first used. The recording doesn't list the skills the agent had,
+ * only those it used.
+ */
+export function skillsUsed(s: Session): SkillUse[] {
+  const out = new Map<string, SkillUse>();
+  for (const w of s.workers.values()) {
+    for (const it of w.items) {
+      for (const c of it.turn?.calls ?? []) {
+        if (c.name !== "skill" || c.status !== "ok") continue;
+        const a = callArgs(c);
+        const name = typeof a?.name === "string" ? a.name : "";
+        if (name === "") continue;
+        const use = out.get(name) ?? { name, loads: 0, files: [] };
+        const file = typeof a?.file === "string" ? a.file : "";
+        if (file === "" || file === "SKILL.md") use.loads++;
+        else if (!use.files.includes(file)) use.files.push(file);
+        out.set(name, use);
+      }
+    }
+  }
+  return [...out.values()];
 }

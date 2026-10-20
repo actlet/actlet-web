@@ -1,0 +1,59 @@
+# A scripted sales digest: the agent loads a skill, reads one of its
+# files, and its context grows until it is compacted.
+price: {currency: EUR, input: 3, output: 15}
+turns:
+  - text: There's a skill for CSV reports; I'll load it first.
+    delay: 1s
+    usage: {input: 2000, output: 90}
+    tool_calls:
+      - name: skill
+        input: {name: csv-report}
+
+  - text: Now the layout it asks for, and the sales.
+    delay: 1s
+    usage: {input: 3600, output: 120}
+    tool_calls:
+      - name: skill
+        input: {name: csv-report, file: reference.md}
+      - name: read_file
+        input: {path: ../inputs/sales.csv}
+
+  - text: I'll total the revenue per region.
+    delay: 1s
+    usage: {input: 5200, output: 180}
+    tool_calls:
+      - name: python
+        input:
+          code: |
+            import csv
+            from collections import defaultdict
+            totals = defaultdict(int)
+            for row in csv.DictReader(open("../inputs/sales.csv")):
+                totals[row["region"]] += int(row["revenue_eur"])
+            for region, revenue in sorted(totals.items()):
+                print(f"{region}: {revenue} EUR")
+
+  - text: Writing the digest in the skill's layout.
+    delay: 1s
+    usage: {input: 2900, output: 260}
+    tool_calls:
+      - name: write_file
+        input:
+          path: ../output/digest.md
+          content: |
+            # Sales digest, July and August 2026
+
+            - north: 7650 EUR (255 units)
+            - south: 9000 EUR (300 units)
+            - west: 9000 EUR (300 units)
+
+            Trend: the south more than doubled in August.
+
+  - text: The digest is in output/digest.md.
+    usage: {input: 3300, output: 30}
+
+summary:
+  text: |-
+    The task: a digest of inputs/sales.csv in output/digest.md, following the csv-report skill.
+    So far: loaded the csv-report skill and its reference.md layout (a title, one line per region, a trend), read sales.csv, and totalled the revenue: north 7650 EUR, south 9000 EUR, west 9000 EUR.
+  usage: {input: 4800, output: 140}

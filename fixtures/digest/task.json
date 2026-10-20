@@ -1,0 +1,7 @@
+{
+  "schema": "v0",
+  "id": "sales-digest",
+  "kind": "agent",
+  "definition": {"max_turns": 12},
+  "input": "Write a short digest of the sales in inputs/sales.csv to output/digest.md, following the csv-report skill."
+}

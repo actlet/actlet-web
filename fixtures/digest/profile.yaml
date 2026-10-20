@@ -1,0 +1,28 @@
+# A session with a skill, and a model window small enough that the
+# worker's context is compacted half-way.
+schema: v0
+id: digest
+version: "1"
+limits:
+  max_workers: 1
+models:
+  aliases:
+    - alias: large
+      description: the main model, with a small window for this example
+      capabilities: [tools]
+      context_window: 8000
+    - alias: fast
+      description: a quick model that writes the summaries
+      context_window: 128000
+  roles:
+    main: large
+compaction:
+  threshold_percent: 60
+  model: fast
+  keep_turns: 2
+skills:
+  - dir: skills/csv-report
+tools:
+  - name: read_file
+  - name: write_file
+  - name: python

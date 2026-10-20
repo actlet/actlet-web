@@ -1,0 +1,7 @@
+region,month,units,revenue_eur
+north,2026-07,120,3600
+north,2026-08,135,4050
+south,2026-07,90,2700
+south,2026-08,210,6300
+west,2026-07,160,4800
+west,2026-08,140,4200

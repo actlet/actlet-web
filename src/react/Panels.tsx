@@ -1,6 +1,16 @@
 import type { ReactNode } from "react";
 import { budgetLine, budgets } from "../view/budgets";
-import { duration, elapsed, firstSentence, orNA, plural, progressText, tokens } from "../view/format";
+import {
+  compactionPolicy,
+  duration,
+  elapsed,
+  firstSentence,
+  orNA,
+  plural,
+  progressText,
+  skillsUsed,
+  tokens,
+} from "../view/format";
 import { clock } from "../view/time";
 import { sanitize } from "../view/sanitize";
 import { contextWindow, firstLine, stateName, workers, type Session } from "../view/session";
@@ -95,6 +105,49 @@ export function BudgetTable({ session: s, now = null }: { session: Session; now?
         })}
       </tbody>
     </table>
+  );
+}
+
+/** When and how the workers' context is compacted. */
+function CompactionPolicyView({ session }: { session: Session }) {
+  const p = compactionPolicy(session);
+  if (!p) return <div className="actlet-muted">not in this recording</div>;
+  if (p.strategy === "off") return <div>off: workers never compact their context</div>;
+  return (
+    <KV
+      rows={[
+        ["strategy", p.strategy || "summarize"],
+        ["when", `the context reaches ${p.thresholdPercent}% of the model's window`],
+        ["summary by", p.model || "the worker's own model"],
+        ["keeps", `the last ${plural(p.keepTurns, "turn")} as they are`],
+      ]}
+    />
+  );
+}
+
+/** The skills the agent loaded, and the files of them it read. */
+function SkillsView({ session }: { session: Session }) {
+  const offered = session.info?.tools.some((t) => t.name === "skill") ?? false;
+  const used = skillsUsed(session);
+  if (!offered && used.length === 0) return <div className="actlet-muted">none</div>;
+  return (
+    <>
+      {used.length === 0 && <div className="actlet-muted">none loaded yet</div>}
+      <ul className="actlet-plain-list">
+        {used.map((u) => (
+          <li key={u.name} className="actlet-mono">
+            <Text text={u.name} max={100} />
+            <span className="actlet-muted">
+              <Text
+                text={`  loaded ${plural(u.loads, "time")}${u.files.length > 0 ? `; read ${u.files.join(", ")}` : ""}`}
+                max={1000}
+              />
+            </span>
+          </li>
+        ))}
+      </ul>
+      <div className="actlet-muted">The recording lists the skills the agent used, not every skill it had.</div>
+    </>
   );
 }
 
@@ -267,6 +320,9 @@ export function ProfilePanel({ session: s, now = null }: PanelProps) {
       <Section title="Budgets">
         <BudgetTable session={s} now={now} />
       </Section>
+      <Section title="Compaction">
+        <CompactionPolicyView session={s} />
+      </Section>
       <Section title="Local viewers may">
         <Text text={orNA(info.localCommands.join(", "))} />
       </Section>
@@ -312,6 +368,9 @@ export function ToolsPanel({ session: s }: PanelProps) {
             />
           </div>
         ))}
+      </Section>
+      <Section title="Skills" note="as the agent used them">
+        <SkillsView session={s} />
       </Section>
       <Section title="Installed" note="tools manifest">
         {info.manifest === "" ? <div className="actlet-muted">none</div> : <Pre text={info.manifest} />}

@@ -19,6 +19,7 @@ import {
   type ActivityEvent,
   type Budget,
   type Command,
+  type Compaction,
   type ModelCatalog,
   type ToolGrant,
   type ToolInfo,
@@ -156,6 +157,8 @@ export interface Item extends Instant {
   from: string;
   /** A system item worth attention, such as a gap. */
   warn: boolean;
+  /** More to show on request, such as a compaction's summary; "" when there is none. Not in the view-state JSON. */
+  detail: string;
 }
 
 /** One model call: the assistant's answer and the tool calls it made. */
@@ -373,7 +376,7 @@ function where(ev: ActivityEvent | null): { epoch: number; seq: number } & Insta
 }
 
 function item(ev: ActivityEvent | null, kind: ItemKind, fields: Partial<Item> = {}): Item {
-  return { kind, ...where(ev), turn: null, text: "", from: "", warn: false, ...fields };
+  return { kind, ...where(ev), turn: null, text: "", from: "", warn: false, detail: "", ...fields };
 }
 
 /** The worker's latest turn, for its tool calls: one this viewer never saw if there is none. */
@@ -510,7 +513,7 @@ export function apply(s: Session, ev: ActivityEvent) {
       };
       addUsage(t.usage, m.usage);
       w.last = t;
-      addWorkerItem(w, { ...at, kind: "turn", turn: t, text: "", from: "", warn: false });
+      addWorkerItem(w, { ...at, kind: "turn", turn: t, text: "", from: "", warn: false, detail: "" });
       break;
     }
     case "toolStarted": {
@@ -534,6 +537,15 @@ export function apply(s: Session, ev: ActivityEvent) {
         addUsage(c.usage, f.usage);
       }
       c.status = f.outcomeUnknown ? "unknown" : f.isError ? "error" : "ok";
+      break;
+    }
+    case "compaction": {
+      const c = b.value;
+      addUsage(s.usage, c.usage);
+      if (w) {
+        addUsage(w.usage, c.usage);
+        addWorkerItem(w, item(ev, "system", { text: keep(compactionText(c)), detail: keep(c.summary) }));
+      }
       break;
     }
     case "progress": {
@@ -827,12 +839,22 @@ export function describe(ev: ActivityEvent): string {
       return "progress: " + firstLine(b.value.message);
     case "feedback":
       return `feedback (${b.value.kind}): ${firstLine(b.value.message)}`;
+    case "compaction": {
+      const c = b.value;
+      return `compaction (${c.model}): ${c.summarizedTurns} turns summarised, ${c.keptTurns} kept, at ${c.contextTokens} tokens`;
+    }
     case "budgetStatus": {
       const parts = b.value.budgets.map((u) => `${budgetName(u.kind)} ${amount(u.used)}/${amount(u.limit)} ${u.state}`);
       return `budget_status (${b.value.reason}): ${parts.join(", ")}`;
     }
   }
   return "an event this viewer doesn't know";
+}
+
+/** Describes a compaction in a worker's timeline. */
+function compactionText(c: Compaction): string {
+  const turns = c.summarizedTurns === 1 ? "turn" : "turns";
+  return `context compacted at ${c.contextTokens} tokens: ${c.summarizedTurns} ${turns} summarised by ${c.model}, the last ${c.keptTurns} kept`;
 }
 
 export function firstLine(s: string): string {

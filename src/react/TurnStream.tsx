@@ -284,6 +284,20 @@ export function ItemView(props: ItemViewProps) {
         </div>
       );
     case "system":
+      if (item.detail !== "") {
+        // Such as a compaction, whose summary shows on request.
+        return (
+          <details className={`actlet-system actlet-detail${item.warn ? " actlet-warn" : ""}`}>
+            <summary>
+              {"· "}
+              <Text text={item.text} />
+            </summary>
+            <div className="actlet-text actlet-detail-body">
+              <Text text={item.detail} />
+            </div>
+          </details>
+        );
+      }
       return (
         <div className={`actlet-system${item.warn ? " actlet-warn" : ""}`}>
           {"· "}

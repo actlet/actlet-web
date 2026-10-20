@@ -9,7 +9,8 @@
 #   scripts/record-fixture.sh <actlet-bin-dir> <scenario-dir> <out.jsonl> [operator-file]
 #
 # The binaries come from building Actlet's ./cmd/... into a scratch
-# directory. KEEP=1 keeps the session folder and logs.
+# directory. The scratch folder the session runs in shows as /work in the
+# fixture. KEEP=1 keeps the session folder and logs.
 set -euo pipefail
 if [ $# -lt 3 ]; then
 	echo "usage: $0 <actlet-bin-dir> <scenario-dir> <out.jsonl> [operator-file]" >&2
@@ -56,4 +57,9 @@ ACTLET_GATEWAY=$addr ACTLET_TOKEN=record ACTLET_TOOLS_MANIFEST= "$bin/actlet" ru
 echo "record: the run ended with exit code $code"
 sleep 1
 "$here/export-fixture.sh" "$bin/actlet-cli" "$work"/gateway/*.actrec "$out"
+# The session ran in a scratch folder; where it was isn't part of the fixture.
+for dir in "$work" "$(cd "$work" && pwd)" "$(cd "$work" && pwd -P)"; do
+	esc=$(printf '%s' "${dir%/}" | sed 's/[.[\*^$#]/\\&/g')
+	sed -i.bak "s#$esc#/work#g" "$out" && rm -f "$out.bak"
+done
 "$bin/actlet-cli" replay inspect "$work"/gateway/*.actrec | sed -n '/^events:/,/^status:/p'

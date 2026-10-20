@@ -40,3 +40,8 @@ export function fixture(name: string): string {
 export function standardEvents(): ActivityEvent[] {
   return parseJsonl(readFileSync(fixture("standard.jsonl"), "utf8"));
 }
+
+/** A sales digest that loads a skill and whose context is compacted half-way. */
+export function digestEvents(): ActivityEvent[] {
+  return parseJsonl(readFileSync(fixture("digest.jsonl"), "utf8"));
+}
