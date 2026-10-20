@@ -39,13 +39,15 @@ src/
   gen/               generated from actlet/gateway/v0/gateway.proto
 demo/                the dev page (pnpm dev): replay, live, integration examples with mock servers, a synthetic session
 scripts/             generate, record and export fixtures, bench, examples check, smoke test, parity
-fixtures/            demo.jsonl (Actlet's demo) and standard.jsonl (every standard tool), each with its folded state
-                     (*.view.json), its operator file, and standard/ (the release check's scenario)
+fixtures/            demo.jsonl (Actlet's demo), standard.jsonl (every standard tool) and digest.jsonl (a skill and a
+                     compaction), each with its folded state (*.view.json); the scenarios in standard/ and digest/
 test/                vitest: the fold, sanitizing, components, untrusted payloads, scale, accessibility, parity
 ```
 
 ## Checks
 
-Before committing, run `pnpm build`, `pnpm test`, `pnpm lint` and `pnpm typecheck`. Before changing the demo, its mock
+Before committing, run `pnpm check`: build, typecheck, lint, test, and strict parity with the Go view model
+(`pnpm parity:go`, which skips without Go or the Actlet repository). After regenerating the types from a new Actlet
+commit, put that commit in `.actlet-commit`. Before changing the demo, its mock
 servers or the packaging, also run `pnpm check:examples` and `pnpm smoke`. Commit messages follow Conventional
 Commits.

@@ -95,6 +95,16 @@ shows in the timeline with what it changed and whether it was accepted.
 
 ![The money budget used up and the decision waiting for it](docs/budget-waiting.png)
 
+### Compaction and skills
+
+When a worker's context nears its model's window, Actlet has a model summarise its older turns. The worker's timeline
+then says so: "context compacted at 5380 tokens: 1 turn summarised by fast, the last 2 kept". Expanding that line shows
+the summary, and the summary's model call counts towards the worker's and the session's usage. The Profile tab shows
+the compaction policy: when it compacts, which model writes the summary, and how many turns it keeps.
+
+`skill` calls show the skill and the file read (`csv-report · reference.md`). The Tools tab lists the skills the agent
+loaded and the files it read. The recording doesn't list every skill the agent had, only those it used.
+
 ### Files
 
 Selecting a file in the sidebar opens a read-only viewer. With `readFile`, the viewer asks you for the file. Paths are
@@ -175,7 +185,7 @@ Development needs Node 24, pnpm 10 and, for `pnpm generate`, `protoc`.
 
 ```sh
 pnpm install
-pnpm dev             # the demo page; ?mode=replay|standard|live|websocket|sse|jsonl|synthetic, ?theme=light, ?speed=8, ?at=27, ?tab=session
+pnpm dev             # the demo page; ?mode=replay|standard|digest|live|websocket|sse|jsonl|synthetic, ?theme=light, ?speed=8, ?at=27, ?tab=session
 pnpm test            # vitest
 pnpm lint            # eslint (with jsx-a11y) + prettier --check
 pnpm typecheck
@@ -184,7 +194,8 @@ pnpm generate        # regenerate src/gen from ../actlet/proto (PROTO_DIR=… to
 pnpm bench           # the 20,000-event numbers above, in headless Chrome
 pnpm check:examples  # the integration examples end to end, in headless Chrome
 pnpm smoke           # pack, install the tarball in a fresh Vite app, type-check and build it
-pnpm parity <events.jsonl> <go-view.json>  # diff the view state with the Go view model's
+pnpm parity:go       # strict parity with the Go view model on every fixture
+pnpm check           # build, typecheck, lint, test and parity:go
 ```
 
 **pnpm**, because its strict `node_modules` layout catches imports of undeclared dependencies, which matters for a
@@ -199,9 +210,19 @@ next to them, and the stylesheet is `dist/viewer.css`. The exports map has `.`, 
 
 ### Parity with the Go view model
 
-`toViewState` writes the view state as JSON ([docs/view-state.md](docs/view-state.md)). Given a dump of the same
-events from Actlet's Go view model, `pnpm parity events.jsonl go-view.json` folds the events here and lists every path
-where the two differ. Go's `null` for an empty slice or map counts as empty unless `PARITY_STRICT=1`.
+`toViewState` writes the view state as JSON ([docs/view-state.md](docs/view-state.md)), and Actlet's
+`actlet-cli replay view --json` writes the Go view model's in the same form. `pnpm parity:go` checks that the two agree
+on every fixture, strictly:
+
+- **The binary:** it builds `actlet-cli` from a snapshot of the commit in `.actlet-commit` of `../actlet`, leaving that
+  repository as it is. `ACTLET_CLI=<binary>`, `ACTLET_REPO` and `ACTLET_COMMIT` change that.
+- **What it does:** it dumps each `fixtures/*.jsonl` with Go, and lists every path where the dump differs from this
+  library's fold.
+- **Without Go:** with no Go toolchain or Actlet repository it says it skipped, and exits 0, unless `REQUIRE_PARITY=1`.
+
+`pnpm check` runs everything: build, typecheck, lint, test and `parity:go`. For one pair of files, run
+`pnpm parity events.jsonl go-view.json`. There, Go's `null` for an empty slice or map counts as empty unless
+`PARITY_STRICT=1`.
 
 ### Generated types
 
@@ -218,6 +239,8 @@ Both are real recordings: scripted sessions run headless through Actlet's develo
 - `fixtures/standard.jsonl` is a release check from `fixtures/standard/`. It uses every standard tool: progress,
   feedback, the budget, a decision and an llm call. Its money budget runs out, the work waits, and the operator raises
   the budget with a profile update.
+- `fixtures/digest.jsonl` is a sales digest from `fixtures/digest/`. The agent loads a skill (`skills/csv-report`) and
+  reads one of its files, and its context grows past a small window, so it is compacted half-way.
 
 To record them again, build Actlet's binaries into a scratch directory from the Actlet repository
 (`go build -o "$tmp/bin/" ./cmd/...`), then:
@@ -225,8 +248,9 @@ To record them again, build Actlet's binaries into a scratch directory from the 
 ```sh
 scripts/record-fixture.sh "$tmp/bin" <actlet>/examples/demo fixtures/demo.jsonl fixtures/demo.operator
 scripts/record-fixture.sh "$tmp/bin" fixtures/standard fixtures/standard.jsonl fixtures/standard.operator
+scripts/record-fixture.sh "$tmp/bin" fixtures/digest fixtures/digest.jsonl
 UPDATE_GOLDEN=1 pnpm test   # rewrite fixtures/*.view.json, the folded view states; review the diff
 ```
 
 The operator files hold the gateway commands sent during the run, at their times. Exporting replaces home directory
-paths.
+paths, and the scratch folder the session ran in shows as `/work`.

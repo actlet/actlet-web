@@ -110,7 +110,9 @@ Text is bounded at 256 KiB per field, with the cut marked `[viewer cut N charact
 so this matters only for events that didn't come from Actlet. Calls of turns that fall off a timeline (after 2,000 items)
 are let go. That changes nothing visible, unless the event for a dropped call that already finished arrives again.
 
-Usage includes what tool calls through the gateway (such as `llm`) report. A call's own usage is kept for display
-but isn't part of the format, as the Go model doesn't keep it per call.
+Usage includes what tool calls through the gateway (such as `llm`) report, and the model calls that write
+compactions' summaries. A call's own usage is kept for display but isn't part of the format, as the Go model doesn't
+keep it per call. A compaction shows as a system item in its worker's timeline; its summary is kept for display as the
+item's detail, which isn't part of the format either.
 
 The Go model's internal fields, such as its per-worker call index and latest turn, aren't part of the format.
