@@ -1,0 +1,714 @@
+/*
+ * @actlet/viewer styles. Every colour and font is a custom property on
+ * .actlet-viewer, so an app can restyle the viewer by setting them.
+ * data-theme="dark" | "light" | "auto" (the reader's system setting).
+ */
+
+.actlet-viewer {
+  --actlet-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --actlet-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --actlet-size: 13px;
+  --actlet-radius: 6px;
+
+  --actlet-bg: #16181d;
+  --actlet-bg-raised: #1e2129;
+  --actlet-bg-select: #2a2e3a;
+  --actlet-fg: #d8dbe2;
+  --actlet-muted: #7a7f8c;
+  --actlet-faint: #4b5060;
+  --actlet-border: #2c303a;
+  --actlet-agent: #8b7cf6;
+  --actlet-subagent: #5fa8d3;
+  --actlet-operator: #e5a84b;
+  --actlet-ok: #6cbf84;
+  --actlet-err: #e06c75;
+  --actlet-run: #d7ba7d;
+  --actlet-add: #6cbf84;
+  --actlet-del: #e06c75;
+  --actlet-cut-bg: rgba(215, 186, 125, 0.14);
+  --actlet-overlay: rgba(0, 0, 0, 0.55);
+}
+
+.actlet-viewer[data-theme="light"] {
+  --actlet-bg: #fbfbfd;
+  --actlet-bg-raised: #f1f2f6;
+  --actlet-bg-select: #e4e6f0;
+  --actlet-fg: #1d2030;
+  --actlet-muted: #6a7080;
+  --actlet-faint: #a3a8b6;
+  --actlet-border: #dfe1e8;
+  --actlet-agent: #6a55e8;
+  --actlet-subagent: #2f7fb0;
+  --actlet-operator: #b4741a;
+  --actlet-ok: #2f8a4c;
+  --actlet-err: #c43f4a;
+  --actlet-run: #a17a1f;
+  --actlet-add: #2f8a4c;
+  --actlet-del: #c43f4a;
+  --actlet-cut-bg: rgba(161, 122, 31, 0.12);
+  --actlet-overlay: rgba(20, 22, 30, 0.35);
+}
+
+@media (prefers-color-scheme: light) {
+  .actlet-viewer[data-theme="auto"] {
+    --actlet-bg: #fbfbfd;
+    --actlet-bg-raised: #f1f2f6;
+    --actlet-bg-select: #e4e6f0;
+    --actlet-fg: #1d2030;
+    --actlet-muted: #6a7080;
+    --actlet-faint: #a3a8b6;
+    --actlet-border: #dfe1e8;
+    --actlet-agent: #6a55e8;
+    --actlet-subagent: #2f7fb0;
+    --actlet-operator: #b4741a;
+    --actlet-ok: #2f8a4c;
+    --actlet-err: #c43f4a;
+    --actlet-run: #a17a1f;
+    --actlet-add: #2f8a4c;
+    --actlet-del: #c43f4a;
+    --actlet-cut-bg: rgba(161, 122, 31, 0.12);
+    --actlet-overlay: rgba(20, 22, 30, 0.35);
+  }
+}
+
+.actlet-viewer {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 320px;
+  background: var(--actlet-bg);
+  color: var(--actlet-fg);
+  font-family: var(--actlet-font);
+  font-size: var(--actlet-size);
+  line-height: 1.45;
+  overflow: hidden;
+  color-scheme: dark;
+}
+.actlet-viewer[data-theme="light"] {
+  color-scheme: light;
+}
+.actlet-viewer *,
+.actlet-viewer *::before,
+.actlet-viewer *::after {
+  box-sizing: border-box;
+}
+
+.actlet-muted {
+  color: var(--actlet-muted);
+}
+.actlet-faint {
+  color: var(--actlet-faint);
+}
+.actlet-mono,
+.actlet-pre,
+.actlet-tool,
+.actlet-events,
+.actlet-status,
+.actlet-code {
+  font-family: var(--actlet-mono);
+}
+.actlet-ok {
+  color: var(--actlet-ok);
+}
+.actlet-err {
+  color: var(--actlet-err);
+}
+.actlet-warn {
+  color: var(--actlet-run);
+}
+.actlet-add,
+.actlet-tone-add {
+  color: var(--actlet-add);
+}
+.actlet-del,
+.actlet-tone-del,
+.actlet-tone-error {
+  color: var(--actlet-del);
+}
+.actlet-tone-hunk {
+  color: var(--actlet-faint);
+}
+.actlet-tone-muted {
+  color: var(--actlet-muted);
+}
+
+/* Header and tabs. */
+.actlet-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  padding: 0.4em 0.9em;
+  border-bottom: 1px solid var(--actlet-border);
+  min-width: 0;
+}
+.actlet-title {
+  font-weight: 700;
+  color: var(--actlet-agent);
+}
+.actlet-task {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.actlet-tabs {
+  margin-left: auto;
+  display: flex;
+  gap: 0.25em;
+  flex-wrap: wrap;
+}
+.actlet-tab {
+  background: none;
+  border: none;
+  color: var(--actlet-muted);
+  font: inherit;
+  padding: 0.2em 0.5em;
+  border-radius: var(--actlet-radius);
+  cursor: pointer;
+}
+.actlet-tab:hover {
+  color: var(--actlet-fg);
+}
+.actlet-tab-on {
+  color: var(--actlet-fg);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Body. */
+.actlet-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.actlet-chat {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+.actlet-chat-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.actlet-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  padding: 0.3em 0.9em;
+  color: var(--actlet-muted);
+  font-size: 0.92em;
+  border-bottom: 1px solid var(--actlet-border);
+}
+.actlet-toolbar label {
+  cursor: pointer;
+}
+.actlet-focus {
+  color: var(--actlet-fg);
+}
+.actlet-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--actlet-agent);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* The stream. */
+.actlet-stream-wrap {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+.actlet-stream {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: 0.4em 0.9em 1em;
+}
+.actlet-empty {
+  color: var(--actlet-muted);
+  padding: 1em 0;
+}
+.actlet-latest {
+  position: absolute;
+  right: 1em;
+  bottom: 0.8em;
+  border: 1px solid var(--actlet-border);
+  background: var(--actlet-bg-raised);
+  color: var(--actlet-fg);
+  border-radius: 999px;
+  padding: 0.25em 0.8em;
+  font: inherit;
+  cursor: pointer;
+}
+.actlet-sep {
+  border: none;
+  border-top: 1px solid var(--actlet-border);
+  margin: 0.6em 0;
+}
+.actlet-sep-dashed {
+  border-top-style: dashed;
+  margin: 0.3em 0;
+}
+.actlet-msg {
+  margin-top: 0.8em;
+  padding-left: 0.7em;
+  border-left: 3px solid var(--actlet-accent, var(--actlet-agent));
+}
+.actlet-agent {
+  --actlet-accent: var(--actlet-agent);
+}
+.actlet-subagent {
+  --actlet-accent: var(--actlet-subagent);
+}
+.actlet-operator {
+  --actlet-accent: var(--actlet-operator);
+}
+.actlet-who strong {
+  color: var(--actlet-accent);
+}
+.actlet-clock {
+  color: var(--actlet-faint);
+}
+.actlet-text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 0.15em 0;
+}
+.actlet-system {
+  color: var(--actlet-muted);
+  margin-top: 0.5em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.actlet-system.actlet-warn {
+  color: var(--actlet-run);
+}
+.actlet-calls {
+  margin-top: 0.3em;
+}
+
+/* Tool blocks. */
+.actlet-tool {
+  margin: 0.2em 0 0.2em 0.6em;
+}
+.actlet-tool-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.1em 0.2em;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 4px;
+  min-width: 0;
+}
+.actlet-tool-head:hover,
+.actlet-tool-head[aria-expanded="true"] {
+  background: var(--actlet-bg-select);
+}
+.actlet-tool-name {
+  font-weight: 700;
+  white-space: nowrap;
+}
+.actlet-tool-args {
+  color: var(--actlet-muted);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.actlet-tool-took {
+  color: var(--actlet-muted);
+  white-space: nowrap;
+}
+.actlet-tool-body {
+  margin-left: 0.55em;
+  padding-left: 0.9em;
+  border-left: 1px solid var(--actlet-faint);
+}
+.actlet-line {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.actlet-more {
+  color: var(--actlet-faint);
+}
+.actlet-nested {
+  border-left: 1px dotted var(--actlet-faint);
+  padding-left: 0.6em;
+  font-family: var(--actlet-font);
+}
+.actlet-icon {
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+}
+.actlet-spinner::before {
+  content: "⠋";
+  color: var(--actlet-run);
+  animation: actlet-spin 1s steps(10) infinite;
+}
+@keyframes actlet-spin {
+  0% {
+    content: "⠋";
+  }
+  10% {
+    content: "⠙";
+  }
+  20% {
+    content: "⠹";
+  }
+  30% {
+    content: "⠸";
+  }
+  40% {
+    content: "⠼";
+  }
+  50% {
+    content: "⠴";
+  }
+  60% {
+    content: "⠦";
+  }
+  70% {
+    content: "⠧";
+  }
+  80% {
+    content: "⠇";
+  }
+  90% {
+    content: "⠏";
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .actlet-spinner::before {
+    animation: none;
+    content: "●";
+  }
+}
+
+/* Truncation, by Actlet or by the viewer. */
+.actlet-cut {
+  display: inline-block;
+  margin: 0 0.2em;
+  padding: 0 0.4em;
+  border-radius: 4px;
+  background: var(--actlet-cut-bg);
+  color: var(--actlet-run);
+  font-family: var(--actlet-font);
+  font-size: 0.88em;
+  font-style: italic;
+}
+
+/* Sidebar. */
+.actlet-sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--actlet-border);
+  padding: 0.5em 0.6em;
+  overflow-y: auto;
+}
+.actlet-head {
+  font-size: 0.8em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--actlet-muted);
+  margin: 0.6em 0 0.3em;
+}
+.actlet-list,
+.actlet-plain-list,
+.actlet-tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.actlet-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4em;
+  width: 100%;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  font-family: var(--actlet-mono);
+  text-align: left;
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  cursor: pointer;
+  min-width: 0;
+}
+.actlet-row:hover,
+.actlet-selected {
+  background: var(--actlet-bg-select);
+}
+.actlet-row-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.actlet-file .actlet-row-name {
+  flex: 1;
+  direction: rtl;
+  text-align: left;
+}
+
+/* Footer: replay controls, commands and the status line. */
+.actlet-footer {
+  border-top: 1px solid var(--actlet-border);
+}
+.actlet-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25em;
+  padding: 0.3em 0.9em;
+  color: var(--actlet-muted);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.actlet-state {
+  color: var(--actlet-fg);
+}
+.actlet-replay,
+.actlet-command-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4em;
+  padding: 0.35em 0.9em;
+}
+.actlet-replay {
+  border-bottom: 1px solid var(--actlet-border);
+}
+.actlet-seek {
+  flex: 1;
+  min-width: 120px;
+  accent-color: var(--actlet-agent);
+}
+.actlet-pos {
+  font-family: var(--actlet-mono);
+  min-width: 5em;
+  text-align: right;
+}
+.actlet-btn,
+.actlet-speed,
+.actlet-input {
+  font: inherit;
+  color: var(--actlet-fg);
+  background: var(--actlet-bg-raised);
+  border: 1px solid var(--actlet-border);
+  border-radius: var(--actlet-radius);
+  padding: 0.2em 0.6em;
+}
+.actlet-btn {
+  cursor: pointer;
+}
+.actlet-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.actlet-btn-danger {
+  color: var(--actlet-err);
+}
+.actlet-note-form {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  flex: 1;
+  min-width: 200px;
+}
+.actlet-prompt {
+  color: var(--actlet-operator);
+  font-weight: 700;
+}
+.actlet-input {
+  flex: 1;
+  min-width: 0;
+}
+.actlet-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  color: var(--actlet-err);
+}
+.actlet-sent {
+  list-style: none;
+  margin: 0;
+  padding: 0 0.9em 0.3em;
+  font-size: 0.92em;
+}
+.actlet-sent-pending {
+  color: var(--actlet-run);
+}
+.actlet-sent-accepted {
+  color: var(--actlet-ok);
+}
+.actlet-sent-rejected,
+.actlet-sent-failed {
+  color: var(--actlet-err);
+}
+.actlet-viewer :focus-visible {
+  outline: 2px solid var(--actlet-agent);
+  outline-offset: 1px;
+}
+
+/* Tabs other than the conversation. */
+.actlet-panel {
+  flex: 1;
+  overflow: auto;
+  padding: 0.6em 1em 1.2em;
+}
+.actlet-section {
+  margin-bottom: 1.1em;
+}
+.actlet-section-title {
+  font-size: 1em;
+  margin: 0.4em 0;
+}
+.actlet-kv {
+  margin: 0;
+  display: grid;
+  gap: 0.1em;
+}
+.actlet-kv > div {
+  display: flex;
+  gap: 1em;
+}
+.actlet-kv dt {
+  width: 7em;
+  color: var(--actlet-muted);
+  flex-shrink: 0;
+}
+.actlet-kv dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.actlet-table {
+  border-collapse: collapse;
+  margin-top: 0.4em;
+  font-family: var(--actlet-mono);
+}
+.actlet-table th,
+.actlet-table td {
+  text-align: left;
+  padding: 0.1em 1em 0.1em 0;
+  vertical-align: top;
+}
+.actlet-table th {
+  color: var(--actlet-muted);
+  font-weight: 400;
+}
+.actlet-pre {
+  margin: 0;
+  padding: 0.6em 0.8em;
+  background: var(--actlet-bg-raised);
+  border-radius: var(--actlet-radius);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.actlet-tree li {
+  margin: 0.2em 0;
+}
+.actlet-event-line {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* File viewer. */
+.actlet-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--actlet-overlay);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2em;
+  z-index: 10;
+}
+.actlet-popup {
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 960px);
+  max-height: 100%;
+  background: var(--actlet-bg);
+  border: 1px solid var(--actlet-faint);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+.actlet-popup-head,
+.actlet-popup-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  padding: 0.5em 0.9em;
+}
+.actlet-popup-head {
+  border-bottom: 1px solid var(--actlet-border);
+}
+.actlet-popup-foot {
+  border-top: 1px solid var(--actlet-border);
+  font-size: 0.92em;
+}
+.actlet-popup-body {
+  overflow: auto;
+  padding: 0.5em 0.9em;
+}
+.actlet-path {
+  overflow-wrap: anywhere;
+}
+.actlet-code {
+  border-collapse: collapse;
+}
+.actlet-code td {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+.actlet-lineno {
+  color: var(--actlet-faint);
+  text-align: right;
+  padding-right: 1em;
+  user-select: none;
+  white-space: nowrap;
+}
+.actlet-hl-keyword {
+  color: var(--actlet-agent);
+}
+.actlet-hl-string {
+  color: var(--actlet-ok);
+}
+.actlet-hl-comment {
+  color: var(--actlet-faint);
+}
+.actlet-hl-heading {
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .actlet-chat {
+    flex-direction: column;
+  }
+  .actlet-sidebar {
+    width: auto;
+    max-height: 30%;
+    border-left: none;
+    border-top: 1px solid var(--actlet-border);
+  }
+}
