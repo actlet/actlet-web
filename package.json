@@ -28,7 +28,8 @@
     "format": "prettier --write .",
     "typecheck": "tsc -p tsconfig.json",
     "generate": "scripts/generate.sh",
-    "bench": "node scripts/bench.mjs"
+    "bench": "node scripts/bench.mjs",
+    "check:examples": "node scripts/check-examples.mjs"
   },
   "peerDependencies": {
     "react": ">=18",
