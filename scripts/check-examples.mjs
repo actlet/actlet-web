@@ -110,6 +110,16 @@ try {
     await until(async () => (await status()).includes("completed"), "the replay at the end", 90_000);
     await until(() => page.evaluate("!!document.querySelector('.actlet-decision')"), "the decision shown");
   });
+  await check("digest", async () => {
+    await until(async () => (await status()).includes("completed"), "the replay at the end", 90_000);
+    await until(
+      () =>
+        page.evaluate(
+          "[...document.querySelectorAll('.actlet-detail summary')].some((s) => s.textContent.includes('context compacted'))",
+        ),
+      "the compaction shown",
+    );
+  });
   await check("jsonl", async () => {
     await until(async () => (await status()).includes("completed"), "the replay at the end", 90_000);
   });
