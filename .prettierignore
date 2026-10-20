@@ -1,0 +1,5 @@
+dist/
+demo/dist/
+src/gen/
+fixtures/
+pnpm-lock.yaml
