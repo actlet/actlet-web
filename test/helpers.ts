@@ -35,3 +35,8 @@ export function demoEvents(): ActivityEvent[] {
 export function fixture(name: string): string {
   return resolve(process.cwd(), "fixtures", name);
 }
+
+/** The release check that uses every standard tool: progress, feedback, budgets, decide and llm. */
+export function standardEvents(): ActivityEvent[] {
+  return parseJsonl(readFileSync(fixture("standard.jsonl"), "utf8"));
+}

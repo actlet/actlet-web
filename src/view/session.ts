@@ -10,6 +10,7 @@
  * sequences are removed as events are folded.
  */
 import {
+  BudgetKind,
   CommandResult,
   Origin,
   PauseMode,
@@ -37,6 +38,8 @@ export const MAX_LOG = 5000;
  * when an implementor feeds something larger.
  */
 export const MAX_TEXT = 256 * 1024;
+/** Bounds the feedback kept. */
+export const MAX_FEEDBACK = 200;
 
 /** Tokens, and what they cost when the gateway says. */
 export interface Usage {
@@ -66,8 +69,15 @@ export interface Session {
   last: Instant | null;
   /** Describes the run, from its session_info event; null before it. */
   info: Info | null;
-  /** Totals the model calls' tokens and cost. */
+  /** Totals the model calls' tokens and cost, and those of tool calls through the gateway. */
   usage: Usage;
+  /** The agent's latest progress report; null before one. */
+  progress: Progress | null;
+  /** What the agent sent with send_feedback, oldest first. */
+  feedback: Feedback[];
+  feedbackDropped: number;
+  /** The budgets as the latest budget status reported them; null before one. */
+  budgets: BudgetState[] | null;
   /** The session's own timeline: its start and state changes, commands, operator notes and messages. */
   items: Item[];
   dropped: number;
@@ -77,6 +87,32 @@ export interface Session {
   /** The workers by ID, and the order they were first seen in. */
   workers: Map<string, Worker>;
   order: string[];
+}
+
+/** A progress report of the agent's. */
+export interface Progress extends Instant {
+  worker: string;
+  message: string;
+  /** How far along it is, from 0 to 100, or -1 when it didn't say. */
+  percent: number;
+}
+
+/** Feedback the agent sent. */
+export interface Feedback extends Instant {
+  worker: string;
+  /** "problem", "suggestion", "question" or "other". */
+  kind: string;
+  message: string;
+}
+
+/** A budget as a budget status reported it. */
+export interface BudgetState {
+  kind: BudgetKind;
+  limit: number;
+  used: number;
+  currency: string;
+  /** "ok", "alerted" (past the alert threshold), "exhausted", or "waiting" (exhausted, and work waits for it to be raised). */
+  state: string;
 }
 
 export type WorkerStatus = "running" | "finished" | "failed";
@@ -146,6 +182,8 @@ export interface ToolCall {
   output: string;
   /** How long it took, in nanoseconds. */
   took: number;
+  /** What a call through the gateway used, such as an llm call; null for local tools. Not in the view-state JSON. */
+  usage: Usage | null;
   diffs: Diff[];
   /** The subagent a spawn_subagent call started. */
   child: string;
@@ -226,6 +264,10 @@ export function newSession(id = ""): Session {
     last: null,
     info: null,
     usage: newUsage(),
+    progress: null,
+    feedback: [],
+    feedbackDropped: 0,
+    budgets: null,
     items: [],
     dropped: 0,
     log: [],
@@ -354,6 +396,7 @@ function call(w: Worker, ev: ActivityEvent, id: string, name: string): ToolCall 
       status: "running",
       output: "",
       took: 0,
+      usage: null,
       diffs: [],
       child: "",
       epoch: Number(ev.epoch),
@@ -484,7 +527,41 @@ export function apply(s: Session, ev: ActivityEvent) {
       const c = call(w, ev, f.callId, f.tool);
       c.output = keep(f.output);
       c.took = nanos(f.took);
+      addUsage(w.usage, f.usage);
+      addUsage(s.usage, f.usage);
+      if (f.usage) {
+        c.usage = newUsage();
+        addUsage(c.usage, f.usage);
+      }
       c.status = f.outcomeUnknown ? "unknown" : f.isError ? "error" : "ok";
+      break;
+    }
+    case "progress": {
+      const pr = b.value;
+      s.progress = {
+        ...at,
+        worker: keep(ev.worker),
+        message: keep(pr.message),
+        percent: pr.percent === undefined ? -1 : Math.min(pr.percent, 100),
+      };
+      break;
+    }
+    case "budgetStatus":
+      s.budgets = b.value.budgets.map((u) => ({
+        kind: u.kind,
+        limit: u.limit,
+        used: u.used,
+        currency: keep(u.currency),
+        state: keep(u.state),
+      }));
+      break;
+    case "feedback": {
+      s.feedback.push({ ...at, worker: keep(ev.worker), kind: keep(b.value.kind), message: keep(b.value.message) });
+      const n = s.feedback.length - MAX_FEEDBACK;
+      if (n > 0) {
+        s.feedback.splice(0, n);
+        s.feedbackDropped += n;
+      }
       break;
     }
     case "fileChange": {
@@ -637,6 +714,38 @@ export function contextWindow(s: Session, model: string): number {
   return 0;
 }
 
+/** Writes a budget figure briefly, as Go's %.0f from 1000 up and %.4g below. */
+export function amount(v: number): string {
+  if (v >= 1000 || v <= -1000) return goFixed0(v);
+  return goG4(v);
+}
+
+/** Go's %.0f: rounds half to even. */
+function goFixed0(v: number): string {
+  const f = Math.floor(v);
+  const d = v - f;
+  const r = d < 0.5 ? f : d > 0.5 ? f + 1 : f % 2 === 0 ? f : f + 1;
+  return String(r === 0 ? 0 : r);
+}
+
+/** Go's %.4g: four significant digits, trailing zeros dropped, an exponent below 1e-4 or from 1e4. */
+function goG4(v: number): string {
+  if (v === 0 || !Number.isFinite(v)) return Number.isFinite(v) ? "0" : v > 0 ? "+Inf" : v < 0 ? "-Inf" : "NaN";
+  const [mant, expText] = v.toExponential(3).split("e");
+  const exp = Number(expText);
+  if (exp < -4 || exp >= 4) {
+    const m = mant.replace(/\.?0+$/, "");
+    return `${m}e${exp < 0 ? "-" : "+"}${String(Math.abs(exp)).padStart(2, "0")}`;
+  }
+  const fixed = v.toFixed(Math.max(3 - exp, 0));
+  return fixed.includes(".") ? fixed.replace(/\.?0+$/, "") : fixed;
+}
+
+/** A budget kind in lower case, such as "money". */
+export function budgetName(k: BudgetKind): string {
+  return enumName(BudgetKind, k);
+}
+
 /** A session state in lower case, such as "running"; "starting" before any. */
 export function stateName(state: SessionState): string {
   if (state === SessionState.UNSPECIFIED) return "starting";
@@ -661,7 +770,7 @@ export function originName(o: Origin): string {
   return "someone";
 }
 
-/** A command in a word or two, such as "pause (drain)". */
+/** A command in a word or two, such as "pause (drain)" or "profile update (budgets)". */
 export function commandName(c: Command | undefined): string {
   switch (c?.action.case) {
     case "pause":
@@ -670,6 +779,13 @@ export function commandName(c: Command | undefined): string {
       return "stop";
     case "steer":
       return "note";
+    case "profileUpdate": {
+      const parts = [...c.action.value.fields];
+      if (c.action.value.resetBudgets.length > 0) {
+        parts.push("reset " + c.action.value.resetBudgets.map(budgetName).join(", "));
+      }
+      return `profile update (${parts.join("; ")})`;
+    }
   }
   return "command";
 }
@@ -706,6 +822,15 @@ export function describe(ev: ActivityEvent): string {
       return `subagent_finished error=${b.value.isError}: ${firstLine(b.value.result)}`;
     case "sessionInfo":
       return "session_info: task " + b.value.taskId;
+    case "progress":
+      if (b.value.percent !== undefined) return `progress ${b.value.percent}%: ${firstLine(b.value.message)}`;
+      return "progress: " + firstLine(b.value.message);
+    case "feedback":
+      return `feedback (${b.value.kind}): ${firstLine(b.value.message)}`;
+    case "budgetStatus": {
+      const parts = b.value.budgets.map((u) => `${budgetName(u.kind)} ${amount(u.used)}/${amount(u.limit)} ${u.state}`);
+      return `budget_status (${b.value.reason}): ${parts.join(", ")}`;
+    }
   }
   return "an event this viewer doesn't know";
 }

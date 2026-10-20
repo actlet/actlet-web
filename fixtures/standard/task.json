@@ -1,0 +1,7 @@
+{
+  "schema": "v0",
+  "id": "release-check",
+  "kind": "agent",
+  "definition": {"max_turns": 12},
+  "input": "Read the release notes in inputs/notes.md, summarise them in output/summary.md, and ask the release manager whether to ship today."
+}

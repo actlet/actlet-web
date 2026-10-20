@@ -4,6 +4,7 @@
  */
 import { toJson } from "@bufbuild/protobuf";
 import {
+  BudgetKind,
   BudgetSchema,
   ModelCatalogSchema,
   SessionState,
@@ -60,6 +61,23 @@ export function toViewState(s: Session): ViewStateJson {
       local_commands: info.localCommands,
     },
     usage: usage(s.usage),
+    progress: s.progress && {
+      worker: s.progress.worker,
+      message: s.progress.message,
+      percent: s.progress.percent,
+      time: s.progress.time,
+    },
+    feedback: s.feedback.map((f) => ({ worker: f.worker, kind: f.kind, message: f.message, time: f.time })),
+    feedback_dropped: s.feedbackDropped,
+    budgets:
+      s.budgets &&
+      s.budgets.map((b) => ({
+        kind: "BUDGET_KIND_" + (BudgetKind[b.kind] ?? String(b.kind)),
+        limit: b.limit,
+        used: b.used,
+        currency: b.currency,
+        state: b.state,
+      })),
     items: s.items.map(item),
     dropped: s.dropped,
     workers: workers(s).map((w) => ({

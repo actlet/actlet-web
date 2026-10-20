@@ -1,16 +1,22 @@
 import { create } from "@bufbuild/protobuf";
 import {
+  BudgetSchema,
   CommandResult,
   CommandSchema,
   Origin,
   PauseMode,
   type ActivityEvent,
+  type Budget,
+  type BudgetKind,
   type Command,
   type CommandAck,
 } from "./gen/actlet/gateway/v0/gateway_pb";
 
-/** The commands a viewer can offer. "pause" offers both modes: drain and interrupt. */
-export type CommandKind = "steer" | "pause" | "stop";
+/**
+ * The commands a viewer can offer. "pause" offers both modes, drain and
+ * interrupt; "profile_update" offers raising a budget.
+ */
+export type CommandKind = "steer" | "pause" | "stop" | "profile_update";
 
 /** What the viewer offers by default: steer notes only, for monitoring and light steering. */
 export const DEFAULT_COMMANDS: readonly CommandKind[] = ["steer"];
@@ -57,6 +63,29 @@ export function pauseCommand(mode: PauseMode, o: CommandOptions = {}): Command {
 /** A stop command: cancel the task, with the profile's grace period. */
 export function stopCommand(o: CommandOptions = {}): Command {
   return create(CommandSchema, { ...base(o), action: { case: "stop", value: {} } });
+}
+
+/**
+ * A profile update that changes one budget's limit, and optionally starts
+ * its usage again from zero. A profile update replaces all the budgets, so
+ * it carries every one: pass the session's budgets as they stand, from
+ * budgetDefinitions.
+ */
+export function raiseBudgetCommand(
+  current: readonly Budget[],
+  kind: BudgetKind,
+  limit: number,
+  reset = false,
+  o: CommandOptions = {},
+): Command {
+  const budgets = current.map((b) => create(BudgetSchema, { ...b, limit: b.kind === kind ? limit : b.limit }));
+  return create(CommandSchema, {
+    ...base(o),
+    action: {
+      case: "profileUpdate",
+      value: { profile: { budgets }, fields: ["budgets"], resetBudgets: reset ? [kind] : [] },
+    },
+  });
 }
 
 /** What happened to a command, as far as the viewer knows. */

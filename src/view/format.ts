@@ -2,7 +2,17 @@
  * Presentation helpers shared by the components: how the TUI words and
  * lays out what the session view holds.
  */
-import { diffStat, fileHistory, firstLine, type Item, type Session, type ToolCall, type Worker } from "./session";
+import {
+  diffStat,
+  fileHistory,
+  firstLine,
+  type Item,
+  type Progress,
+  type Session,
+  type ToolCall,
+  type Usage,
+  type Worker,
+} from "./session";
 
 /** A token count, short: 950, 1.2k, 34k, 1.5M. */
 export function tokens(n: number): string {
@@ -61,6 +71,11 @@ export function toolLabel(name: string): string {
     shell: "Shell",
     python: "Python",
     spawn_subagent: "Subagent",
+    report_progress: "Progress",
+    send_feedback: "Feedback",
+    budget_status: "Budget",
+    decide: "Decide",
+    llm: "LLM",
   };
   return Object.hasOwn(labels, name) ? labels[name] : name;
 }
@@ -110,6 +125,16 @@ export function keyArgs(c: ToolCall): string {
       if (str("model") !== "") s += " · " + str("model");
       return `${s}  ${str("task")}`.trim();
     }
+    case "report_progress":
+      return typeof a.percent === "number" ? `${a.percent.toFixed(0)}% · ${str("message")}` : str("message");
+    case "send_feedback":
+      return str("kind") + ": " + str("message");
+    case "decide":
+      return str("question");
+    case "llm":
+      return str("model") !== "" ? str("model") + " · " + str("prompt") : str("prompt");
+    case "budget_status":
+      return "";
   }
   return firstLine(c.input);
 }
@@ -252,4 +277,62 @@ export function elapsed(s: Session, now: number | null): number | null {
 export function firstSentence(s: string): string {
   const i = s.indexOf(". ");
   return i > 0 ? s.slice(0, i + 1) : s;
+}
+
+/** A decide call: what was asked, and what was decided. */
+export interface DecideView {
+  question: string;
+  options: string[];
+  context: string;
+  /** The answer; null while the call waits or if it failed. */
+  decision: { decision: string; decidedBy: string; reason: string } | null;
+}
+
+/** Reads a decide call's question and, once answered, its decision. Null if the input isn't a decide call's. */
+export function decideView(c: ToolCall): DecideView | null {
+  const a = callArgs(c);
+  if (!a || typeof a.question !== "string") return null;
+  const options = Array.isArray(a.options) ? a.options.filter((o): o is string => typeof o === "string") : [];
+  let decision: DecideView["decision"] = null;
+  if (c.status === "ok") {
+    try {
+      const out: unknown = JSON.parse(c.output);
+      if (out !== null && typeof out === "object" && typeof (out as { decision?: unknown }).decision === "string") {
+        const o = out as Record<string, unknown>;
+        const text = (k: string) => (typeof o[k] === "string" ? (o[k] as string) : "");
+        decision = { decision: text("decision"), decidedBy: text("decided_by"), reason: text("reason") };
+      }
+    } catch {
+      // not JSON: shown as plain output
+    }
+  }
+  return { question: a.question, options, context: typeof a.context === "string" ? a.context : "", decision };
+}
+
+/** An llm call: the model, the prompt, and the answer with what it used. */
+export interface LlmView {
+  /** The alias asked for; "" for the default. */
+  model: string;
+  prompt: string;
+  system: string;
+}
+
+/** Reads an llm call's input. Null if it isn't an llm call's. */
+export function llmView(c: ToolCall): LlmView | null {
+  const a = callArgs(c);
+  if (!a || typeof a.prompt !== "string") return null;
+  const text = (k: string) => (typeof a[k] === "string" ? (a[k] as string) : "");
+  return { model: text("model"), prompt: text("prompt"), system: text("system") };
+}
+
+/** What a call through the gateway used, in a line: "180 in / 45 out · 0.0012 EUR". */
+export function usageLine(u: Usage): string {
+  let s = `${tokens(u.input)} in / ${tokens(u.output)} out`;
+  if (u.cost > 0) s += ` · ${u.cost.toFixed(4)}${u.currency !== "" ? " " + u.currency : ""}`;
+  return s;
+}
+
+/** A progress report in a line: "40% · Summary drafted", or just the message. */
+export function progressText(p: Progress): string {
+  return p.percent >= 0 ? `${p.percent}% · ${p.message}` : p.message;
 }

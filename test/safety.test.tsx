@@ -79,6 +79,60 @@ function maliciousRun() {
     case: "command",
     value: { command: { id: evil, actor: evil, action: { case: "steer", value: { note: evil } } }, message: evil },
   });
+  // The standard tools and budgets.
+  e.add("root", { case: "progress", value: { message: evil, percent: 50 } });
+  e.add("root", { case: "feedback", value: { kind: evil, message: evil } });
+  e.add("", {
+    case: "budgetStatus",
+    value: {
+      reason: evil,
+      budgets: [
+        { kind: 2, limit: 1, used: 2, currency: evil, state: "waiting" },
+        { kind: 3, limit: 10, used: 1, state: evil },
+      ],
+    },
+  });
+  e.add("root", {
+    case: "toolStarted",
+    value: {
+      callId: "d1",
+      tool: "decide",
+      input: JSON.stringify({ question: evil, options: [evil, evil], context: evil }),
+    },
+  });
+  e.add("root", {
+    case: "toolFinished",
+    value: { callId: "d1", tool: "decide", output: JSON.stringify({ decision: evil, decided_by: evil, reason: evil }) },
+  });
+  e.add("root", {
+    case: "toolStarted",
+    value: { callId: "l1", tool: "llm", input: JSON.stringify({ model: evil, prompt: evil, system: evil }) },
+  });
+  e.add("root", {
+    case: "toolFinished",
+    value: {
+      callId: "l1",
+      tool: "llm",
+      output: evil,
+      usage: { inputTokens: 1n, outputTokens: 1n, cost: 0.1, currency: evil },
+    },
+  });
+  e.add("root", {
+    case: "toolStarted",
+    value: { callId: "p1", tool: "report_progress", input: JSON.stringify({ message: evil, percent: 5 }) },
+  });
+  e.add("root", {
+    case: "toolStarted",
+    value: { callId: "f1", tool: "send_feedback", input: JSON.stringify({ kind: evil, message: evil }) },
+  });
+  e.add("", {
+    case: "command",
+    value: {
+      command: { id: evil, action: { case: "profileUpdate", value: { fields: [evil], resetBudgets: [2] } } },
+      result: 2,
+      message: evil,
+    },
+  });
   return e.out;
 }
 
@@ -109,9 +163,14 @@ function hasControls(s: string): boolean {
 describe("untrusted content", () => {
   it("renders as inert text on every tab", () => {
     const { container } = render(
-      <ActivityViewer events={maliciousRun()} onCommand={() => {}} allowedCommands={["steer", "pause", "stop"]} />,
+      <ActivityViewer
+        events={maliciousRun()}
+        onCommand={() => {}}
+        allowedCommands={["steer", "pause", "stop", "profile_update"]}
+      />,
     );
     fireEvent.click(screen.getByLabelText(/expand/));
+    fireEvent.click(screen.getByRole("button", { name: "Raise a budget…" }));
     expectInert(container);
     // The payloads show as the text they are.
     expect(container.textContent).toContain("<script>window.__pwned = 1</script>");

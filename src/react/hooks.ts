@@ -103,7 +103,7 @@ export interface ReplayOptions {
   sessionId?: string;
   autoPlay?: boolean;
   speed?: number;
-  /** Start at this many events shown; at the end by default unless playing automatically. */
+  /** Start at this many events shown: all of them by default, or none when playing at once. */
   start?: number;
   /** How often playback moves on, in milliseconds. */
   tick?: number;
@@ -119,8 +119,8 @@ export function useReplay(events: readonly EventInput[], opts: ReplayOptions = {
   const [player] = useState(() => {
     const p = new Player(usable, sessionId);
     p.setSpeed(speed);
+    p.seek(opts.start ?? (autoPlay ? 0 : usable.length));
     if (autoPlay) p.play(Date.now());
-    else p.seek(opts.start ?? usable.length);
     return p;
   });
   const [version, bump] = useReducer((n: number) => n + 1, 0);

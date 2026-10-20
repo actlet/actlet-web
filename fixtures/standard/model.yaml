@@ -1,0 +1,78 @@
+# A scripted release check that uses every standard tool: progress,
+# feedback, the budget, a decision and a side call to another model.
+price: {currency: EUR, input: 3, output: 15}
+turns:
+  - text: I'll read the release notes and see what budget I have.
+    delay: 2s
+    usage: {input: 4000, output: 300}
+    tool_calls:
+      - name: report_progress
+        input: {message: Reading the release notes, percent: 10}
+      - name: read_file
+        input: {path: ../inputs/notes.md}
+      - name: budget_status
+        input: {}
+
+  - text: I'll have the fast model draft the summary.
+    delay: 2s
+    usage: {input: 4500, output: 250}
+    tool_calls:
+      - name: llm
+        input:
+          model: fast
+          prompt: "Summarise these release notes in two sentences: faster report exports, a new archive action without undo, and a one-cent rounding fix for discounts."
+      - name: report_progress
+        input: {message: Summary drafted, percent: 40}
+
+  - text: The archive action has no undo. Whether to ship is the release manager's call.
+    delay: 2s
+    usage: {input: 5200, output: 280}
+    tool_calls:
+      - name: decide
+        input:
+          question: Ship release 2.4 today, although the archive action has no undo yet?
+          options: [ship today, wait for undo]
+          context: The exports are 3x faster and the rounding fix is waited for; the archive action is new and can't be undone.
+      - name: send_feedback
+        input: {kind: suggestion, message: "Give the archive action an undo, or a confirmation step, before it is advertised."}
+
+  - text: Shipping today, with a warning about the archive action. Writing the summary.
+    delay: 2s
+    usage: {input: 5600, output: 420}
+    tool_calls:
+      - name: write_file
+        input:
+          path: ../output/summary.md
+          content: |
+            # Release 2.4: ship today
+
+            Report exports are about three times faster, a new archive action
+            files away finished projects, and totals no longer drift by a cent
+            when a discount applies.
+
+            The archive action has no undo yet: say so in the release notes.
+      - name: report_progress
+        input: {message: Summary written, percent: 90}
+
+  - text: Done. The summary is in output/summary.md; the release manager chose to ship today.
+    delay: 1s
+    usage: {input: 6000, output: 60}
+    tool_calls:
+      - name: report_progress
+        input: {message: Release check finished, percent: 100}
+
+  - text: The release check is complete.
+    usage: {input: 6100, output: 20}
+
+decisions:
+  - match: Ship release 2.4
+    decision: ship today
+    decided_by: the release manager
+    reason: The export speed-up is promised to two customers this week; the release notes will warn about the missing undo.
+    delay: 3s
+
+llm:
+  - match: Summarise these release notes
+    text: Release 2.4 makes report exports about three times faster and fixes a one-cent rounding error with discounts. It also adds an archive action for finished projects, which can't be undone yet.
+    usage: {input: 180, output: 45}
+    cost: 0.0012

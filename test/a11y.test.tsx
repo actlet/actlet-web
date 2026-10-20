@@ -120,9 +120,9 @@ describe("keyboard only", () => {
     const stream = screen.getByRole("log", { name: "Conversation" });
     stream.focus();
     await user.keyboard("{ArrowLeft}");
-    expect(screen.getByText("77/78")).toBeTruthy();
+    expect(screen.getByText("80/81")).toBeTruthy();
     await user.keyboard("{Shift>}{ArrowLeft}{/Shift}");
-    expect(screen.getByText("67/78")).toBeTruthy();
+    expect(screen.getByText("70/81")).toBeTruthy();
     await user.keyboard("+");
     expect((screen.getByLabelText("Speed") as HTMLSelectElement).value).toBe("2");
     vi.useFakeTimers();

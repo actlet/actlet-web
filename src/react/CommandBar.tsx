@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { PauseMode, type Command } from "../gen/actlet/gateway/v0/gateway_pb";
-import { commandName } from "../view/session";
+import { PauseMode, type Budget, type Command } from "../gen/actlet/gateway/v0/gateway_pb";
+import { commandName, type BudgetState } from "../view/session";
 import {
   DEFAULT_COMMANDS,
   pauseCommand,
@@ -11,6 +11,7 @@ import {
   type CommandStatus,
   type SentCommand,
 } from "../commands";
+import { RaiseBudget } from "./RaiseBudget";
 import { Text } from "./Text";
 
 /** Delivers a command to the session. A rejected promise marks the command as not delivered. */
@@ -24,6 +25,9 @@ export interface CommandBarProps extends CommandOptions {
   outcomes?: ReadonlyMap<string, { status: CommandStatus; message: string }>;
   /** The session has ended: nothing more can be sent. */
   ended?: boolean;
+  /** For raising a budget: the session's budgets as profile entries, and as last reported. */
+  budgetDefinitions?: readonly Budget[];
+  budgetStates?: readonly BudgetState[];
 }
 
 /** The most recent sent commands the bar lists. */
@@ -31,7 +35,7 @@ const SHOWN = 5;
 
 /**
  * Sends commands like the terminal viewer does: a line for operator notes,
- * and pause and stop when the implementor allows them. The implementor
+ * and pause, stop and raising a budget when the implementor allows them. The implementor
  * delivers them; the bar shows whether each was accepted.
  */
 export function CommandBar({
@@ -39,6 +43,8 @@ export function CommandBar({
   allowed = DEFAULT_COMMANDS,
   outcomes,
   ended = false,
+  budgetDefinitions = [],
+  budgetStates = [],
   ...opts
 }: CommandBarProps) {
   const [note, setNote] = useState("");
@@ -127,6 +133,9 @@ export function CommandBar({
               Interrupt
             </button>
           </>
+        )}
+        {can("profile_update") && (
+          <RaiseBudget definitions={budgetDefinitions} states={budgetStates} disabled={ended} onSend={send} {...opts} />
         )}
         {can("stop") &&
           (confirmStop ? (

@@ -10,6 +10,7 @@ import { EventsPanel, ProfilePanel, SessionPanel, TaskPanel, ToolsPanel } from "
 import { ReplayControls } from "./ReplayControls";
 import { Sidebar } from "./Sidebar";
 import { StateAnnouncer, StatusLine } from "./StatusLine";
+import { budgetDefinitions, budgets } from "../view/budgets";
 import { Tabs, type TabId } from "./Tabs";
 import { Text } from "./Text";
 import { TurnStream } from "./TurnStream";
@@ -34,7 +35,7 @@ export interface ActivityViewerProps {
 
   /** Live mode: delivers commands the operator sends. Without it, the viewer only watches. */
   onCommand?: CommandHandler;
-  /** The commands offered: steer notes only by default. */
+  /** The commands offered: steer notes only by default; add "pause", "stop" or "profile_update" (raising a budget). */
   allowedCommands?: readonly CommandKind[];
   /** Acknowledgements of sent commands the implementor received, if any; command events count too. */
   acks?: readonly CommandAck[];
@@ -48,6 +49,8 @@ export interface ActivityViewerProps {
   /** Replay mode: start playing at once, at this speed. */
   autoPlay?: boolean;
   speed?: number;
+  /** Replay mode: how many events to show at first; all of them by default, or none when playing at once. */
+  startAt?: number;
 
   /** The tab shown first. */
   defaultTab?: TabId;
@@ -75,7 +78,12 @@ function LiveViewer(props: ActivityViewerProps) {
 }
 
 function ReplayViewer(props: ActivityViewerProps) {
-  const opts: ReplayOptions = { sessionId: props.sessionId, autoPlay: props.autoPlay, speed: props.speed };
+  const opts: ReplayOptions = {
+    sessionId: props.sessionId,
+    autoPlay: props.autoPlay,
+    speed: props.speed,
+    start: props.startAt,
+  };
   const r = useReplay(props.events, opts);
   return (
     <Layout
@@ -237,6 +245,8 @@ function Layout(p: LayoutProps) {
             ended={ended}
             origin={p.commandOrigin}
             actor={p.actor}
+            budgetDefinitions={budgetDefinitions(session)}
+            budgetStates={budgets(session)}
           />
         )}
         <StatusLine session={session} connection={connection} now={now} />

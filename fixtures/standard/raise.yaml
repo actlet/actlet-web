@@ -1,0 +1,11 @@
+# The operator raises the money budget the session ran out of.
+budgets:
+  - kind: money
+    limit: 0.2
+    currency: EUR
+    alert_at_percent: 50
+    on_exhaust: wait
+    wait_mode: idle
+  - kind: tokens
+    limit: 100000
+    on_exhaust: kill

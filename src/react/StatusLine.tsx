@@ -1,5 +1,6 @@
 import { SessionState } from "../gen/actlet/gateway/v0/gateway_pb";
-import { duration, elapsed, tokens } from "../view/format";
+import { budgetAlarm } from "../view/budgets";
+import { clip, duration, elapsed, progressText, tokens } from "../view/format";
 import { contextWindow, stateName, type Session } from "../view/session";
 import { Text } from "./Text";
 
@@ -11,10 +12,17 @@ export interface StatusLineProps {
   now?: number | null;
 }
 
+/** The most of the latest progress report the status line shows. */
+const PROGRESS_CHARS = 48;
+
 /** The one compact status line: what is happening, the model, how full its context is, cost, time and what the viewer shows. */
 export function StatusLine({ session: s, connection, now = null }: StatusLineProps) {
   const root = s.workers.get("root");
   const parts: string[] = [];
+  if (s.progress) {
+    const text = progressText(s.progress);
+    parts.push(text.length > PROGRESS_CHARS ? clip(text, PROGRESS_CHARS - 1).text + "…" : text);
+  }
   if (root) {
     if (root.model !== "") parts.push(root.model);
     const window = contextWindow(s, root.model);
@@ -26,6 +34,7 @@ export function StatusLine({ session: s, connection, now = null }: StatusLinePro
   const ns = elapsed(s, running ? now : null);
   parts.push(ns === null ? "0s" : duration(Math.round(ns / 1e9) * 1e9));
   parts.push(connection);
+  const alarm = budgetAlarm(s);
   return (
     // Not a live region: it changes every second. StateAnnouncer says when the state changes.
     <div className="actlet-status" role="group" aria-label="Session status">
@@ -37,6 +46,15 @@ export function StatusLine({ session: s, connection, now = null }: StatusLinePro
           <Text text={p} max={200} />
         </span>
       ))}
+      {alarm !== "" && (
+        <span className="actlet-alarm">
+          <span className="actlet-faint">{" · "}</span>
+          <span className="actlet-icon" aria-hidden="true">
+            ⚠
+          </span>
+          {alarm}
+        </span>
+      )}
     </div>
   );
 }
@@ -70,7 +88,7 @@ function StateIcon({ state }: { state: SessionState }) {
 export function StateAnnouncer({ session }: { session: Session }) {
   return (
     <div className="actlet-sr-only" role="status" aria-live="polite" aria-atomic="true">
-      {`Session ${stateName(session.state)}`}
+      {`Session ${stateName(session.state)}${budgetAlarm(session) ? `; ${budgetAlarm(session)}` : ""}`}
     </div>
   );
 }

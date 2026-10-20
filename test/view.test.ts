@@ -235,7 +235,7 @@ describe("the demo recording", () => {
 
   it("ends completed", () => {
     expect(s.state).toBe(SessionState.COMPLETED);
-    expect(s.events).toBe(78);
+    expect(s.events).toBe(81);
     expect(s.skipped).toBe(0);
   });
 

@@ -37,18 +37,18 @@ describe("ActivityViewer", () => {
     const pos = screen.getByLabelText("Position") as HTMLInputElement;
     fireEvent.change(pos, { target: { value: "0" } });
     expect(screen.getByText("Waiting for the agent…")).toBeTruthy();
-    expect(screen.getByText("0/78")).toBeTruthy();
+    expect(screen.getByText("0/81")).toBeTruthy();
     fireEvent.change(screen.getByLabelText("Speed"), { target: { value: "64" } });
     fireEvent.click(screen.getByLabelText("Play"));
     expect(screen.getByRole("group", { name: "Session status" }).textContent).toContain("replay playing 64x");
     act(() => vi.advanceTimersByTime(3000));
-    const shown = Number(screen.getByText(/^\d+\/78$/).textContent!.split("/")[0]);
+    const shown = Number(screen.getByText(/^\d+\/81$/).textContent!.split("/")[0]);
     expect(shown).toBeGreaterThan(5);
     act(() => vi.advanceTimersByTime(120_000));
-    expect(screen.getByText("78/78")).toBeTruthy();
+    expect(screen.getByText("81/81")).toBeTruthy();
     expect(screen.getByRole("group", { name: "Session status" }).textContent).toContain("completed");
     fireEvent.click(screen.getByLabelText("Back one event"));
-    expect(screen.getByText("77/78")).toBeTruthy();
+    expect(screen.getByText("80/81")).toBeTruthy();
   });
 
   it("follows appended events in live mode", () => {
@@ -127,7 +127,11 @@ describe("ActivityViewer", () => {
     render(<ActivityViewer events={demo} mode="replay" sessionId="abc123" />);
     fireEvent.click(screen.getByRole("tab", { name: "Session" }));
     expect(screen.getByText("abc123")).toBeTruthy();
-    expect(screen.getByText(/^money limit 2 EUR used [\d.]+ \(\d+%\)$/)).toBeTruthy();
+    // The budgets as the latest budget status reported them: money past its alert.
+    const money = screen.getByRole("row", { name: /^money/ });
+    expect(money.textContent).toMatch(/^money0\.6 EUR0\.\d\d \(\d+%\)past the alert$/);
+    expect(money.getAttribute("data-state")).toBe("alerted");
+    expect(screen.getByRole("meter", { name: "money budget used" })).toBeTruthy();
     fireEvent.click(screen.getByRole("tab", { name: "Task" }));
     expect(screen.getByText(/Task q3-sales-review/)).toBeTruthy();
     fireEvent.click(screen.getByRole("tab", { name: "Profile" }));

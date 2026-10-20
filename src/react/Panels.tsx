@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
-import { BudgetKind, type Budget } from "../gen/actlet/gateway/v0/gateway_pb";
-import { duration, elapsed, firstSentence, orNA, plural, tokens } from "../view/format";
+import { budgetLine, budgets } from "../view/budgets";
+import { duration, elapsed, firstSentence, orNA, plural, progressText, tokens } from "../view/format";
+import { clock } from "../view/time";
 import { sanitize } from "../view/sanitize";
-import { contextWindow, enumName, firstLine, stateName, workers, type Session } from "../view/session";
+import { contextWindow, firstLine, stateName, workers, type Session } from "../view/session";
 import { Text } from "./Text";
 
 function Section({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
@@ -40,29 +41,61 @@ function Pre({ text }: { text: string }) {
   );
 }
 
-/** What a budget allows and, as far as the viewer can tell, how much of it is used. */
-export function budgetLine(s: Session, b: Budget, now: number | null): string {
-  const kind = enumName(BudgetKind, b.kind);
-  let limit = `${b.limit}`;
-  if (b.currency !== "") limit += " " + sanitize(b.currency);
-  let used: number | null = null;
-  if (b.kind === BudgetKind.MONEY && s.usage.cost > 0 && s.usage.currency === b.currency) used = s.usage.cost;
-  if (b.kind === BudgetKind.TOKENS && s.usage.input + s.usage.output > 0) used = s.usage.input + s.usage.output;
-  const ns = elapsed(s, now);
-  if (b.kind === BudgetKind.TIME && ns !== null) used = ns / 1e9;
-  let usedText = "n/a";
-  if (used !== null) {
-    let amount = used.toFixed(2);
-    if (b.kind === BudgetKind.TOKENS) {
-      amount = tokens(used);
-      limit = tokens(b.limit);
-    } else if (b.kind === BudgetKind.TIME) {
-      amount = duration(Math.round(used) * 1e9);
-      limit = duration(b.limit * 1e9);
-    }
-    usedText = `${amount} (${b.limit > 0 ? Math.round((used * 100) / b.limit) : 0}%)`;
-  }
-  return `${kind}  limit ${limit}  used ${usedText}`;
+const knownStates = ["ok", "alerted", "exhausted", "waiting"];
+const feedbackKinds = ["problem", "suggestion", "question", "other"];
+
+/** The session's budgets: each one's limit, what is used of it, and its state. */
+export function BudgetTable({ session: s, now = null }: { session: Session; now?: number | null }) {
+  const bs = budgets(s);
+  if (bs.length === 0) return <div className="actlet-muted">none</div>;
+  return (
+    <table className="actlet-table actlet-budgets">
+      <thead>
+        <tr>
+          <th>budget</th>
+          <th>limit</th>
+          <th>used</th>
+          <th>
+            <span className="actlet-sr-only">share used</span>
+          </th>
+          <th>state</th>
+        </tr>
+      </thead>
+      <tbody>
+        {bs.map((b, i) => {
+          const l = budgetLine(s, b, now);
+          // Only the states Actlet defines go into attributes; the text shows whatever was sent.
+          const state = knownStates.includes(l.state) ? l.state : undefined;
+          return (
+            <tr key={i} data-state={state} className={state ? `actlet-budget-${state}` : undefined}>
+              <td>{l.kind}</td>
+              <td>
+                <Text text={l.limit} max={100} />
+              </td>
+              <td>{l.used}</td>
+              <td>
+                {l.percent !== null && (
+                  <meter
+                    className="actlet-meter"
+                    min={0}
+                    max={100}
+                    low={50}
+                    high={90}
+                    optimum={0}
+                    value={Math.min(l.percent, 100)}
+                    aria-label={`${l.kind} budget used`}
+                  />
+                )}
+              </td>
+              <td className="actlet-budget-state">
+                <Text text={l.stateText || l.state || "n/a"} max={100} />
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
 }
 
 export interface PanelProps {
@@ -89,6 +122,7 @@ export function SessionPanel({ session: s, now = null, connection = "" }: PanelP
             ["elapsed", ns === null ? "0s" : duration(Math.round(ns / 1e9) * 1e9)],
             ["viewing", orNA(connection)],
             ["events", `${s.events}${s.skipped > 0 ? `, ${s.skipped} missed` : ""}`],
+            ...(s.progress ? [["progress", progressText(s.progress)] as [string, string]] : []),
           ]}
         />
       </Section>
@@ -131,17 +165,25 @@ export function SessionPanel({ session: s, now = null, connection = "" }: PanelP
           </tbody>
         </table>
       </Section>
-      <Section title="Budgets" note="not enforced yet">
-        {(s.info?.budgets.length ?? 0) === 0 ? (
-          <div className="actlet-muted">n/a</div>
-        ) : (
-          s.info!.budgets.map((b, i) => (
-            <div key={i} className="actlet-mono">
-              <Text text={budgetLine(s, b, now)} />
-            </div>
-          ))
-        )}
+      <Section title="Budgets">
+        <BudgetTable session={s} now={now} />
       </Section>
+      {s.feedback.length > 0 && (
+        <Section title="Feedback" note="from the agent">
+          {s.feedbackDropped > 0 && <div className="actlet-muted">{`… ${s.feedbackDropped} earlier`}</div>}
+          <ul className="actlet-plain-list actlet-feedback">
+            {s.feedback.map((f, i) => (
+              <li key={i}>
+                <span className="actlet-muted">{clock(f.at)}</span>{" "}
+                <span className={`actlet-chip actlet-feedback-${feedbackKinds.includes(f.kind) ? f.kind : "other"}`}>
+                  <Text text={f.kind} max={40} />
+                </span>{" "}
+                <Text text={f.message} />
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
     </div>
   );
 }
@@ -222,13 +264,8 @@ export function ProfilePanel({ session: s, now = null }: PanelProps) {
           <div className="actlet-muted">none listed; the agent asks for the "main" alias</div>
         )}
       </Section>
-      <Section title="Budgets" note="not enforced yet">
-        {info.budgets.length === 0 && <div className="actlet-muted">n/a</div>}
-        {info.budgets.map((b, i) => (
-          <div key={i} className="actlet-mono">
-            <Text text={budgetLine(s, b, now)} />
-          </div>
-        ))}
+      <Section title="Budgets">
+        <BudgetTable session={s} now={now} />
       </Section>
       <Section title="Local viewers may">
         <Text text={orNA(info.localCommands.join(", "))} />

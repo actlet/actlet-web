@@ -740,3 +740,72 @@
     border-top: 1px solid var(--actlet-border);
   }
 }
+
+/* Budgets, progress and feedback. */
+.actlet-alarm {
+  color: var(--actlet-err);
+  font-weight: 600;
+}
+.actlet-budgets td {
+  vertical-align: middle;
+}
+.actlet-budget-alerted .actlet-budget-state {
+  color: var(--actlet-run);
+}
+.actlet-budget-exhausted .actlet-budget-state,
+.actlet-budget-waiting .actlet-budget-state {
+  color: var(--actlet-err);
+  font-weight: 600;
+}
+.actlet-meter {
+  width: 7em;
+  height: 0.7em;
+}
+.actlet-chip {
+  display: inline-block;
+  padding: 0 0.45em;
+  border-radius: 999px;
+  border: 1px solid var(--actlet-border);
+  background: var(--actlet-bg-raised);
+  color: var(--actlet-muted);
+  font-size: 0.88em;
+}
+.actlet-feedback-problem {
+  color: var(--actlet-err);
+}
+.actlet-feedback-suggestion {
+  color: var(--actlet-ok);
+}
+.actlet-feedback-question {
+  color: var(--actlet-operator);
+}
+.actlet-feedback li {
+  margin: 0.2em 0;
+}
+
+/* Decisions and side calls to other models. */
+.actlet-decision strong {
+  color: var(--actlet-ok);
+}
+.actlet-llm-meta {
+  font-style: italic;
+}
+
+/* Raising a budget. */
+.actlet-raise {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.2em 0.4em;
+  border: 1px solid var(--actlet-border);
+  border-radius: var(--actlet-radius);
+}
+.actlet-number {
+  width: 7em;
+  flex: none;
+}
+.actlet-check {
+  color: var(--actlet-muted);
+  cursor: pointer;
+}

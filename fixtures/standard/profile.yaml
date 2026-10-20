@@ -1,0 +1,41 @@
+# A session that uses every standard tool, with a money budget tight
+# enough to run out: the work waits until the operator raises it.
+schema: v0
+id: release
+version: "1"
+limits:
+  max_workers: 2
+  max_tool_concurrency: 4
+budgets:
+  - kind: money
+    limit: 0.04
+    currency: EUR
+    alert_at_percent: 50
+    on_exhaust: wait
+    wait_mode: idle
+  - kind: tokens
+    limit: 100000
+    on_exhaust: kill
+models:
+  aliases:
+    - alias: large
+      description: the strongest model
+      capabilities: [tools]
+      context_window: 200000
+    - alias: fast
+      description: a quick, cheap model
+      context_window: 128000
+  roles:
+    main: large
+    llm: fast
+  selectable: [fast]
+tools:
+  - name: read_file
+  - name: write_file
+  - name: report_progress
+  - name: send_feedback
+  - name: budget_status
+  - name: decide
+  - name: llm
+local_attach:
+  commands: [steer]

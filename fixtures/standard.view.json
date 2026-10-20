@@ -1,0 +1,865 @@
+{
+  "version": 1,
+  "id": "",
+  "epoch": 1,
+  "state": "SESSION_STATE_COMPLETED",
+  "reason": "task completed",
+  "resumed": false,
+  "profile": "release",
+  "events": 45,
+  "skipped": 0,
+  "first": "2026-10-20T20:43:53.413024Z",
+  "last": "2026-10-20T20:44:29.300701Z",
+  "info": {
+    "task_id": "release-check",
+    "task_kind": "agent",
+    "task": "{\n  \"schema\": \"v0\",\n  \"id\": \"release-check\",\n  \"kind\": \"agent\",\n  \"definition\": {\n    \"max_turns\": 12\n  },\n  \"input\": \"Read the release notes in inputs/notes.md, summarise them in output/summary.md, and ask the release manager whether to ship today.\"\n}\n",
+    "config": "{\n  \"profile_id\": \"release\",\n  \"profile_version\": \"1\",\n  \"max_workers\": 2,\n  \"max_tool_concurrency\": 4,\n  \"stop_grace\": \"30s\",\n  \"default_pause_mode\": \"drain\",\n  \"signal_deadline\": \"8s\",\n  \"model\": \"large\",\n  \"checkpoint_every_turns\": 1,\n  \"tools\": [\n    \"read_file\",\n    \"write_file\",\n    \"report_progress\",\n    \"send_feedback\",\n    \"budget_status\",\n    \"decide\",\n    \"llm\"\n  ],\n  \"subagent_model\": \"large\",\n  \"max_subagent_depth\": 2,\n  \"max_subagents\": 8,\n  \"budgets\": [\n    {\n      \"kind\": \"BUDGET_KIND_MONEY\",\n      \"limit\": 0.04,\n      \"currency\": \"EUR\",\n      \"alert_at_percent\": 50,\n      \"on_exhaust\": \"BUDGET_ACTION_WAIT\",\n      \"wait_mode\": \"BUDGET_WAIT_MODE_IDLE\"\n    },\n    {\n      \"kind\": \"BUDGET_KIND_TOKENS\",\n      \"limit\": 100000,\n      \"on_exhaust\": \"BUDGET_ACTION_KILL\"\n    }\n  ],\n  \"local_commands\": [\n    \"steer\"\n  ]\n}",
+    "budgets": [
+      {
+        "kind": "BUDGET_KIND_MONEY",
+        "limit": 0.04,
+        "currency": "EUR",
+        "alert_at_percent": 50,
+        "on_exhaust": "BUDGET_ACTION_WAIT",
+        "wait_mode": "BUDGET_WAIT_MODE_IDLE"
+      },
+      {
+        "kind": "BUDGET_KIND_TOKENS",
+        "limit": 100000,
+        "on_exhaust": "BUDGET_ACTION_KILL"
+      }
+    ],
+    "models": {
+      "aliases": [
+        {
+          "alias": "large",
+          "description": "the strongest model",
+          "capabilities": [
+            "tools"
+          ],
+          "context_window": "200000"
+        },
+        {
+          "alias": "fast",
+          "description": "a quick, cheap model",
+          "context_window": "128000"
+        }
+      ],
+      "roles": {
+        "llm": "fast",
+        "main": "large"
+      },
+      "selectable": [
+        "fast"
+      ]
+    },
+    "tools": [
+      {
+        "name": "budget_status",
+        "policy": "retry",
+        "description": "See how much of the session's budgets (time, money, tokens, disk space) is used, to plan your work within them."
+      },
+      {
+        "name": "decide",
+        "policy": "bridge",
+        "description": "Ask for a decision you shouldn't make alone: the orchestrator puts the question to a person or a system that decides, and the answer is this call's result. It may take a while. Give the options you see and the context needed to choose."
+      },
+      {
+        "name": "llm",
+        "policy": "bridge",
+        "description": "Call another model for side work, such as summarising or classifying text, and get its answer. It sees only what you send it and has no tools. Choose a model, or leave it out for the default, fast."
+      },
+      {
+        "name": "read_file",
+        "policy": "retry",
+        "description": "Read a text file. Lines come numbered; read a large file in parts with offset and limit. Relative paths are relative to workspace/."
+      },
+      {
+        "name": "report_progress",
+        "policy": "retry",
+        "description": "Tell the people watching how the task is going: what you are doing now and, if you can tell, how far along you are. Report at milestones, not after every step."
+      },
+      {
+        "name": "send_feedback",
+        "policy": "retry",
+        "description": "Send feedback to the people running this service: a problem with the task or your setup (a missing tool, unclear instructions, bad input), a suggestion, or a question. It doesn't wait for an answer."
+      },
+      {
+        "name": "spawn_subagent",
+        "policy": "spawn",
+        "description": "start a subagent on a subtask"
+      },
+      {
+        "name": "write_file",
+        "policy": "reconcile",
+        "description": "Create or overwrite a file with the given content. Missing directories are created. inputs/ is read-only; put deliverables in output/."
+      }
+    ],
+    "grants": [
+      {
+        "name": "read_file"
+      },
+      {
+        "name": "write_file"
+      },
+      {
+        "name": "report_progress"
+      },
+      {
+        "name": "send_feedback"
+      },
+      {
+        "name": "budget_status"
+      },
+      {
+        "name": "decide"
+      },
+      {
+        "name": "llm"
+      }
+    ],
+    "manifest": "",
+    "worker_id": "AAAAA.localdomain",
+    "version": "dev",
+    "local_commands": [
+      "steer"
+    ]
+  },
+  "usage": {
+    "input": 31580,
+    "output": 1375,
+    "cache_read": 0,
+    "cache_write": 0,
+    "cost": 0.11535000000000001,
+    "currency": "EUR"
+  },
+  "progress": {
+    "worker": "root",
+    "message": "Release check finished",
+    "percent": 100,
+    "time": "2026-10-20T20:44:29.235938Z"
+  },
+  "feedback": [
+    {
+      "worker": "root",
+      "kind": "suggestion",
+      "message": "Give the archive action an undo, or a confirmation step, before it is advertised.",
+      "time": "2026-10-20T20:43:59.607862Z"
+    }
+  ],
+  "feedback_dropped": 0,
+  "budgets": [
+    {
+      "kind": "BUDGET_KIND_MONEY",
+      "limit": 0.2,
+      "used": 0.11535000000000001,
+      "currency": "EUR",
+      "state": "alerted"
+    },
+    {
+      "kind": "BUDGET_KIND_TOKENS",
+      "limit": 100000,
+      "used": 32955,
+      "currency": "",
+      "state": "ok"
+    }
+  ],
+  "items": [
+    {
+      "kind": "system",
+      "epoch": 1,
+      "seq": 1,
+      "time": "2026-10-20T20:43:53.413024Z",
+      "turn": null,
+      "text": "run 1 started",
+      "from": "",
+      "warn": false
+    },
+    {
+      "kind": "system",
+      "epoch": 1,
+      "seq": 21,
+      "time": "2026-10-20T20:43:59.593237Z",
+      "turn": null,
+      "text": "money budget used up (0.05 EUR of 0.04 EUR); new work waits until it is raised",
+      "from": "",
+      "warn": false
+    },
+    {
+      "kind": "system",
+      "epoch": 1,
+      "seq": 29,
+      "time": "2026-10-20T20:44:23.114257Z",
+      "turn": null,
+      "text": "profile update (budgets) from the orchestrator accepted: changed budgets",
+      "from": "",
+      "warn": false
+    },
+    {
+      "kind": "system",
+      "epoch": 1,
+      "seq": 45,
+      "time": "2026-10-20T20:44:29.300701Z",
+      "turn": null,
+      "text": "session completed: task completed",
+      "from": "",
+      "warn": false
+    }
+  ],
+  "dropped": 0,
+  "workers": [
+    {
+      "id": "root",
+      "parent": "",
+      "call_id": "",
+      "model": "large",
+      "task": "",
+      "status": "finished",
+      "result": "",
+      "turns": 6,
+      "context": 6100,
+      "usage": {
+        "input": 31580,
+        "output": 1375,
+        "cache_read": 0,
+        "cache_write": 0,
+        "cost": 0.11535000000000001,
+        "currency": "EUR"
+      },
+      "items": [
+        {
+          "kind": "turn",
+          "epoch": 1,
+          "seq": 5,
+          "time": "2026-10-20T20:43:55.436274Z",
+          "turn": {
+            "number": 1,
+            "model": "large",
+            "text": "I'll read the release notes and see what budget I have.",
+            "usage": {
+              "input": 4000,
+              "output": 300,
+              "cache_read": 0,
+              "cache_write": 0,
+              "cost": 0.0165,
+              "currency": "EUR"
+            },
+            "stop": "tool_use",
+            "calls": [
+              {
+                "call_id": "call_1_3",
+                "name": "budget_status",
+                "input": "{}",
+                "status": "ok",
+                "output": "money: 0.02 EUR of 0.04 EUR used (41%), ok\ntokens: 4300 tokens of 100000 tokens used (4%), ok",
+                "took_ns": 16951542,
+                "diffs": [],
+                "child": "",
+                "epoch": 1,
+                "seq": 6
+              },
+              {
+                "call_id": "call_1_2",
+                "name": "read_file",
+                "input": "{\"path\":\"../inputs/notes.md\"}",
+                "status": "ok",
+                "output": "     1\t# Release 2.4\n     2\t\n     3\t- Faster report exports (about 3x on large workspaces).\n     4\t- A new \"archive\" action for finished projects.\n     5\t- Fixed: totals were off by one cent when a discount applied.\n     6\t- Known issue: the archive action has no undo yet.\n",
+                "took_ns": 34997625,
+                "diffs": [],
+                "child": "",
+                "epoch": 1,
+                "seq": 7
+              },
+              {
+                "call_id": "call_1_1",
+                "name": "report_progress",
+                "input": "{\"message\":\"Reading the release notes\",\"percent\":10}",
+                "status": "ok",
+                "output": "Progress reported.",
+                "took_ns": 45255708,
+                "diffs": [],
+                "child": "",
+                "epoch": 1,
+                "seq": 8
+              }
+            ],
+            "unseen": false
+          },
+          "text": "",
+          "from": "",
+          "warn": false
+        },
+        {
+          "kind": "turn",
+          "epoch": 1,
+          "seq": 14,
+          "time": "2026-10-20T20:43:57.520917Z",
+          "turn": {
+            "number": 2,
+            "model": "large",
+            "text": "I'll have the fast model draft the summary.",
+            "usage": {
+              "input": 4500,
+              "output": 250,
+              "cache_read": 0,
+              "cache_write": 0,
+              "cost": 0.01725,
+              "currency": "EUR"
+            },
+            "stop": "tool_use",
+            "calls": [
+              {
+                "call_id": "call_2_2",
+                "name": "report_progress",
+                "input": "{\"message\":\"Summary drafted\",\"percent\":40}",
+                "status": "ok",
+                "output": "Progress reported.",
+                "took_ns": 18765208,
+                "diffs": [],
+                "child": "",
+                "epoch": 1,
+                "seq": 15
+              },
+              {
+                "call_id": "call_2_1",
+                "name": "llm",
+                "input": "{\"model\":\"fast\",\"prompt\":\"Summarise these release notes in two sentences: faster report exports, a new archive action without undo, and a one-cent rounding fix for discounts.\"}",
+                "status": "ok",
+                "output": "Release 2.4 makes report exports about three times faster and fixes a one-cent rounding error with discounts. It also adds an archive action for finished projects, which can't be undone yet.",
+                "took_ns": 43822209,
+                "diffs": [],
+                "child": "",
+                "epoch": 1,
+                "seq": 16
+              }
+            ],
+            "unseen": false
+          },
+          "text": "",
+          "from": "",
+          "warn": false
+        },
+        {
+          "kind": "system",
+          "epoch": 1,
+          "seq": 20,
+          "time": "2026-10-20T20:43:57.574259Z",
+          "turn": null,
+          "text": "the agent got a notice: You have used 84% of the session's money budget (0.03 EUR of 0.04 EUR). When it runs out, your work will wait until it is raised. Plan to finish your task within it.",
+          "from": "",
+          "warn": false
+        },
+        {
+          "kind": "turn",
+          "epoch": 1,
+          "seq": 23,
+          "time": "2026-10-20T20:43:59.593258Z",
+          "turn": {
+            "number": 3,
+            "model": "large",
+            "text": "The archive action has no undo. Whether to ship is the release manager's call.",
+            "usage": {
+              "input": 5200,
+              "output": 280,
+              "cache_read": 0,
+              "cache_write": 0,
+              "cost": 0.0198,
+              "currency": "EUR"
+            },
+            "stop": "tool_use",
+            "calls": [
+              {
+                "call_id": "call_3_2",
+                "name": "send_feedback",
+                "input": "{\"kind\":\"suggestion\",\"message\":\"Give the archive action an undo, or a confirmation step, before it is advertised.\"}",
+                "status": "ok",
+                "output": "Feedback sent.",
+                "took_ns": 13843416,
+                "diffs": [],
+                "child": "",
+                "epoch": 1,
+                "seq": 24
+              },
+              {
+                "call_id": "call_3_1",
+                "name": "decide",
+                "input": "{\"context\":\"The exports are 3x faster and the rounding fix is waited for; the archive action is new and can't be undone.\",\"options\":[\"ship today\",\"wait for undo\"],\"question\":\"Ship release 2.4 today, although the archive action has no undo yet?\"}",
+                "status": "ok",
+                "output": "{\"decision\":\"ship today\",\"reason\":\"The export speed-up is promised to two customers this week; the release notes will warn about the missing undo.\",\"decided_by\":\"the release manager\"}",
+                "took_ns": 26523620792,
+                "diffs": [],
+                "child": "",
+                "epoch": 1,
+                "seq": 25
+              }
+            ],
+            "unseen": false
+          },
+          "text": "",
+          "from": "",
+          "warn": false
+        },
+        {
+          "kind": "turn",
+          "epoch": 1,
+          "seq": 31,
+          "time": "2026-10-20T20:44:28.144864Z",
+          "turn": {
+            "number": 4,
+            "model": "large",
+            "text": "Shipping today, with a warning about the archive action. Writing the summary.",
+            "usage": {
+              "input": 5600,
+              "output": 420,
+              "cache_read": 0,
+              "cache_write": 0,
+              "cost": 0.0231,
+              "currency": "EUR"
+            },
+            "stop": "tool_use",
+            "calls": [
+              {
+                "call_id": "call_4_2",
+                "name": "report_progress",
+                "input": "{\"message\":\"Summary written\",\"percent\":90}",
+                "status": "ok",
+                "output": "Progress reported.",
+                "took_ns": 31065292,
+                "diffs": [],
+                "child": "",
+                "epoch": 1,
+                "seq": 32
+              },
+              {
+                "call_id": "call_4_1",
+                "name": "write_file",
+                "input": "{\"content\":\"# Release 2.4: ship today\\n\\nReport exports are about three times faster, a new archive action\\nfiles away finished projects, and totals no longer drift by a cent\\nwhen a discount applies.\\n\\nThe archive action has no undo yet: say so in the release notes.\\n\",\"path\":\"../output/summary.md\"}",
+                "status": "ok",
+                "output": "created ../output/summary.md (251 bytes)",
+                "took_ns": 49632833,
+                "diffs": [
+                  {
+                    "path": "../output/summary.md",
+                    "created": true,
+                    "diff": "--- /dev/null\n+++ b/../output/summary.md\n@@ -0,0 +1,7 @@\n+# Release 2.4: ship today\n+\n+Report exports are about three times faster, a new archive action\n+files away finished projects, and totals no longer drift by a cent\n+when a discount applies.\n+\n+The archive action has no undo yet: say so in the release notes.\n"
+                  }
+                ],
+                "child": "",
+                "epoch": 1,
+                "seq": 33
+              }
+            ],
+            "unseen": false
+          },
+          "text": "",
+          "from": "",
+          "warn": false
+        },
+        {
+          "kind": "turn",
+          "epoch": 1,
+          "seq": 38,
+          "time": "2026-10-20T20:44:29.219907Z",
+          "turn": {
+            "number": 5,
+            "model": "large",
+            "text": "Done. The summary is in output/summary.md; the release manager chose to ship today.",
+            "usage": {
+              "input": 6000,
+              "output": 60,
+              "cache_read": 0,
+              "cache_write": 0,
+              "cost": 0.0189,
+              "currency": "EUR"
+            },
+            "stop": "tool_use",
+            "calls": [
+              {
+                "call_id": "call_5_1",
+                "name": "report_progress",
+                "input": "{\"message\":\"Release check finished\",\"percent\":100}",
+                "status": "ok",
+                "output": "Progress reported.",
+                "took_ns": 19228083,
+                "diffs": [],
+                "child": "",
+                "epoch": 1,
+                "seq": 39
+              }
+            ],
+            "unseen": false
+          },
+          "text": "",
+          "from": "",
+          "warn": false
+        },
+        {
+          "kind": "turn",
+          "epoch": 1,
+          "seq": 43,
+          "time": "2026-10-20T20:44:29.266769Z",
+          "turn": {
+            "number": 6,
+            "model": "large",
+            "text": "The release check is complete.",
+            "usage": {
+              "input": 6100,
+              "output": 20,
+              "cache_read": 0,
+              "cache_write": 0,
+              "cost": 0.0186,
+              "currency": "EUR"
+            },
+            "stop": "end_turn",
+            "calls": [],
+            "unseen": false
+          },
+          "text": "",
+          "from": "",
+          "warn": false
+        },
+        {
+          "kind": "system",
+          "epoch": 1,
+          "seq": 44,
+          "time": "2026-10-20T20:44:29.27195Z",
+          "turn": null,
+          "text": "task completed after 6 model turns; deliverables: summary.md",
+          "from": "",
+          "warn": false
+        }
+      ],
+      "dropped": 0
+    }
+  ],
+  "files": [
+    {
+      "path": "output/summary.md",
+      "added": 7,
+      "removed": 0,
+      "changes": 1
+    }
+  ],
+  "models": [
+    "large"
+  ],
+  "log": [
+    {
+      "epoch": 1,
+      "seq": 1,
+      "time": "2026-10-20T20:43:53.413024Z",
+      "worker": "",
+      "text": "started: run 1, resumed false"
+    },
+    {
+      "epoch": 1,
+      "seq": 2,
+      "time": "2026-10-20T20:43:53.41303Z",
+      "worker": "",
+      "text": "session_info: task release-check"
+    },
+    {
+      "epoch": 1,
+      "seq": 3,
+      "time": "2026-10-20T20:43:53.413032Z",
+      "worker": "",
+      "text": "state: starting → running (started)"
+    },
+    {
+      "epoch": 1,
+      "seq": 4,
+      "time": "2026-10-20T20:43:53.413109Z",
+      "worker": "",
+      "text": "budget_status (start): money 0/0.04 ok, tokens 0/100000 ok"
+    },
+    {
+      "epoch": 1,
+      "seq": 5,
+      "time": "2026-10-20T20:43:55.436274Z",
+      "worker": "root",
+      "text": "model_turn 1 (large): I'll read the release notes and see what budget I have. → report_progress, read_file, budget_status"
+    },
+    {
+      "epoch": 1,
+      "seq": 6,
+      "time": "2026-10-20T20:43:55.445749Z",
+      "worker": "root",
+      "text": "tool_started budget_status call_1_3: {}"
+    },
+    {
+      "epoch": 1,
+      "seq": 7,
+      "time": "2026-10-20T20:43:55.448599Z",
+      "worker": "root",
+      "text": "tool_started read_file call_1_2: {\"path\":\"../inputs/notes.md\"}"
+    },
+    {
+      "epoch": 1,
+      "seq": 8,
+      "time": "2026-10-20T20:43:55.44871Z",
+      "worker": "root",
+      "text": "tool_started report_progress call_1_1: {\"message\":\"Reading the release notes\",\"percent\":10}"
+    },
+    {
+      "epoch": 1,
+      "seq": 9,
+      "time": "2026-10-20T20:43:55.462687Z",
+      "worker": "root",
+      "text": "tool_finished budget_status call_1_3 error=false unknown=false: money: 0.02 EUR of 0.04 EUR used (41%), ok"
+    },
+    {
+      "epoch": 1,
+      "seq": 10,
+      "time": "2026-10-20T20:43:55.474114Z",
+      "worker": "root",
+      "text": "progress 10%: Reading the release notes"
+    },
+    {
+      "epoch": 1,
+      "seq": 11,
+      "time": "2026-10-20T20:43:55.483598Z",
+      "worker": "root",
+      "text": "tool_finished read_file call_1_2 error=false unknown=false:      1\t# Release 2.4"
+    },
+    {
+      "epoch": 1,
+      "seq": 12,
+      "time": "2026-10-20T20:43:55.494008Z",
+      "worker": "root",
+      "text": "tool_finished report_progress call_1_1 error=false unknown=false: Progress reported."
+    },
+    {
+      "epoch": 1,
+      "seq": 13,
+      "time": "2026-10-20T20:43:57.520908Z",
+      "worker": "",
+      "text": "budget_status (alert): money 0.03375/0.04 alerted, tokens 9050/100000 ok"
+    },
+    {
+      "epoch": 1,
+      "seq": 14,
+      "time": "2026-10-20T20:43:57.520917Z",
+      "worker": "root",
+      "text": "model_turn 2 (large): I'll have the fast model draft the summary. → llm, report_progress"
+    },
+    {
+      "epoch": 1,
+      "seq": 15,
+      "time": "2026-10-20T20:43:57.525994Z",
+      "worker": "root",
+      "text": "tool_started report_progress call_2_2: {\"message\":\"Summary drafted\",\"percent\":40}"
+    },
+    {
+      "epoch": 1,
+      "seq": 16,
+      "time": "2026-10-20T20:43:57.526036Z",
+      "worker": "root",
+      "text": "tool_started llm call_2_1: {\"model\":\"fast\",\"prompt\":\"Summarise these release notes in two sentences: faster report exports, a new archive action without undo, and a one-cent rounding fix for discounts.\"}"
+    },
+    {
+      "epoch": 1,
+      "seq": 17,
+      "time": "2026-10-20T20:43:57.538692Z",
+      "worker": "root",
+      "text": "progress 40%: Summary drafted"
+    },
+    {
+      "epoch": 1,
+      "seq": 18,
+      "time": "2026-10-20T20:43:57.544743Z",
+      "worker": "root",
+      "text": "tool_finished report_progress call_2_2 error=false unknown=false: Progress reported."
+    },
+    {
+      "epoch": 1,
+      "seq": 19,
+      "time": "2026-10-20T20:43:57.569852Z",
+      "worker": "root",
+      "text": "tool_finished llm call_2_1 error=false unknown=false: Release 2.4 makes report exports about three times faster and fixes a one-cent rounding error with discounts. It also adds an archive action for finished projects, which can't be undone yet."
+    },
+    {
+      "epoch": 1,
+      "seq": 20,
+      "time": "2026-10-20T20:43:57.574259Z",
+      "worker": "root",
+      "text": "text: the agent got a notice: You have used 84% of the session's money budget (0.03 EUR of 0.04 EUR). When it runs out, your work will wait until it is raised. Plan to finish your task within it."
+    },
+    {
+      "epoch": 1,
+      "seq": 21,
+      "time": "2026-10-20T20:43:59.593237Z",
+      "worker": "",
+      "text": "text: money budget used up (0.05 EUR of 0.04 EUR); new work waits until it is raised"
+    },
+    {
+      "epoch": 1,
+      "seq": 22,
+      "time": "2026-10-20T20:43:59.593246Z",
+      "worker": "",
+      "text": "budget_status (exhausted): money 0.05475/0.04 waiting, tokens 14755/100000 ok"
+    },
+    {
+      "epoch": 1,
+      "seq": 23,
+      "time": "2026-10-20T20:43:59.593258Z",
+      "worker": "root",
+      "text": "model_turn 3 (large): The archive action has no undo. Whether to ship is the release manager's call. → decide, send_feedback"
+    },
+    {
+      "epoch": 1,
+      "seq": 24,
+      "time": "2026-10-20T20:43:59.598443Z",
+      "worker": "root",
+      "text": "tool_started send_feedback call_3_2: {\"kind\":\"suggestion\",\"message\":\"Give the archive action an undo, or a confirmation step, before it is advertised.\"}"
+    },
+    {
+      "epoch": 1,
+      "seq": 25,
+      "time": "2026-10-20T20:43:59.598526Z",
+      "worker": "root",
+      "text": "tool_started decide call_3_1: {\"context\":\"The exports are 3x faster and the rounding fix is waited for; the archive action is new and can't be undone.\",\"options\":[\"ship today\",\"wait for undo\"],\"question\":\"Ship release 2.4 today, although the archive action has no undo yet?\"}"
+    },
+    {
+      "epoch": 1,
+      "seq": 26,
+      "time": "2026-10-20T20:43:59.607862Z",
+      "worker": "root",
+      "text": "feedback (suggestion): Give the archive action an undo, or a confirmation step, before it is advertised."
+    },
+    {
+      "epoch": 1,
+      "seq": 27,
+      "time": "2026-10-20T20:43:59.612268Z",
+      "worker": "root",
+      "text": "tool_finished send_feedback call_3_2 error=false unknown=false: Feedback sent."
+    },
+    {
+      "epoch": 1,
+      "seq": 28,
+      "time": "2026-10-20T20:44:23.114248Z",
+      "worker": "",
+      "text": "budget_status (update): money 0.05475/0.2 ok, tokens 14755/100000 ok"
+    },
+    {
+      "epoch": 1,
+      "seq": 29,
+      "time": "2026-10-20T20:44:23.114257Z",
+      "worker": "",
+      "text": "command 572bc2465d3504726b69888b4b5879c7: profile update (budgets) accepted"
+    },
+    {
+      "epoch": 1,
+      "seq": 30,
+      "time": "2026-10-20T20:44:26.122354Z",
+      "worker": "root",
+      "text": "tool_finished decide call_3_1 error=false unknown=false: {\"decision\":\"ship today\",\"reason\":\"The export speed-up is promised to two customers this week; the release notes will warn about the missing undo.\",\"decided_by\":\"the release manager\"}"
+    },
+    {
+      "epoch": 1,
+      "seq": 31,
+      "time": "2026-10-20T20:44:28.144864Z",
+      "worker": "root",
+      "text": "model_turn 4 (large): Shipping today, with a warning about the archive action. Writing the summary. → write_file, report_progress"
+    },
+    {
+      "epoch": 1,
+      "seq": 32,
+      "time": "2026-10-20T20:44:28.150241Z",
+      "worker": "root",
+      "text": "tool_started report_progress call_4_2: {\"message\":\"Summary written\",\"percent\":90}"
+    },
+    {
+      "epoch": 1,
+      "seq": 33,
+      "time": "2026-10-20T20:44:28.150317Z",
+      "worker": "root",
+      "text": "tool_started write_file call_4_1: {\"content\":\"# Release 2.4: ship today\\n\\nReport exports are about three times faster, a new archive action\\nfiles away finished projects, and totals no longer drift by a cent\\nwhen a discount applies.\\n\\nThe archive action has no undo yet: say so in the release notes.\\n\",\"path\":\"../output/summary.md\"}"
+    },
+    {
+      "epoch": 1,
+      "seq": 34,
+      "time": "2026-10-20T20:44:28.160178Z",
+      "worker": "root",
+      "text": "progress 90%: Summary written"
+    },
+    {
+      "epoch": 1,
+      "seq": 35,
+      "time": "2026-10-20T20:44:28.181297Z",
+      "worker": "root",
+      "text": "tool_finished report_progress call_4_2 error=false unknown=false: Progress reported."
+    },
+    {
+      "epoch": 1,
+      "seq": 36,
+      "time": "2026-10-20T20:44:28.199942Z",
+      "worker": "root",
+      "text": "file_change ../output/summary.md (call call_4_1)"
+    },
+    {
+      "epoch": 1,
+      "seq": 37,
+      "time": "2026-10-20T20:44:28.199949Z",
+      "worker": "root",
+      "text": "tool_finished write_file call_4_1 error=false unknown=false: created ../output/summary.md (251 bytes)"
+    },
+    {
+      "epoch": 1,
+      "seq": 38,
+      "time": "2026-10-20T20:44:29.219907Z",
+      "worker": "root",
+      "text": "model_turn 5 (large): Done. The summary is in output/summary.md; the release manager chose to ship today. → report_progress"
+    },
+    {
+      "epoch": 1,
+      "seq": 39,
+      "time": "2026-10-20T20:44:29.224677Z",
+      "worker": "root",
+      "text": "tool_started report_progress call_5_1: {\"message\":\"Release check finished\",\"percent\":100}"
+    },
+    {
+      "epoch": 1,
+      "seq": 40,
+      "time": "2026-10-20T20:44:29.235938Z",
+      "worker": "root",
+      "text": "progress 100%: Release check finished"
+    },
+    {
+      "epoch": 1,
+      "seq": 41,
+      "time": "2026-10-20T20:44:29.24389Z",
+      "worker": "root",
+      "text": "tool_finished report_progress call_5_1 error=false unknown=false: Progress reported."
+    },
+    {
+      "epoch": 1,
+      "seq": 42,
+      "time": "2026-10-20T20:44:29.266652Z",
+      "worker": "",
+      "text": "budget_status (alert): money 0.1154/0.2 alerted, tokens 32955/100000 ok"
+    },
+    {
+      "epoch": 1,
+      "seq": 43,
+      "time": "2026-10-20T20:44:29.266769Z",
+      "worker": "root",
+      "text": "model_turn 6 (large): The release check is complete. → "
+    },
+    {
+      "epoch": 1,
+      "seq": 44,
+      "time": "2026-10-20T20:44:29.27195Z",
+      "worker": "root",
+      "text": "text: task completed after 6 model turns; deliverables: summary.md"
+    },
+    {
+      "epoch": 1,
+      "seq": 45,
+      "time": "2026-10-20T20:44:29.300701Z",
+      "worker": "",
+      "text": "state: running → completed (task completed)"
+    }
+  ],
+  "log_dropped": 0
+}

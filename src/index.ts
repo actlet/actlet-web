@@ -8,11 +8,20 @@ export * from "./core";
 export { ActivityViewer, type ActivityViewerProps } from "./react/ActivityViewer";
 export { TurnStream, ItemView, type TurnStreamProps, type StreamOptions } from "./react/TurnStream";
 export { ToolBlock, type ToolBlockProps } from "./react/ToolBlock";
-export { StatusLine, type StatusLineProps } from "./react/StatusLine";
+export { StateAnnouncer, StatusLine, type StatusLineProps } from "./react/StatusLine";
 export { Sidebar, type SidebarProps } from "./react/Sidebar";
 export { FileViewer, type FileContent, type FileReader, type FileViewerProps } from "./react/FileViewer";
 export { Tabs, TABS, type TabId, type TabsProps } from "./react/Tabs";
-export { SessionPanel, TaskPanel, ProfilePanel, ToolsPanel, EventsPanel, type PanelProps } from "./react/Panels";
+export {
+  BudgetTable,
+  SessionPanel,
+  TaskPanel,
+  ProfilePanel,
+  ToolsPanel,
+  EventsPanel,
+  type PanelProps,
+} from "./react/Panels";
+export { RaiseBudget, type RaiseBudgetProps } from "./react/RaiseBudget";
 export { ReplayControls, type ReplayControlsProps } from "./react/ReplayControls";
 export { CommandBar, type CommandBarProps, type CommandHandler } from "./react/CommandBar";
 export { Text } from "./react/Text";
