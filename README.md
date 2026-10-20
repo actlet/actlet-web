@@ -36,7 +36,11 @@ import "@actlet/viewer/styles.css";
 />
 ```
 
-Give the viewer a height. It fills its container.
+Give the viewer a height. It fills its container. Feeding it from a WebSocket, server-sent events or a JSONL file is
+covered in [docs/integration.md](docs/integration.md), with examples that run in the demo.
+
+`@actlet/viewer/core` has everything without React: decoding events, the fold, replay timing, commands and the view-state
+JSON. It's useful on a server, in a worker, or with another UI framework. The main entry exports all of it too.
 
 ### Events
 
@@ -59,8 +63,8 @@ In live mode, with `onCommand` set, the footer offers what `allowedCommands` all
 (`"steer"`), Pause and Interrupt (`"pause"`, drain and interrupt), and Stop with a confirmation (`"stop"`). The default
 is `["steer"]`: watching and light steering, like the terminal viewer. Replay mode never offers commands.
 
-Each command gets a fresh ID, and `commandOrigin` and `actor` set the origin and actor fields. The origin defaults to `ORIGIN_REMOTE`, a viewer that isn't on the box's machine. A sent command shows as
-pending until the box reports it. The viewer learns the outcome from the session's `command` events, or from `acks` you
+Each command gets a fresh ID, and `commandOrigin` and `actor` set the origin and actor fields. The origin defaults to
+`ORIGIN_REMOTE`, a viewer that isn't on the box's machine. A sent command shows as pending until the box reports it. The viewer learns the outcome from the session's `command` events, or from `acks` you
 pass in. If `onCommand` throws or returns a rejected promise, the command shows as not delivered. For your own UI,
 `steerCommand`, `pauseCommand` and `stopCommand` build the same messages.
 
@@ -91,6 +95,36 @@ The view model has no React in it: `fold(events)`, `apply(session, event)`, `wor
 `running()` and friends. `Player` plays an event array back with time you pass in. `toViewState(session)` gives the
 view state as JSON (see [docs/view-state.md](docs/view-state.md)).
 
+### Long sessions
+
+From 150 items on, the conversation is virtualised: only the items in and near the view are in the page, measured as
+they render, and the view keeps following the end. A subagent nests only its latest 40 items under its spawn call; the
+rest show when it's shown alone. Memory stays bounded. Each timeline keeps its latest 2,000 items and the event log its
+latest 5,000 lines. Calls of turns that fall off are let go, and any text past 256 KiB is cut and marked. Live mode
+folds only appended events and keeps no reference to them.
+
+Measured on a synthetic 20,000-event session (`pnpm bench`, headless Chrome, production build):
+
+|                                                             |                                                            |
+| ----------------------------------------------------------- | ---------------------------------------------------------- |
+| Fold all 20,000 events                                      | 196 ms                                                     |
+| Append 250 events live, to the second painted frame         | 33 ms on average, 38 ms at worst (two frames is the floor) |
+| Scroll the whole conversation, one step per frame           | 16.7 ms frames, none over 50 ms; 16 items in the page      |
+| JS heap at the end, with the 20,000 events held by the page | 39 MB                                                      |
+
+### Keyboard and screen readers
+
+The tabs, the conversation and the sidebar each take one tab stop. Inside them, arrow keys (or `j` and `k`) move, and
+`Home` and `End` jump to either end. In the conversation, arrow keys move between tool calls, and `Enter` or `Space`
+expands one. A file opens in a dialog that keeps focus inside, closes on `Escape` and returns focus to the file. In a
+replay, `Space` or `k` plays and pauses, `←` and `→` step one event (ten with `Shift`), and `+` and `-` change the
+speed. Asking to stop focuses Cancel first.
+
+Icons, regions and lists have roles and labels. The status line isn't a live region, because it ticks every second;
+instead, state changes are announced. Text colours meet WCAG AA (4.5:1) in both themes, and the spinner stops for
+readers who ask for less motion. jsx-a11y lints the components, axe runs over every view in the tests, and a test walks
+through the viewer by keyboard alone.
+
 ### Theming
 
 `theme="dark" | "light" | "auto"` (the default follows the system setting). Every colour and font is a CSS custom property
@@ -110,18 +144,37 @@ Everything in the events comes from models, tools and files, so it's treated as 
 
 ## Develop
 
+Development needs Node 24, pnpm 10 and, for `pnpm generate`, `protoc`.
+
 ```sh
 pnpm install
-pnpm dev        # the demo page: plays fixtures/demo.jsonl (?mode=live, ?theme=light, ?speed=8)
-pnpm test       # vitest
-pnpm lint       # eslint + prettier --check
+pnpm dev             # the demo page; ?mode=replay|live|websocket|sse|jsonl|synthetic, ?theme=light, ?speed=8
+pnpm test            # vitest
+pnpm lint            # eslint (with jsx-a11y) + prettier --check
 pnpm typecheck
-pnpm build      # dist/: ES module, declarations, viewer.css
-pnpm generate   # regenerate src/gen from ../actlet/proto (PROTO_DIR=… to override)
+pnpm build           # dist/: ES modules, declarations, viewer.css
+pnpm generate        # regenerate src/gen from ../actlet/proto (PROTO_DIR=… to override)
+pnpm bench           # the 20,000-event numbers above, in headless Chrome
+pnpm check:examples  # the integration examples end to end, in headless Chrome
+pnpm smoke           # pack, install the tarball in a fresh Vite app, type-check and build it
+pnpm parity <events.jsonl> <go-view.json>  # diff the view state with the Go view model's
 ```
 
 **pnpm**, because its strict `node_modules` layout catches imports of undeclared dependencies, which matters for a
 library. It also installs quickly, and `packageManager` in `package.json` pins its version.
+
+### Packaging
+
+`pnpm build` writes ES modules to `dist/`, one file per module, so bundlers keep only what an app uses. Declarations sit
+next to them, and the stylesheet is `dist/viewer.css`. The exports map has `.`, `./core`, `./styles.css` and
+`./package.json`. React 18 or 19 is the only peer dependency, and `@bufbuild/protobuf` the only dependency.
+`pnpm pack` packs `dist/`, the README and `package.json`.
+
+### Parity with the Go view model
+
+`toViewState` writes the view state as JSON ([docs/view-state.md](docs/view-state.md)). Given a dump of the same
+events from Actlet's Go view model, `pnpm parity events.jsonl go-view.json` folds the events here and lists every path
+where the two differ. Go's `null` for an empty slice or map counts as empty unless `PARITY_STRICT=1`.
 
 ### Generated types
 

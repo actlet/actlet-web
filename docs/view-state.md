@@ -100,4 +100,10 @@ An item:
 }
 ```
 
+`pnpm parity <events.jsonl> <go-view.json>` diffs the two and lists the paths that differ.
+
+Text is bounded at 256 KiB per field, with the cut marked `[viewer cut N characters]`. Actlet cuts content far shorter,
+so this matters only for events that didn't come from Actlet. Calls of turns that fall off a timeline (after 2,000 items)
+are let go. That changes nothing visible, unless the event for a dropped call that already finished arrives again.
+
 The Go model's internal fields, such as its per-worker call index and latest turn, aren't part of the format.
