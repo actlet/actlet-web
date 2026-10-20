@@ -33,7 +33,10 @@ describe("the digest recording", () => {
     expect(s.usage.output).toBe(turns.reduce((n, t) => n + t.usage.output, 0) + 140);
   });
 
-  it("reads the compaction policy and the skills used", () => {
+  it("reads the compaction policy and the skills, listed and used", () => {
+    expect(s.info?.skills.map((k) => [k.name, k.source, k.files])).toEqual([
+      ["csv-report", "profile", ["reference.md", "scripts/totals.py"]],
+    ]);
     expect(compactionPolicy(s)).toEqual({ strategy: "summarize", thresholdPercent: 60, model: "fast", keepTurns: 2 });
     expect(skillsUsed(s)).toEqual([{ name: "csv-report", loads: 1, files: ["reference.md"] }]);
     const skills = root.items.flatMap((it) => it.turn?.calls ?? []).filter((c) => c.name === "skill");
@@ -103,9 +106,23 @@ describe("the viewer", () => {
     expect(screen.getByText("the context reaches 60% of the model's window")).toBeTruthy();
     expect(screen.getByText("the last 2 turns as they are")).toBeTruthy();
     fireEvent.click(screen.getByRole("tab", { name: "Tools" }));
-    expect(screen.getByText("csv-report").closest("li")!.textContent).toBe(
-      "csv-report  loaded 1 time; read reference.md",
-    );
+    const skill = screen.getByText("csv-report").closest("li")!;
+    expect(within(skill).getByText("profile").className).toContain("actlet-chip");
+    expect(skill.textContent).toContain("loaded 1 time; read reference.md");
+    expect(skill.textContent).toContain("Summarise a CSV file of sales into a short report");
+    expect(skill.textContent).toContain("files: reference.md, scripts/totals.py");
+    expect(screen.queryByText(/lists only the skills the agent used/)).toBeNull();
+  });
+
+  it("shows only the skills used for a recording that doesn't list them", () => {
+    const e = new Events();
+    e.add("", { case: "sessionInfo", value: { taskId: "t", tools: [{ name: "skill", policy: "retry" }] } });
+    e.add("root", { case: "toolStarted", value: { callId: "k", tool: "skill", input: '{"name":"pdf"}' } });
+    e.add("root", { case: "toolFinished", value: { callId: "k", tool: "skill", output: "Skill pdf" } });
+    render(<ActivityViewer events={e.out} mode="replay" />);
+    fireEvent.click(screen.getByRole("tab", { name: "Tools" }));
+    expect(screen.getByText("pdf").closest("li")!.textContent).toBe("pdf loaded 1 time");
+    expect(screen.getByText(/lists only the skills the agent used/)).toBeTruthy();
   });
 
   it("passes axe on every tab, with the summary open", async () => {

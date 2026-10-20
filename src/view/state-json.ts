@@ -8,6 +8,7 @@ import {
   BudgetSchema,
   ModelCatalogSchema,
   SessionState,
+  SkillInfoSchema,
   ToolGrantSchema,
   ToolInfoSchema,
 } from "../gen/actlet/gateway/v0/gateway_pb";
@@ -59,6 +60,7 @@ export function toViewState(s: Session): ViewStateJson {
       worker_id: info.workerId,
       version: info.version,
       local_commands: info.localCommands,
+      skills: info.skills.map((k) => toJson(SkillInfoSchema, k, opts)),
     },
     usage: usage(s.usage),
     progress: s.progress && {

@@ -138,7 +138,8 @@
     "local_commands": [
       "steer",
       "pause"
-    ]
+    ],
+    "skills": []
   },
   "usage": {
     "input": 136300,

@@ -21,6 +21,7 @@ import {
   type Command,
   type Compaction,
   type ModelCatalog,
+  type SkillInfo,
   type ToolGrant,
   type ToolInfo,
   type Usage as UsageMessage,
@@ -225,6 +226,8 @@ export interface Info {
   workerId: string;
   version: string;
   localCommands: string[];
+  /** The skills the agent may load. */
+  skills: SkillInfo[];
 }
 
 /** A file changed in the session. */
@@ -629,6 +632,7 @@ export function apply(s: Session, ev: ActivityEvent) {
         workerId: keep(i.workerId),
         version: keep(i.actletVersion),
         localCommands: i.localCommands.map(sanitize),
+        skills: i.skills,
       };
       break;
     }

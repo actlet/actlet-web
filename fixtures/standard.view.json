@@ -124,7 +124,8 @@
     "version": "dev",
     "local_commands": [
       "steer"
-    ]
+    ],
+    "skills": []
   },
   "usage": {
     "input": 31580,

@@ -125,28 +125,62 @@ function CompactionPolicyView({ session }: { session: Session }) {
   );
 }
 
-/** The skills the agent loaded, and the files of them it read. */
+/**
+ * The skills the agent may load, with what it used of them. Recordings
+ * from before Actlet listed skills only show the skills the agent used.
+ */
 function SkillsView({ session }: { session: Session }) {
-  const offered = session.info?.tools.some((t) => t.name === "skill") ?? false;
+  const listed = session.info?.skills ?? [];
   const used = skillsUsed(session);
-  if (!offered && used.length === 0) return <div className="actlet-muted">none</div>;
+  const use = (name: string) => {
+    const u = used.find((x) => x.name === name);
+    if (!u) return "not loaded";
+    return `loaded ${plural(u.loads, "time")}${u.files.length > 0 ? `; read ${u.files.join(", ")}` : ""}`;
+  };
+  const unlisted = used.filter((u) => !listed.some((k) => k.name === u.name));
+  if (listed.length === 0 && used.length === 0) return <div className="actlet-muted">none</div>;
   return (
     <>
-      {used.length === 0 && <div className="actlet-muted">none loaded yet</div>}
-      <ul className="actlet-plain-list">
-        {used.map((u) => (
-          <li key={u.name} className="actlet-mono">
-            <Text text={u.name} max={100} />
+      <ul className="actlet-plain-list actlet-skills">
+        {listed.map((k, i) => (
+          <li key={`${i}:${k.name}`}>
+            <span className="actlet-mono">
+              <Text text={k.name} max={100} />
+            </span>{" "}
+            {k.source !== "" && (
+              <span className="actlet-chip">
+                <Text text={k.source} max={40} />
+              </span>
+            )}{" "}
             <span className="actlet-muted">
-              <Text
-                text={`  loaded ${plural(u.loads, "time")}${u.files.length > 0 ? `; read ${u.files.join(", ")}` : ""}`}
-                max={1000}
-              />
+              <Text text={use(k.name)} max={1000} />
+            </span>
+            {k.description !== "" && (
+              <div>
+                <Text text={k.description} max={2000} />
+              </div>
+            )}
+            {k.files.length > 0 && (
+              <div className="actlet-muted actlet-mono">
+                <Text text={"files: " + k.files.join(", ")} max={2000} />
+              </div>
+            )}
+          </li>
+        ))}
+        {unlisted.map((u) => (
+          <li key={`used:${u.name}`}>
+            <span className="actlet-mono">
+              <Text text={u.name} max={100} />
+            </span>{" "}
+            <span className="actlet-muted">
+              <Text text={use(u.name)} max={1000} />
             </span>
           </li>
         ))}
       </ul>
-      <div className="actlet-muted">The recording lists the skills the agent used, not every skill it had.</div>
+      {listed.length === 0 && (
+        <div className="actlet-muted">This recording lists only the skills the agent used, not every skill it had.</div>
+      )}
     </>
   );
 }
@@ -369,7 +403,7 @@ export function ToolsPanel({ session: s }: PanelProps) {
           </div>
         ))}
       </Section>
-      <Section title="Skills" note="as the agent used them">
+      <Section title="Skills">
         <SkillsView session={s} />
       </Section>
       <Section title="Installed" note="tools manifest">

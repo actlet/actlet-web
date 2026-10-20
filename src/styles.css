@@ -831,3 +831,6 @@
   border-left: 2px solid var(--actlet-border);
   color: var(--actlet-fg);
 }
+.actlet-skills li {
+  margin: 0.35em 0;
+}

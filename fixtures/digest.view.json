@@ -8,8 +8,8 @@
   "profile": "digest",
   "events": 23,
   "skipped": 0,
-  "first": "2026-10-20T23:06:47.149718Z",
-  "last": "2026-10-20T23:06:51.587958Z",
+  "first": "2026-10-20T23:17:33.399611Z",
+  "last": "2026-10-20T23:17:38.018999Z",
   "info": {
     "task_id": "sales-digest",
     "task_kind": "agent",
@@ -79,6 +79,17 @@
     "version": "dev",
     "local_commands": [
       "steer"
+    ],
+    "skills": [
+      {
+        "name": "csv-report",
+        "description": "Summarise a CSV file of sales into a short report with totals per region and a one-line trend.",
+        "source": "profile",
+        "files": [
+          "reference.md",
+          "scripts/totals.py"
+        ]
+      }
     ]
   },
   "usage": {
@@ -98,7 +109,7 @@
       "kind": "system",
       "epoch": 1,
       "seq": 1,
-      "time": "2026-10-20T23:06:47.149718Z",
+      "time": "2026-10-20T23:17:33.399611Z",
       "turn": null,
       "text": "run 1 started",
       "from": "",
@@ -108,7 +119,7 @@
       "kind": "system",
       "epoch": 1,
       "seq": 23,
-      "time": "2026-10-20T23:06:51.587958Z",
+      "time": "2026-10-20T23:17:38.018999Z",
       "turn": null,
       "text": "session completed: task completed",
       "from": "",
@@ -140,7 +151,7 @@
           "kind": "turn",
           "epoch": 1,
           "seq": 4,
-          "time": "2026-10-20T23:06:48.173326Z",
+          "time": "2026-10-20T23:17:34.424035Z",
           "turn": {
             "number": 1,
             "model": "large",
@@ -161,7 +172,7 @@
                 "input": "{\"name\":\"csv-report\"}",
                 "status": "ok",
                 "output": "Skill csv-report, in /work/session/.actlet/skills/csv-report. Its paths are relative to that folder: run its scripts with the shell or python tools, and read its other files with this tool's file input.\n\nFiles:\n- reference.md\n- scripts/totals.py\n\n# CSV report\n\n1. Read the CSV and check its header: region, month, units, revenue_eur.\n2. Total the revenue per region, with scripts/totals.py or by hand.\n3. Write the report as reference.md describes: a title, one line per region, and the trend.",
-                "took_ns": 17880083,
+                "took_ns": 14216375,
                 "diffs": [],
                 "child": "",
                 "epoch": 1,
@@ -178,7 +189,7 @@
           "kind": "turn",
           "epoch": 1,
           "seq": 7,
-          "time": "2026-10-20T23:06:49.226444Z",
+          "time": "2026-10-20T23:17:35.46617Z",
           "turn": {
             "number": 2,
             "model": "large",
@@ -199,7 +210,7 @@
                 "input": "{\"path\":\"../inputs/sales.csv\"}",
                 "status": "ok",
                 "output": "     1\tregion,month,units,revenue_eur\n     2\tnorth,2026-07,120,3600\n     3\tnorth,2026-08,135,4050\n     4\tsouth,2026-07,90,2700\n     5\tsouth,2026-08,210,6300\n     6\twest,2026-07,160,4800\n     7\twest,2026-08,140,4200\n",
-                "took_ns": 18490458,
+                "took_ns": 16310750,
                 "diffs": [],
                 "child": "",
                 "epoch": 1,
@@ -211,7 +222,7 @@
                 "input": "{\"file\":\"reference.md\",\"name\":\"csv-report\"}",
                 "status": "ok",
                 "output": "# Report layout\n\n    # <title>\n\n    - <region>: <revenue> EUR (<units> units)\n\n    Trend: <one sentence>\n",
-                "took_ns": 30989000,
+                "took_ns": 28498041,
                 "diffs": [],
                 "child": "",
                 "epoch": 1,
@@ -228,7 +239,7 @@
           "kind": "turn",
           "epoch": 1,
           "seq": 12,
-          "time": "2026-10-20T23:06:50.280168Z",
+          "time": "2026-10-20T23:17:36.517923Z",
           "turn": {
             "number": 3,
             "model": "large",
@@ -249,7 +260,7 @@
                 "input": "{\"code\":\"import csv\\nfrom collections import defaultdict\\ntotals = defaultdict(int)\\nfor row in csv.DictReader(open(\\\"../inputs/sales.csv\\\")):\\n    totals[row[\\\"region\\\"]] += int(row[\\\"revenue_eur\\\"])\\nfor region, revenue in sorted(totals.items()):\\n    print(f\\\"{region}: {revenue} EUR\\\")\\n\"}",
                 "status": "ok",
                 "output": "exit code 0\nstdout:\nnorth: 7650 EUR\nsouth: 9000 EUR\nwest: 9000 EUR\n",
-                "took_ns": 158441083,
+                "took_ns": 356683417,
                 "diffs": [],
                 "child": "",
                 "epoch": 1,
@@ -266,7 +277,7 @@
           "kind": "system",
           "epoch": 1,
           "seq": 15,
-          "time": "2026-10-20T23:06:50.458715Z",
+          "time": "2026-10-20T23:17:36.895322Z",
           "turn": null,
           "text": "compacting the context: 5380 tokens; summarising 1 turns with fast, keeping 2",
           "from": "",
@@ -276,7 +287,7 @@
           "kind": "system",
           "epoch": 1,
           "seq": 16,
-          "time": "2026-10-20T23:06:50.469108Z",
+          "time": "2026-10-20T23:17:36.904159Z",
           "turn": null,
           "text": "context compacted at 5380 tokens: 1 turn summarised by fast, the last 2 kept",
           "from": "",
@@ -286,7 +297,7 @@
           "kind": "turn",
           "epoch": 1,
           "seq": 17,
-          "time": "2026-10-20T23:06:51.500365Z",
+          "time": "2026-10-20T23:17:37.929242Z",
           "turn": {
             "number": 4,
             "model": "large",
@@ -307,7 +318,7 @@
                 "input": "{\"content\":\"# Sales digest, July and August 2026\\n\\n- north: 7650 EUR (255 units)\\n- south: 9000 EUR (300 units)\\n- west: 9000 EUR (300 units)\\n\\nTrend: the south more than doubled in August.\\n\",\"path\":\"../output/digest.md\"}",
                 "status": "ok",
                 "output": "created ../output/digest.md (174 bytes)",
-                "took_ns": 33190625,
+                "took_ns": 26841167,
                 "diffs": [
                   {
                     "path": "../output/digest.md",
@@ -330,7 +341,7 @@
           "kind": "turn",
           "epoch": 1,
           "seq": 21,
-          "time": "2026-10-20T23:06:51.554982Z",
+          "time": "2026-10-20T23:17:37.975036Z",
           "turn": {
             "number": 5,
             "model": "large",
@@ -355,7 +366,7 @@
           "kind": "system",
           "epoch": 1,
           "seq": 22,
-          "time": "2026-10-20T23:06:51.568379Z",
+          "time": "2026-10-20T23:17:37.982705Z",
           "turn": null,
           "text": "task completed after 5 model turns; deliverables: digest.md",
           "from": "",
@@ -380,161 +391,161 @@
     {
       "epoch": 1,
       "seq": 1,
-      "time": "2026-10-20T23:06:47.149718Z",
+      "time": "2026-10-20T23:17:33.399611Z",
       "worker": "",
       "text": "started: run 1, resumed false"
     },
     {
       "epoch": 1,
       "seq": 2,
-      "time": "2026-10-20T23:06:47.149723Z",
+      "time": "2026-10-20T23:17:33.39962Z",
       "worker": "",
       "text": "session_info: task sales-digest"
     },
     {
       "epoch": 1,
       "seq": 3,
-      "time": "2026-10-20T23:06:47.149724Z",
+      "time": "2026-10-20T23:17:33.399622Z",
       "worker": "",
       "text": "state: starting → running (started)"
     },
     {
       "epoch": 1,
       "seq": 4,
-      "time": "2026-10-20T23:06:48.173326Z",
+      "time": "2026-10-20T23:17:34.424035Z",
       "worker": "root",
       "text": "model_turn 1 (large): There's a skill for CSV reports; I'll load it first. → skill"
     },
     {
       "epoch": 1,
       "seq": 5,
-      "time": "2026-10-20T23:06:48.178545Z",
+      "time": "2026-10-20T23:17:34.428322Z",
       "worker": "root",
       "text": "tool_started skill call_1_1: {\"name\":\"csv-report\"}"
     },
     {
       "epoch": 1,
       "seq": 6,
-      "time": "2026-10-20T23:06:48.196376Z",
+      "time": "2026-10-20T23:17:34.442527Z",
       "worker": "root",
       "text": "tool_finished skill call_1_1 error=false unknown=false: Skill csv-report, in /work/session/.actlet/skills/csv-report. Its paths are relative to that folder: run its scripts with the shell or python tools, and read its other files with this tool's file input."
     },
     {
       "epoch": 1,
       "seq": 7,
-      "time": "2026-10-20T23:06:49.226444Z",
+      "time": "2026-10-20T23:17:35.46617Z",
       "worker": "root",
       "text": "model_turn 2 (large): Now the layout it asks for, and the sales. → skill, read_file"
     },
     {
       "epoch": 1,
       "seq": 8,
-      "time": "2026-10-20T23:06:49.231971Z",
+      "time": "2026-10-20T23:17:35.470874Z",
       "worker": "root",
       "text": "tool_started read_file call_2_2: {\"path\":\"../inputs/sales.csv\"}"
     },
     {
       "epoch": 1,
       "seq": 9,
-      "time": "2026-10-20T23:06:49.232169Z",
+      "time": "2026-10-20T23:17:35.471064Z",
       "worker": "root",
       "text": "tool_started skill call_2_1: {\"file\":\"reference.md\",\"name\":\"csv-report\"}"
     },
     {
       "epoch": 1,
       "seq": 10,
-      "time": "2026-10-20T23:06:49.250462Z",
+      "time": "2026-10-20T23:17:35.487188Z",
       "worker": "root",
       "text": "tool_finished read_file call_2_2 error=false unknown=false:      1\tregion,month,units,revenue_eur"
     },
     {
       "epoch": 1,
       "seq": 11,
-      "time": "2026-10-20T23:06:49.263157Z",
+      "time": "2026-10-20T23:17:35.499556Z",
       "worker": "root",
       "text": "tool_finished skill call_2_1 error=false unknown=false: # Report layout"
     },
     {
       "epoch": 1,
       "seq": 12,
-      "time": "2026-10-20T23:06:50.280168Z",
+      "time": "2026-10-20T23:17:36.517923Z",
       "worker": "root",
       "text": "model_turn 3 (large): I'll total the revenue per region. → python"
     },
     {
       "epoch": 1,
       "seq": 13,
-      "time": "2026-10-20T23:06:50.290963Z",
+      "time": "2026-10-20T23:17:36.5231Z",
       "worker": "root",
       "text": "tool_started python call_3_1: {\"code\":\"import csv\\nfrom collections import defaultdict\\ntotals = defaultdict(int)\\nfor row in csv.DictReader(open(\\\"../inputs/sales.csv\\\")):\\n    totals[row[\\\"region\\\"]] += int(row[\\\"revenue_eur\\\"])\\nfor region, revenue in sorted(totals.items()):\\n    print(f\\\"{region}: {revenue} EUR\\\")\\n\"}"
     },
     {
       "epoch": 1,
       "seq": 14,
-      "time": "2026-10-20T23:06:50.449405Z",
+      "time": "2026-10-20T23:17:36.879784Z",
       "worker": "root",
       "text": "tool_finished python call_3_1 error=false unknown=false: exit code 0"
     },
     {
       "epoch": 1,
       "seq": 15,
-      "time": "2026-10-20T23:06:50.458715Z",
+      "time": "2026-10-20T23:17:36.895322Z",
       "worker": "root",
       "text": "text: compacting the context: 5380 tokens; summarising 1 turns with fast, keeping 2"
     },
     {
       "epoch": 1,
       "seq": 16,
-      "time": "2026-10-20T23:06:50.469108Z",
+      "time": "2026-10-20T23:17:36.904159Z",
       "worker": "root",
       "text": "compaction (fast): 1 turns summarised, 2 kept, at 5380 tokens"
     },
     {
       "epoch": 1,
       "seq": 17,
-      "time": "2026-10-20T23:06:51.500365Z",
+      "time": "2026-10-20T23:17:37.929242Z",
       "worker": "root",
       "text": "model_turn 4 (large): Writing the digest in the skill's layout. → write_file"
     },
     {
       "epoch": 1,
       "seq": 18,
-      "time": "2026-10-20T23:06:51.507678Z",
+      "time": "2026-10-20T23:17:37.934633Z",
       "worker": "root",
       "text": "tool_started write_file call_4_1: {\"content\":\"# Sales digest, July and August 2026\\n\\n- north: 7650 EUR (255 units)\\n- south: 9000 EUR (300 units)\\n- west: 9000 EUR (300 units)\\n\\nTrend: the south more than doubled in August.\\n\",\"path\":\"../output/digest.md\"}"
     },
     {
       "epoch": 1,
       "seq": 19,
-      "time": "2026-10-20T23:06:51.540861Z",
+      "time": "2026-10-20T23:17:37.961465Z",
       "worker": "root",
       "text": "file_change ../output/digest.md (call call_4_1)"
     },
     {
       "epoch": 1,
       "seq": 20,
-      "time": "2026-10-20T23:06:51.540869Z",
+      "time": "2026-10-20T23:17:37.961474Z",
       "worker": "root",
       "text": "tool_finished write_file call_4_1 error=false unknown=false: created ../output/digest.md (174 bytes)"
     },
     {
       "epoch": 1,
       "seq": 21,
-      "time": "2026-10-20T23:06:51.554982Z",
+      "time": "2026-10-20T23:17:37.975036Z",
       "worker": "root",
       "text": "model_turn 5 (large): The digest is in output/digest.md. → "
     },
     {
       "epoch": 1,
       "seq": 22,
-      "time": "2026-10-20T23:06:51.568379Z",
+      "time": "2026-10-20T23:17:37.982705Z",
       "worker": "root",
       "text": "text: task completed after 5 model turns; deliverables: digest.md"
     },
     {
       "epoch": 1,
       "seq": 23,
-      "time": "2026-10-20T23:06:51.587958Z",
+      "time": "2026-10-20T23:17:38.018999Z",
       "worker": "",
       "text": "state: running → completed (task completed)"
     }

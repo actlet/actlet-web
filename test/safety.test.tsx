@@ -36,6 +36,7 @@ function maliciousRun() {
       tools: [{ name: evil, policy: evil, description: evil }],
       grants: [{ name: evil, settings: { [evil]: evil } }],
       budgets: [{ kind: 2, limit: 1, currency: evil }],
+      skills: [{ name: evil, description: evil, source: evil, files: [evil, evil] }],
       models: {
         aliases: [{ alias: evil, description: evil, contextWindow: 1000n }],
         roles: { [evil]: evil },
