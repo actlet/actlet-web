@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { PauseMode, type Command } from "../gen/actlet/gateway/v0/gateway_pb";
 import { commandName } from "../view/session";
 import {
@@ -44,6 +44,16 @@ export function CommandBar({
   const [note, setNote] = useState("");
   const [sent, setSent] = useState<SentCommand[]>([]);
   const [confirmStop, setConfirmStop] = useState(false);
+  // Asking to confirm a stop moves focus to Cancel, the safe choice; when
+  // the question goes, focus goes back to the Stop button.
+  const cancelRef = useRef<HTMLButtonElement>(null);
+  const stopRef = useRef<HTMLButtonElement>(null);
+  const asked = useRef(false);
+  useEffect(() => {
+    if (confirmStop) cancelRef.current?.focus();
+    else if (asked.current) stopRef.current?.focus();
+    asked.current = confirmStop;
+  }, [confirmStop]);
 
   const send = (command: Command) => {
     const entry: SentCommand = { command, label: commandName(command), status: "pending", message: "" };
@@ -120,7 +130,7 @@ export function CommandBar({
         )}
         {can("stop") &&
           (confirmStop ? (
-            <span className="actlet-confirm">
+            <span className="actlet-confirm" role="group" aria-label="Confirm stop">
               Stop the task for good?
               <button
                 type="button"
@@ -132,15 +142,17 @@ export function CommandBar({
               >
                 Stop
               </button>
-              <button type="button" className="actlet-btn" onClick={() => setConfirmStop(false)}>
+              <button type="button" ref={cancelRef} className="actlet-btn" onClick={() => setConfirmStop(false)}>
                 Cancel
               </button>
             </span>
           ) : (
             <button
               type="button"
+              ref={stopRef}
               className="actlet-btn actlet-btn-danger"
               disabled={ended}
+              aria-haspopup="true"
               onClick={() => setConfirmStop(true)}
             >
               Stop…
@@ -148,7 +160,7 @@ export function CommandBar({
           ))}
       </div>
       {sent.length > 0 && (
-        <ul className="actlet-sent" aria-label="Sent commands">
+        <ul className="actlet-sent" aria-label="Sent commands" aria-live="polite">
           {sent.map((s) => {
             const known = s.status === "pending" ? outcomes?.get(s.command.id) : undefined;
             const status = known?.status ?? s.status;

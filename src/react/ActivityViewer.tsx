@@ -9,7 +9,7 @@ import { useLiveSession, useNow, useReplay, type ReplayOptions } from "./hooks";
 import { EventsPanel, ProfilePanel, SessionPanel, TaskPanel, ToolsPanel } from "./Panels";
 import { ReplayControls } from "./ReplayControls";
 import { Sidebar } from "./Sidebar";
-import { StatusLine } from "./StatusLine";
+import { StateAnnouncer, StatusLine } from "./StatusLine";
 import { Tabs, type TabId } from "./Tabs";
 import { Text } from "./Text";
 import { TurnStream } from "./TurnStream";
@@ -86,6 +86,16 @@ function ReplayViewer(props: ActivityViewerProps) {
       now={null}
       connection={r.label}
       live={false}
+      shortcuts={(key) => {
+        // Space or k plays and pauses, arrows step (ten with Shift), + and - change the speed.
+        const steps: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1, "<": -10, ">": 10 };
+        if (key === " " || key === "k") r.toggle();
+        else if (key in steps) r.seek(r.position + steps[key]);
+        else if (key === "+" || key === "=") r.setSpeed(r.speed * 2);
+        else if (key === "-") r.setSpeed(r.speed / 2);
+        else return false;
+        return true;
+      }}
       controls={
         <ReplayControls
           playing={r.playing}
@@ -109,6 +119,8 @@ interface LayoutProps extends Omit<ActivityViewerProps, "events"> {
   connection: string;
   live: boolean;
   controls?: React.ReactNode;
+  /** Handles a key pressed outside any control; reports whether it did. */
+  shortcuts?: (key: string) => boolean;
 }
 
 const terminal = [SessionState.PAUSED, SessionState.STOPPED, SessionState.COMPLETED, SessionState.FAILED];
@@ -189,8 +201,21 @@ function Layout(p: LayoutProps) {
   }
 
   return (
-    <div className={`actlet-viewer${p.className ? " " + p.className : ""}`} data-theme={theme} style={p.style}>
-      <header className="actlet-header">
+    <div
+      className={`actlet-viewer${p.className ? " " + p.className : ""}`}
+      data-theme={theme}
+      style={p.style}
+      role="region"
+      aria-label="Session activity"
+      onKeyDown={(e) => {
+        if (!p.shortcuts || e.altKey || e.ctrlKey || e.metaKey || file !== null) return;
+        const t = e.target as HTMLElement;
+        if (t.closest("input, select, textarea, button, a, [role=tab], [role=dialog]")) return;
+        const key = e.shiftKey && e.key === "ArrowLeft" ? "<" : e.shiftKey && e.key === "ArrowRight" ? ">" : e.key;
+        if (p.shortcuts(key)) e.preventDefault();
+      }}
+    >
+      <div className="actlet-header">
         <span className="actlet-title">actlet</span>
         {session.info && session.info.taskId !== "" && (
           <span className="actlet-muted actlet-task">
@@ -198,11 +223,11 @@ function Layout(p: LayoutProps) {
           </span>
         )}
         <Tabs active={tab} onChange={setTab} idPrefix={id} />
-      </header>
+      </div>
       <div className="actlet-body" role="tabpanel" id={`${id}-panel-${tab}`} aria-labelledby={`${id}-tab-${tab}`}>
         {body}
       </div>
-      <footer className="actlet-footer">
+      <div className="actlet-footer">
         {p.controls}
         {commands && (
           <CommandBar
@@ -215,7 +240,8 @@ function Layout(p: LayoutProps) {
           />
         )}
         <StatusLine session={session} connection={connection} now={now} />
-      </footer>
+        <StateAnnouncer session={session} />
+      </div>
       {file !== null && <FileViewer session={session} path={file} readFile={p.readFile} onClose={closeFile} />}
     </div>
   );

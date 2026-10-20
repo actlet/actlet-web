@@ -27,7 +27,8 @@ export function StatusLine({ session: s, connection, now = null }: StatusLinePro
   parts.push(ns === null ? "0s" : duration(Math.round(ns / 1e9) * 1e9));
   parts.push(connection);
   return (
-    <div className="actlet-status" role="status">
+    // Not a live region: it changes every second. StateAnnouncer says when the state changes.
+    <div className="actlet-status" role="group" aria-label="Session status">
       <StateIcon state={s.state} />
       <span className="actlet-state">{stateName(s.state)}</span>
       {parts.map((p, i) => (
@@ -43,12 +44,33 @@ export function StatusLine({ session: s, connection, now = null }: StatusLinePro
 function StateIcon({ state }: { state: SessionState }) {
   switch (state) {
     case SessionState.COMPLETED:
-      return <span className="actlet-icon actlet-ok">✓</span>;
+      return (
+        <span className="actlet-icon actlet-ok" aria-hidden="true">
+          ✓
+        </span>
+      );
     case SessionState.FAILED:
     case SessionState.STOPPED:
-      return <span className="actlet-icon actlet-err">✗</span>;
+      return (
+        <span className="actlet-icon actlet-err" aria-hidden="true">
+          ✗
+        </span>
+      );
     case SessionState.PAUSED:
-      return <span className="actlet-icon actlet-warn">‖</span>;
+      return (
+        <span className="actlet-icon actlet-warn" aria-hidden="true">
+          ‖
+        </span>
+      );
   }
-  return <span className="actlet-icon actlet-spinner" />;
+  return <span className="actlet-icon actlet-spinner" aria-hidden="true" />;
+}
+
+/** Tells screen readers when the session's state changes, such as when it completes. */
+export function StateAnnouncer({ session }: { session: Session }) {
+  return (
+    <div className="actlet-sr-only" role="status" aria-live="polite" aria-atomic="true">
+      {`Session ${stateName(session.state)}`}
+    </div>
+  );
 }

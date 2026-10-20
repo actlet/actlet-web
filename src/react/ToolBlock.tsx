@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { duration, keyArgs, plural, resultLines, toolLabel } from "../view/format";
 import type { Session, ToolCall, Worker } from "../view/session";
 import { Text } from "./Text";
@@ -28,9 +29,18 @@ export function ToolBlock(props: ToolBlockProps) {
           ? duration(call.took)
           : "";
   const child = call.child !== "" ? session.workers.get(call.child) : undefined;
+  const bodyId = useId();
   return (
     <div className={`actlet-tool actlet-tool-${call.status}`} data-call={call.callId}>
-      <button type="button" className="actlet-tool-head" aria-expanded={expanded} onClick={() => onToggle(key)}>
+      {/* Out of the tab order: the stream moves between tool calls with arrow keys. */}
+      <button
+        type="button"
+        className="actlet-tool-head"
+        tabIndex={-1}
+        aria-expanded={expanded}
+        aria-controls={bodyId}
+        onClick={() => onToggle(key)}
+      >
         <StatusIcon status={call.status} />
         <span className="actlet-tool-name">
           <Text text={toolLabel(call.name)} max={200} />
@@ -40,11 +50,13 @@ export function ToolBlock(props: ToolBlockProps) {
         </span>
         <span className="actlet-tool-took">{right}</span>
       </button>
-      {child ? (
-        <SubagentBody {...props} child={child} expanded={expanded} />
-      ) : (
-        <Result call={call} expanded={expanded} />
-      )}
+      <div id={bodyId}>
+        {child ? (
+          <SubagentBody {...props} child={child} expanded={expanded} />
+        ) : (
+          <Result call={call} expanded={expanded} />
+        )}
+      </div>
     </div>
   );
 }
@@ -53,24 +65,24 @@ function StatusIcon({ status }: { status: ToolCall["status"] }) {
   switch (status) {
     case "ok":
       return (
-        <span className="actlet-icon actlet-ok" aria-label="done">
+        <span className="actlet-icon actlet-ok" role="img" aria-label="done">
           ✓
         </span>
       );
     case "error":
       return (
-        <span className="actlet-icon actlet-err" aria-label="failed">
+        <span className="actlet-icon actlet-err" role="img" aria-label="failed">
           ✗
         </span>
       );
     case "unknown":
       return (
-        <span className="actlet-icon actlet-warn" aria-label="outcome unknown">
+        <span className="actlet-icon actlet-warn" role="img" aria-label="outcome unknown">
           ?
         </span>
       );
   }
-  return <span className="actlet-icon actlet-spinner" aria-label="running" />;
+  return <span className="actlet-icon actlet-spinner" role="img" aria-label="running" />;
 }
 
 function Result({ call, expanded }: { call: ToolCall; expanded: boolean }) {

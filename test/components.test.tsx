@@ -20,7 +20,7 @@ describe("ActivityViewer", () => {
     const report = within(side).getByTitle("output/report.md");
     expect(report.textContent).toContain("+11");
     expect(report.textContent).toContain("−2");
-    const status = screen.getByRole("status");
+    const status = screen.getByRole("group", { name: "Session status" });
     expect(status.textContent).toMatch(/^✓completed · large · ctx \d+% · [\d.]+ EUR · .* · replay at the end 1x 100%$/);
     // Turns are grouped: the agent's turns, with their tool calls as blocks.
     expect(container.querySelectorAll(".actlet-agent").length).toBe(9);
@@ -40,26 +40,26 @@ describe("ActivityViewer", () => {
     expect(screen.getByText("0/78")).toBeTruthy();
     fireEvent.change(screen.getByLabelText("Speed"), { target: { value: "64" } });
     fireEvent.click(screen.getByLabelText("Play"));
-    expect(screen.getByRole("status").textContent).toContain("replay playing 64x");
+    expect(screen.getByRole("group", { name: "Session status" }).textContent).toContain("replay playing 64x");
     act(() => vi.advanceTimersByTime(3000));
     const shown = Number(screen.getByText(/^\d+\/78$/).textContent!.split("/")[0]);
     expect(shown).toBeGreaterThan(5);
     act(() => vi.advanceTimersByTime(120_000));
     expect(screen.getByText("78/78")).toBeTruthy();
-    expect(screen.getByRole("status").textContent).toContain("completed");
+    expect(screen.getByRole("group", { name: "Session status" }).textContent).toContain("completed");
     fireEvent.click(screen.getByLabelText("Back one event"));
     expect(screen.getByText("77/78")).toBeTruthy();
   });
 
   it("follows appended events in live mode", () => {
     const { rerender } = render(<ActivityViewer events={demo.slice(0, 10)} connectionLabel="orchestrator eu-1" />);
-    expect(screen.getByRole("status").textContent).toContain("orchestrator eu-1");
+    expect(screen.getByRole("group", { name: "Session status" }).textContent).toContain("orchestrator eu-1");
     expect(screen.queryByText("root.2")).toBeNull();
     rerender(<ActivityViewer events={demo.slice(0, 40)} connectionLabel="orchestrator eu-1" />);
     expect(screen.getAllByText("root.2").length).toBeGreaterThan(0);
     rerender(<ActivityViewer events={demo} connectionLabel="orchestrator eu-1" ended />);
-    expect(screen.getByRole("status").textContent).toContain("completed");
-    expect(screen.getByRole("status").textContent).toContain("orchestrator eu-1, run ended");
+    expect(screen.getByRole("group", { name: "Session status" }).textContent).toContain("completed");
+    expect(screen.getByRole("group", { name: "Session status" }).textContent).toContain("orchestrator eu-1, run ended");
   });
 
   it("accepts events as Protobuf JSON", () => {

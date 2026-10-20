@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { diffTone, recordedFile, sizeOf } from "../view/format";
 import { highlight } from "../view/highlight";
 import { sanitize } from "../view/sanitize";
@@ -52,6 +52,8 @@ interface Shown {
 export function FileViewer({ session, path, readFile, onClose }: FileViewerProps) {
   const [loaded, setLoaded] = useState<{ path: string; shown: Shown } | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const id = useId();
 
   useEffect(() => {
     if (!readFile) return;
@@ -70,11 +72,22 @@ export function FileViewer({ session, path, readFile, onClose }: FileViewerProps
     };
   }, [path, readFile]);
 
+  // Focus moves into the popup and stays there; Escape closes it, and
+  // focus goes back to where it was.
   useEffect(() => {
+    const before = document.activeElement as HTMLElement | null;
     closeRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onClose();
+      } else if (e.key === "Tab") trapFocus(e, dialogRef.current);
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      if (before?.isConnected) before.focus();
+    };
   }, [onClose]);
 
   let shown: Shown;
@@ -85,51 +98,86 @@ export function FileViewer({ session, path, readFile, onClose }: FileViewerProps
   const lines = shown.lines.slice(0, MAX_FILE_LINES);
   const more = shown.lines.length - lines.length;
   return (
-    <div className="actlet-overlay" onClick={onClose}>
+    <div className="actlet-overlay">
+      <button type="button" className="actlet-backdrop" tabIndex={-1} aria-label="Close the file" onClick={onClose} />
       <div
+        ref={dialogRef}
         className="actlet-popup"
         role="dialog"
         aria-modal="true"
-        aria-label={`File ${sanitize(path)}`}
-        onClick={(e) => e.stopPropagation()}
+        aria-labelledby={`${id}-title`}
+        aria-describedby={`${id}-note`}
       >
         <div className="actlet-popup-head">
-          <strong className="actlet-path">
+          <h2 className="actlet-path actlet-popup-title" id={`${id}-title`}>
+            <span className="actlet-sr-only">File</span>{" "}
             <bdi>
               <Text text={path} max={500} />
             </bdi>
-          </strong>
-          <button type="button" ref={closeRef} className="actlet-btn" onClick={onClose} aria-label="Close">
+          </h2>
+          <button
+            type="button"
+            ref={closeRef}
+            className="actlet-btn"
+            onClick={onClose}
+            aria-label="Close"
+            aria-keyshortcuts="Escape"
+          >
             esc ✕
           </button>
         </div>
-        <div className="actlet-popup-body">
+        {/* The body scrolls; keyboard users focus it to scroll with the arrow keys. */}
+        <div className="actlet-popup-body" tabIndex={0} role="region" aria-label="File content">
           {lines.length === 0 ? (
             <div className="actlet-muted">
               <Text text={shown.note} />
             </div>
           ) : (
-            <table className="actlet-code">
-              <tbody>
-                {lines.map((l, i) => (
-                  <tr key={i}>
-                    {!shown.diff && <td className="actlet-lineno">{i + 1}</td>}
-                    <td className={shown.diff ? `actlet-tone-${diffTone(l)}` : undefined}>
-                      {shown.diff ? <Text text={l} max={2000} /> : <Highlighted path={path} line={l} n={i} />}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="actlet-code">
+              {lines.map((l, i) => (
+                <div key={i} className={`actlet-code-line${shown.diff ? ` actlet-tone-${diffTone(l)}` : ""}`}>
+                  {!shown.diff && (
+                    <span className="actlet-lineno" aria-hidden="true">
+                      {i + 1}
+                    </span>
+                  )}
+                  <span className="actlet-code-text">
+                    {shown.diff ? <Text text={l} max={2000} /> : <Highlighted path={path} line={l} n={i} />}
+                  </span>
+                </div>
+              ))}
+            </div>
           )}
           {more > 0 && <div className="actlet-cut">{`… ${more} more lines not shown`}</div>}
         </div>
-        <div className="actlet-popup-foot actlet-muted">
+        <div className="actlet-popup-foot actlet-muted" id={`${id}-note`}>
           <Text text={lines.length > 0 ? `${shown.note} · ${lines.length} lines` : "read only"} />
         </div>
       </div>
     </div>
   );
+}
+
+/** Keeps Tab and Shift+Tab within the element. */
+function trapFocus(e: KeyboardEvent, root: HTMLElement | null) {
+  if (!root) return;
+  const focusable = [
+    ...root.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+  ].filter((el) => !el.hasAttribute("disabled"));
+  if (focusable.length === 0) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  const active = document.activeElement;
+  if (!root.contains(active)) {
+    e.preventDefault();
+    first.focus();
+  } else if (e.shiftKey && active === first) {
+    e.preventDefault();
+    last.focus();
+  } else if (!e.shiftKey && active === last) {
+    e.preventDefault();
+    first.focus();
+  }
 }
 
 function Highlighted({ path, line, n }: { path: string; line: string; n: number }) {

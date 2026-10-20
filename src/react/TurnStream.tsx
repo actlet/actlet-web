@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -84,6 +85,7 @@ export function TurnStream({
   const keys = useMemo(() => entryKeys(entries), [entries]);
 
   const ref = useRef<HTMLDivElement>(null);
+  const hintId = useId();
   const atBottom = useRef(true);
   const [behind, setBehind] = useState(false);
   const [view, setView] = useState({ top: 0, height: 0 });
@@ -165,6 +167,7 @@ export function TurnStream({
         role="log"
         aria-live="off"
         aria-label="Conversation"
+        aria-describedby={hintId}
         tabIndex={0}
         data-virtual={virtual || undefined}
       >
@@ -181,6 +184,9 @@ export function TurnStream({
         })}
         {padBottom > 0 && <div style={{ height: padBottom }} aria-hidden="true" />}
       </div>
+      <p id={hintId} className="actlet-sr-only">
+        Arrow keys move between tool calls; Enter expands one.
+      </p>
       {behind && (
         <button type="button" className="actlet-latest" onClick={toLatest}>
           ↓ latest

@@ -17,13 +17,20 @@ const speeds = [0.25, 0.5, 1, 2, 4, 8, 16, 32, 64].filter((s) => s >= MIN_SPEED 
 export function ReplayControls({ playing, position, length, speed, onToggle, onSeek, onSpeed }: ReplayControlsProps) {
   return (
     <div className="actlet-replay" role="group" aria-label="Replay">
-      <button type="button" className="actlet-btn" onClick={onToggle} aria-label={playing ? "Pause" : "Play"}>
+      <button
+        type="button"
+        className="actlet-btn"
+        onClick={onToggle}
+        aria-label={playing ? "Pause" : "Play"}
+        aria-keyshortcuts="Space"
+      >
         {playing ? "❚❚" : "▶"}
       </button>
       <button
         type="button"
         className="actlet-btn"
         aria-label="Back one event"
+        aria-keyshortcuts="ArrowLeft"
         disabled={position === 0}
         onClick={() => onSeek(position - 1)}
       >
@@ -33,6 +40,7 @@ export function ReplayControls({ playing, position, length, speed, onToggle, onS
         type="button"
         className="actlet-btn"
         aria-label="Forward one event"
+        aria-keyshortcuts="ArrowRight"
         disabled={position >= length}
         onClick={() => onSeek(position + 1)}
       >
@@ -52,6 +60,7 @@ export function ReplayControls({ playing, position, length, speed, onToggle, onS
       <select
         className="actlet-speed"
         aria-label="Speed"
+        aria-keyshortcuts="+ -"
         value={speeds.includes(speed) ? speed : 1}
         onChange={(e) => onSpeed(Number(e.target.value))}
       >

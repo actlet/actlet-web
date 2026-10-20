@@ -47,7 +47,7 @@ export function Tabs({ active, onChange, tabs = TABS, idPrefix = "actlet" }: Tab
           role="tab"
           id={`${idPrefix}-tab-${t}`}
           aria-selected={t === active}
-          aria-controls={`${idPrefix}-panel-${t}`}
+          aria-controls={t === active ? `${idPrefix}-panel-${t}` : undefined}
           tabIndex={t === active ? 0 : -1}
           className={`actlet-tab${t === active ? " actlet-tab-on" : ""}`}
           onClick={() => onChange(t)}
