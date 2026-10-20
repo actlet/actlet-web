@@ -103,14 +103,14 @@ rest show when it's shown alone. Memory stays bounded. Each timeline keeps its l
 latest 5,000 lines. Calls of turns that fall off are let go, and any text past 256 KiB is cut and marked. Live mode
 folds only appended events and keeps no reference to them.
 
-Measured on a synthetic 20,000-event session (`pnpm bench`, headless Chrome, production build):
+Measured on a synthetic 20,000-event session (`pnpm bench`, headless Chrome, production build, over two runs):
 
-|                                                             |                                                            |
-| ----------------------------------------------------------- | ---------------------------------------------------------- |
-| Fold all 20,000 events                                      | 196 ms                                                     |
-| Append 250 events live, to the second painted frame         | 33 ms on average, 38 ms at worst (two frames is the floor) |
-| Scroll the whole conversation, one step per frame           | 16.7 ms frames, none over 50 ms; 16 items in the page      |
-| JS heap at the end, with the 20,000 events held by the page | 39 MB                                                      |
+|                                                             |                                                                          |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Fold all 20,000 events                                      | 196–205 ms                                                               |
+| Append 250 events live, to the second painted frame         | 33 ms on average, 37 ms at the 95th percentile (two frames is the floor) |
+| Scroll the whole conversation, one step per frame           | 16.7 ms frames, none over 50 ms; 16 items in the page                    |
+| JS heap at the end, with the 20,000 events held by the page | 39–40 MB                                                                 |
 
 ### Keyboard and screen readers
 
