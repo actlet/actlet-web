@@ -18,6 +18,9 @@ import type { Plugin, PreviewServer, ViteDevServer } from "vite";
 import { WebSocketServer, type WebSocket } from "ws";
 import {
   ActivityEventSchema,
+  BudgetAction,
+  BudgetStatusSchema,
+  BudgetUsageSchema,
   CommandAckSchema,
   CommandReceivedSchema,
   CommandResult,
@@ -26,6 +29,7 @@ import {
   StateChangeSchema,
   SteerNoteSchema,
   type ActivityEvent,
+  type BudgetUsage,
   type Command,
 } from "../src/gen/actlet/gateway/v0/gateway_pb.ts";
 
@@ -43,6 +47,8 @@ class MockSession {
   private seq = 0;
   private timer: ReturnType<typeof setTimeout> | undefined;
   ended = false;
+  /** The budgets as last reported. */
+  private budgets: BudgetUsage[] = [];
   onEnd = () => {};
 
   constructor(private readonly speed: number) {
@@ -69,6 +75,7 @@ class MockSession {
       worker,
       body,
     });
+    if (body.case === "budgetStatus") this.budgets = body.value.budgets;
     const json = toJson(ActivityEventSchema, ev, { useProtoFieldName: true }) as JsonObject;
     this.history.push(json);
     for (const fn of this.listeners) fn(json);
@@ -99,7 +106,10 @@ class MockSession {
   /** Acts on a command; returns what the box would acknowledge. */
   command(cmd: Command): { result: CommandResult; message: string } {
     if (this.ended) return { result: CommandResult.REJECTED, message: "the session has ended" };
-    const ack = { result: CommandResult.ACCEPTED, message: "" };
+    const ack = {
+      result: CommandResult.ACCEPTED,
+      message: cmd.action.case === "profileUpdate" ? `changed ${cmd.action.value.fields.join(", ")}` : "",
+    };
     this.publish("", { case: "command", value: create(CommandReceivedSchema, { command: cmd, ...ack }) });
     const state = (from: SessionState, to: SessionState, reason: string) =>
       this.publish("", { case: "state", value: create(StateChangeSchema, { from, to, reason }) });
@@ -118,6 +128,30 @@ class MockSession {
         state(SessionState.RUNNING, SessionState.STOPPING, "stop requested");
         setTimeout(() => state(SessionState.STOPPING, SessionState.STOPPED, "stopped"), 800);
         break;
+      case "profileUpdate": {
+        // New limits, the usage so far (or none for a reset budget), and the state that gives.
+        const u = cmd.action.value;
+        if (!u.fields.includes("budgets") && u.resetBudgets.length === 0) break;
+        const defs = u.fields.includes("budgets") ? (u.profile?.budgets ?? []) : [];
+        const budgets = (defs.length > 0 ? defs : this.budgets).map((b) => {
+          const before = this.budgets.find((x) => x.kind === b.kind);
+          const used = u.resetBudgets.includes(b.kind) ? 0 : (before?.used ?? 0);
+          const alert = "alertAtPercent" in b ? b.alertAtPercent : 0;
+          const wait = "onExhaust" in b && b.onExhaust === BudgetAction.WAIT;
+          const st =
+            b.limit > 0 && used >= b.limit
+              ? wait
+                ? "waiting"
+                : "exhausted"
+              : alert > 0 && used * 100 >= b.limit * alert
+                ? "alerted"
+                : "ok";
+          return create(BudgetUsageSchema, { kind: b.kind, limit: b.limit, used, currency: b.currency, state: st });
+        });
+        const reason = u.resetBudgets.length > 0 && defs.length === 0 ? "reset" : "update";
+        this.publish("", { case: "budgetStatus", value: create(BudgetStatusSchema, { budgets, reason }) });
+        break;
+      }
     }
     return ack;
   }

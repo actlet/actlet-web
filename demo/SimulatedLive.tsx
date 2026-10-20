@@ -76,7 +76,7 @@ export function SimulatedLive({ theme, speed }: { theme: Theme; speed: number })
       sessionId="demo"
       connectionLabel="live demo"
       onCommand={onCommand}
-      allowedCommands={["steer", "pause", "stop"]}
+      allowedCommands={["steer", "pause", "stop", "profile_update"]}
       actor="demo operator"
     />
   );

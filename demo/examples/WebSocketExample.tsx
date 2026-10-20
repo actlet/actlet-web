@@ -54,7 +54,7 @@ export function WebSocketExample({ theme }: { theme: "auto" | "dark" | "light" }
       theme={theme}
       connectionLabel={status === "websocket closed" ? "websocket" : status}
       onCommand={onCommand}
-      allowedCommands={["steer", "pause", "stop"]}
+      allowedCommands={["steer", "pause", "stop", "profile_update"]}
       actor="demo operator"
     />
   );

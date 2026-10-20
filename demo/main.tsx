@@ -1,17 +1,18 @@
 import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { ActivityViewer } from "../src";
+import { ActivityViewer, type TabId } from "../src";
 // Apps import "@actlet/viewer/styles.css".
 import "../src/styles.css";
 import { SyntheticDemo } from "./bench";
 import { JsonlExample } from "./examples/JsonlExample";
 import { SseExample } from "./examples/SseExample";
 import { WebSocketExample } from "./examples/WebSocketExample";
-import { recording } from "./recording";
+import { recording, standardRecording } from "./recording";
 import { SimulatedLive } from "./SimulatedLive";
 
 const modes = {
   replay: "replay the recording",
+  standard: "replay: every standard tool and a budget",
   live: "live: the recording fed in over time",
   websocket: "example: a WebSocket backend",
   sse: "example: server-sent events",
@@ -29,6 +30,9 @@ function Demo() {
   });
   const [theme, setTheme] = useState<Theme>((params.get("theme") as Theme | null) ?? "auto");
   const speed = Number(params.get("speed") ?? 4);
+  // ?at=<events shown> and ?tab=<view> open a replay at a given point, for screenshots.
+  const at = params.get("at") === null ? undefined : Number(params.get("at"));
+  const tab = (params.get("tab") ?? undefined) as TabId | undefined;
   const choose = (m: Mode) => {
     setMode(m);
     const url = new URL(location.href);
@@ -46,6 +50,22 @@ function Demo() {
           speed={speed}
           theme={theme}
           sessionId="demo"
+          startAt={at}
+          defaultTab={tab}
+        />
+      );
+      break;
+    case "standard":
+      body = (
+        <ActivityViewer
+          events={standardRecording}
+          mode="replay"
+          autoPlay={params.get("autoplay") !== "0"}
+          speed={speed}
+          theme={theme}
+          sessionId="release"
+          startAt={at}
+          defaultTab={tab}
         />
       );
       break;

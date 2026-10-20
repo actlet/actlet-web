@@ -56,6 +56,34 @@ async function note(text) {
   );
 }
 
+/** Raises the money budget through the command bar and waits for the box to report it. */
+async function raise(limit) {
+  await page.evaluate(
+    "[...document.querySelectorAll('.actlet-commands button')].find((b) => b.textContent === 'Raise a budget…').click()",
+  );
+  await until(() => page.evaluate("!!document.querySelector('.actlet-raise')"), "the raise form");
+  await page.evaluate(`(() => {
+    const input = [...document.querySelectorAll('.actlet-raise input')].find((i) => i.type === 'number');
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(input, ${JSON.stringify(String(limit))});
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    document.querySelector('.actlet-raise').requestSubmit();
+  })()`);
+  await until(
+    () =>
+      page.evaluate(
+        "[...document.querySelectorAll('.actlet-sent li')].some((li) => li.textContent.startsWith('profile update (budgets)') && li.dataset.status === 'accepted')",
+      ),
+    "the profile update accepted",
+  );
+  await until(
+    () =>
+      page.evaluate(
+        "document.querySelector('.actlet-stream').textContent.includes('profile update (budgets) from a remote operator accepted')",
+      ),
+    "the profile update in the timeline",
+  );
+}
+
 /** Pauses the session and waits for it to end paused. */
 async function pause() {
   await page.evaluate(
@@ -71,11 +99,16 @@ async function pause() {
 try {
   await check("websocket", async () => {
     await note("a note over the websocket");
+    await raise(1.2);
     await pause();
   });
   await check("sse", async () => {
     await note("a note over server-sent events");
     await pause();
+  });
+  await check("standard", async () => {
+    await until(async () => (await status()).includes("completed"), "the replay at the end", 90_000);
+    await until(() => page.evaluate("!!document.querySelector('.actlet-decision')"), "the decision shown");
   });
   await check("jsonl", async () => {
     await until(async () => (await status()).includes("completed"), "the replay at the end", 90_000);
