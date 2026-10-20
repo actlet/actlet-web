@@ -21,7 +21,7 @@ import type { Message as Message$1 } from "@bufbuild/protobuf";
  * Describes the file actlet/gateway/v0/gateway.proto.
  */
 export const file_actlet_gateway_v0_gateway: GenFile = /*@__PURE__*/
-  fileDesc("Ch9hY3RsZXQvZ2F0ZXdheS92MC9nYXRld2F5LnByb3RvEhFhY3RsZXQuZ2F0ZXdheS52MCKPAQoPUmVnaXN0ZXJSZXF1ZXN0EhgKEHByb3RvY29sX3ZlcnNpb24YASABKAkSEQoJd29ya2VyX2lkGAIgASgJEhIKCnNlc3Npb25faWQYAyABKAkSDQoFZXBvY2gYBCABKAQSFAoMY2FwYWJpbGl0aWVzGAUgAygJEhYKDmFjdGxldF92ZXJzaW9uGAYgASgJInoKEFJlZ2lzdGVyUmVzcG9uc2USEgoKc2Vzc2lvbl9pZBgBIAEoCRIrCgdwcm9maWxlGAIgASgLMhouYWN0bGV0LmdhdGV3YXkudjAuUHJvZmlsZRIlCgR0YXNrGAMgASgLMhcuYWN0bGV0LmdhdGV3YXkudjAuVGFzayK2BAoHUHJvZmlsZRIKCgJpZBgBIAEoCRIPCgd2ZXJzaW9uGAIgASgJEikKBmxpbWl0cxgDIAEoCzIZLmFjdGxldC5nYXRld2F5LnYwLkxpbWl0cxI4ChJkZWZhdWx0X3BhdXNlX21vZGUYBCABKA4yHC5hY3RsZXQuZ2F0ZXdheS52MC5QYXVzZU1vZGUSLQoKc3RvcF9ncmFjZRgFIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI8Cg1vbl9kaXNjb25uZWN0GAYgASgOMiUuYWN0bGV0LmdhdGV3YXkudjAuRGlzY29ubmVjdEJlaGF2aW9yEhkKEXJlcXVpcmVkX2ZlYXR1cmVzGAcgAygJEioKB2J1ZGdldHMYCCADKAsyGS5hY3RsZXQuZ2F0ZXdheS52MC5CdWRnZXQSLwoGbW9kZWxzGAkgASgLMh8uYWN0bGV0LmdhdGV3YXkudjAuTW9kZWxDYXRhbG9nEisKBXRvb2xzGAogAygLMhwuYWN0bGV0LmdhdGV3YXkudjAuVG9vbEdyYW50EhQKDGluc3RydWN0aW9ucxgLIAEoCRITCgtiYXNlX3Byb21wdBgMIAEoCRIWCg50b29sc19tYW5pZmVzdBgNIAEoCRIeChZjaGVja3BvaW50X2V2ZXJ5X3R1cm5zGA4gASgNEjQKDGxvY2FsX2F0dGFjaBgPIAEoCzIeLmFjdGxldC5nYXRld2F5LnYwLkxvY2FsQXR0YWNoIjEKC0xvY2FsQXR0YWNoEhAKCGNvbW1hbmRzGAEgAygJEhAKCGRpc2FibGVkGAIgASgIItsBCgZCdWRnZXQSKwoEa2luZBgBIAEoDjIdLmFjdGxldC5nYXRld2F5LnYwLkJ1ZGdldEtpbmQSDQoFbGltaXQYAiABKAESEAoIY3VycmVuY3kYAyABKAkSGAoQYWxlcnRfYXRfcGVyY2VudBgEIAEoDRIzCgpvbl9leGhhdXN0GAUgASgOMh8uYWN0bGV0LmdhdGV3YXkudjAuQnVkZ2V0QWN0aW9uEjQKCXdhaXRfbW9kZRgGIAEoDjIhLmFjdGxldC5nYXRld2F5LnYwLkJ1ZGdldFdhaXRNb2RlIrsBCgxNb2RlbENhdGFsb2cSLgoHYWxpYXNlcxgBIAMoCzIdLmFjdGxldC5nYXRld2F5LnYwLk1vZGVsQWxpYXMSOQoFcm9sZXMYAiADKAsyKi5hY3RsZXQuZ2F0ZXdheS52MC5Nb2RlbENhdGFsb2cuUm9sZXNFbnRyeRISCgpzZWxlY3RhYmxlGAMgAygJGiwKClJvbGVzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASJeCgpNb2RlbEFsaWFzEg0KBWFsaWFzGAEgASgJEhMKC2Rlc2NyaXB0aW9uGAIgASgJEhQKDGNhcGFiaWxpdGllcxgDIAMoCRIWCg5jb250ZXh0X3dpbmRvdxgEIAEoBCKIAQoJVG9vbEdyYW50EgwKBG5hbWUYASABKAkSPAoIc2V0dGluZ3MYAiADKAsyKi5hY3RsZXQuZ2F0ZXdheS52MC5Ub29sR3JhbnQuU2V0dGluZ3NFbnRyeRovCg1TZXR0aW5nc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEibgoGTGltaXRzEhMKC21heF93b3JrZXJzGAEgASgNEhwKFG1heF90b29sX2NvbmN1cnJlbmN5GAIgASgNEhoKEm1heF9zdWJhZ2VudF9kZXB0aBgDIAEoDRIVCg1tYXhfc3ViYWdlbnRzGAQgASgNIlMKBFRhc2sSDgoGc2NoZW1hGAEgASgJEgoKAmlkGAIgASgJEgwKBGtpbmQYAyABKAkSEgoKZGVmaW5pdGlvbhgEIAEoDBINCgVpbnB1dBgFIAEoDCLQAQoJQ29udHJvbFVwEjAKBWhlbGxvGAEgASgLMh8uYWN0bGV0LmdhdGV3YXkudjAuQ29udHJvbEhlbGxvSAASLAoDYWNrGAIgASgLMh0uYWN0bGV0LmdhdGV3YXkudjAuQ29tbWFuZEFja0gAEisKBnN0YXR1cxgDIAEoCzIZLmFjdGxldC5nYXRld2F5LnYwLlN0YXR1c0gAEi8KBGZpbGUYBCABKAsyHy5hY3RsZXQuZ2F0ZXdheS52MC5GaWxlUmVzcG9uc2VIAEIFCgNtc2ciYQoMQ29udHJvbEhlbGxvEhIKCnNlc3Npb25faWQYASABKAkSDQoFZXBvY2gYAiABKAQSLgoFc3RhdGUYAyABKA4yHy5hY3RsZXQuZ2F0ZXdheS52MC5TZXNzaW9uU3RhdGUiqwEKC0NvbnRyb2xEb3duEi0KB2NvbW1hbmQYASABKAsyGi5hY3RsZXQuZ2F0ZXdheS52MC5Db21tYW5kSAASMQoJaGVhcnRiZWF0GAIgASgLMhwuYWN0bGV0LmdhdGV3YXkudjAuSGVhcnRiZWF0SAASMwoJcmVhZF9maWxlGAMgASgLMh4uYWN0bGV0LmdhdGV3YXkudjAuRmlsZVJlcXVlc3RIAEIFCgNtc2ciJwoLRmlsZVJlcXVlc3QSCgoCaWQYASABKAkSDAoEcGF0aBgCIAEoCSKNAQoMRmlsZVJlc3BvbnNlEgoKAmlkGAEgASgJEgwKBHBhdGgYAiABKAkSDwoHY29udGVudBgDIAEoDBIMCgRzaXplGAQgASgDEhEKCXRydW5jYXRlZBgFIAEoCBIOCgZiaW5hcnkYBiABKAgSEgoKZXJyb3JfY29kZRgHIAEoBRINCgVlcnJvchgIIAEoCSI1CglIZWFydGJlYXQSKAoEdGltZRgBIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAi2AEKB0NvbW1hbmQSCgoCaWQYASABKAkSKQoGb3JpZ2luGAIgASgOMhkuYWN0bGV0LmdhdGV3YXkudjAuT3JpZ2luEg0KBWFjdG9yGAMgASgJEikKBXBhdXNlGAogASgLMhguYWN0bGV0LmdhdGV3YXkudjAuUGF1c2VIABInCgRzdG9wGAsgASgLMhcuYWN0bGV0LmdhdGV3YXkudjAuU3RvcEgAEikKBXN0ZWVyGAwgASgLMhguYWN0bGV0LmdhdGV3YXkudjAuU3RlZXJIAEIICgZhY3Rpb24iMwoFUGF1c2USKgoEbW9kZRgBIAEoDjIcLmFjdGxldC5nYXRld2F5LnYwLlBhdXNlTW9kZSI+CgRTdG9wEigKBWdyYWNlGAEgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEgwKBGtpbGwYAiABKAgiFQoFU3RlZXISDAoEbm90ZRgBIAEoCSKmAQoKQ29tbWFuZEFjaxISCgpjb21tYW5kX2lkGAEgASgJEjAKBnJlc3VsdBgCIAEoDjIgLmFjdGxldC5nYXRld2F5LnYwLkNvbW1hbmRSZXN1bHQSDwoHbWVzc2FnZRgDIAEoCRIRCglkdXBsaWNhdGUYBCABKAgSLgoFc3RhdGUYBSABKA4yHy5hY3RsZXQuZ2F0ZXdheS52MC5TZXNzaW9uU3RhdGUiYgoGU3RhdHVzEi4KBXN0YXRlGAEgASgOMh8uYWN0bGV0LmdhdGV3YXkudjAuU2Vzc2lvblN0YXRlEigKBHRpbWUYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wInkKCkFjdGl2aXR5VXASMQoFaGVsbG8YASABKAsyIC5hY3RsZXQuZ2F0ZXdheS52MC5BY3Rpdml0eUhlbGxvSAASMQoFYmF0Y2gYAiABKAsyIC5hY3RsZXQuZ2F0ZXdheS52MC5BY3Rpdml0eUJhdGNoSABCBQoDbXNnIjIKDUFjdGl2aXR5SGVsbG8SEgoKc2Vzc2lvbl9pZBgBIAEoCRINCgVlcG9jaBgCIAEoBCJBCg1BY3Rpdml0eUJhdGNoEjAKBmV2ZW50cxgBIAMoCzIgLmFjdGxldC5nYXRld2F5LnYwLkFjdGl2aXR5RXZlbnQiLwoLQWN0aXZpdHlBY2sSDQoFZXBvY2gYASABKAQSEQoJYWNrZWRfc2VxGAIgASgEIqwGCg1BY3Rpdml0eUV2ZW50EgoKAmlkGAEgASgJEg0KBWVwb2NoGAIgASgEEgsKA3NlcRgDIAEoBBIoCgR0aW1lGAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIOCgZ3b3JrZXIYBSABKAkSNAoHc3RhcnRlZBgKIAEoCzIhLmFjdGxldC5nYXRld2F5LnYwLlNlc3Npb25TdGFydGVkSAASLwoFc3RhdGUYCyABKAsyHi5hY3RsZXQuZ2F0ZXdheS52MC5TdGF0ZUNoYW5nZUgAEjUKB2NvbW1hbmQYDCABKAsyIi5hY3RsZXQuZ2F0ZXdheS52MC5Db21tYW5kUmVjZWl2ZWRIABItCgVzdGVlchgNIAEoCzIcLmFjdGxldC5nYXRld2F5LnYwLlN0ZWVyTm90ZUgAEicKBHRleHQYDiABKAsyFy5hY3RsZXQuZ2F0ZXdheS52MC5UZXh0SAASJQoDZ2FwGA8gASgLMhYuYWN0bGV0LmdhdGV3YXkudjAuR2FwSAASMgoKbW9kZWxfdHVybhgQIAEoCzIcLmFjdGxldC5nYXRld2F5LnYwLk1vZGVsVHVybkgAEjYKDHRvb2xfc3RhcnRlZBgRIAEoCzIeLmFjdGxldC5nYXRld2F5LnYwLlRvb2xTdGFydGVkSAASOAoNdG9vbF9maW5pc2hlZBgSIAEoCzIfLmFjdGxldC5nYXRld2F5LnYwLlRvb2xGaW5pc2hlZEgAEjQKC2ZpbGVfY2hhbmdlGBMgASgLMh0uYWN0bGV0LmdhdGV3YXkudjAuRmlsZUNoYW5nZUgAEj4KEHN1YmFnZW50X3NwYXduZWQYFCABKAsyIi5hY3RsZXQuZ2F0ZXdheS52MC5TdWJhZ2VudFNwYXduZWRIABJAChFzdWJhZ2VudF9maW5pc2hlZBgVIAEoCzIjLmFjdGxldC5nYXRld2F5LnYwLlN1YmFnZW50RmluaXNoZWRIABI2CgxzZXNzaW9uX2luZm8YFiABKAsyHi5hY3RsZXQuZ2F0ZXdheS52MC5TZXNzaW9uSW5mb0gAQgYKBGJvZHki4QIKC1Nlc3Npb25JbmZvEg8KB3Rhc2tfaWQYASABKAkSEQoJdGFza19raW5kGAIgASgJEgwKBHRhc2sYAyABKAkSDgoGY29uZmlnGAQgASgJEioKB2J1ZGdldHMYBSADKAsyGS5hY3RsZXQuZ2F0ZXdheS52MC5CdWRnZXQSLwoGbW9kZWxzGAYgASgLMh8uYWN0bGV0LmdhdGV3YXkudjAuTW9kZWxDYXRhbG9nEioKBXRvb2xzGAcgAygLMhsuYWN0bGV0LmdhdGV3YXkudjAuVG9vbEluZm8SLAoGZ3JhbnRzGAggAygLMhwuYWN0bGV0LmdhdGV3YXkudjAuVG9vbEdyYW50EhYKDnRvb2xzX21hbmlmZXN0GAkgASgJEhEKCXdvcmtlcl9pZBgKIAEoCRIWCg5hY3RsZXRfdmVyc2lvbhgLIAEoCRIWCg5sb2NhbF9jb21tYW5kcxgMIAMoCSI9CghUb29sSW5mbxIMCgRuYW1lGAEgASgJEg4KBnBvbGljeRgCIAEoCRITCgtkZXNjcmlwdGlvbhgDIAEoCSJdCg5TZXNzaW9uU3RhcnRlZBINCgVlcG9jaBgBIAEoBBISCgpwcm9maWxlX2lkGAIgASgJEhcKD3Byb2ZpbGVfdmVyc2lvbhgDIAEoCRIPCgdyZXN1bWVkGAQgASgIInkKC1N0YXRlQ2hhbmdlEi0KBGZyb20YASABKA4yHy5hY3RsZXQuZ2F0ZXdheS52MC5TZXNzaW9uU3RhdGUSKwoCdG8YAiABKA4yHy5hY3RsZXQuZ2F0ZXdheS52MC5TZXNzaW9uU3RhdGUSDgoGcmVhc29uGAMgASgJIoEBCg9Db21tYW5kUmVjZWl2ZWQSKwoHY29tbWFuZBgBIAEoCzIaLmFjdGxldC5nYXRld2F5LnYwLkNvbW1hbmQSMAoGcmVzdWx0GAIgASgOMiAuYWN0bGV0LmdhdGV3YXkudjAuQ29tbWFuZFJlc3VsdBIPCgdtZXNzYWdlGAMgASgJIlMKCVN0ZWVyTm90ZRIMCgRub3RlGAEgASgJEikKBm9yaWdpbhgCIAEoDjIZLmFjdGxldC5nYXRld2F5LnYwLk9yaWdpbhINCgVhY3RvchgDIAEoCSIUCgRUZXh0EgwKBHRleHQYASABKAkiawoDR2FwEg8KB2Ryb3BwZWQYASABKAQSKQoFZmlyc3QYAiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEigKBGxhc3QYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIqcBCglNb2RlbFR1cm4SDAoEdHVybhgBIAEoBBINCgVtb2RlbBgCIAEoCRIMCgR0ZXh0GAMgASgJEhIKCnRvb2xfY2FsbHMYBCADKAkSMgoLc3RvcF9yZWFzb24YBSABKA4yHS5hY3RsZXQuZ2F0ZXdheS52MC5TdG9wUmVhc29uEicKBXVzYWdlGAYgASgLMhguYWN0bGV0LmdhdGV3YXkudjAuVXNhZ2UiOwoLVG9vbFN0YXJ0ZWQSDwoHY2FsbF9pZBgBIAEoCRIMCgR0b29sGAIgASgJEg0KBWlucHV0GAMgASgJIpEBCgxUb29sRmluaXNoZWQSDwoHY2FsbF9pZBgBIAEoCRIMCgR0b29sGAIgASgJEhAKCGlzX2Vycm9yGAMgASgIEhcKD291dGNvbWVfdW5rbm93bhgEIAEoCBIOCgZvdXRwdXQYBSABKAkSJwoEdG9vaxgGIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbiJKCgpGaWxlQ2hhbmdlEg8KB2NhbGxfaWQYASABKAkSDAoEcGF0aBgCIAEoCRIPCgdjcmVhdGVkGAMgASgIEgwKBGRpZmYYBCABKAkiTwoPU3ViYWdlbnRTcGF3bmVkEg4KBnBhcmVudBgBIAEoCRIMCgR0YXNrGAIgASgJEg0KBW1vZGVsGAMgASgJEg8KB2NhbGxfaWQYBCABKAkiQwoQU3ViYWdlbnRGaW5pc2hlZBIQCghpc19lcnJvchgBIAEoCBIOCgZyZXN1bHQYAiABKAkSDQoFdHVybnMYAyABKAQi8gEKEEluZmVyZW5jZVJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCRINCgVlcG9jaBgCIAEoBBIRCglpbnRlbnRfaWQYAyABKAkSDQoFbW9kZWwYBCABKAkSDgoGc3lzdGVtGAUgASgJEiwKCG1lc3NhZ2VzGAYgAygLMhouYWN0bGV0LmdhdGV3YXkudjAuTWVzc2FnZRIqCgV0b29scxgHIAMoCzIbLmFjdGxldC5nYXRld2F5LnYwLlRvb2xTcGVjEhQKDGNvbnRpbnVhdGlvbhgIIAEoDBIZChFtYXhfb3V0cHV0X3Rva2VucxgJIAEoDSJYCgdNZXNzYWdlEiUKBHJvbGUYASABKA4yFy5hY3RsZXQuZ2F0ZXdheS52MC5Sb2xlEiYKBXBhcnRzGAIgAygLMhcuYWN0bGV0LmdhdGV3YXkudjAuUGFydCKGAQoEUGFydBIOCgR0ZXh0GAEgASgJSAASMAoJdG9vbF9jYWxsGAIgASgLMhsuYWN0bGV0LmdhdGV3YXkudjAuVG9vbENhbGxIABI0Cgt0b29sX3Jlc3VsdBgDIAEoCzIdLmFjdGxldC5nYXRld2F5LnYwLlRvb2xSZXN1bHRIAEIGCgRwYXJ0IjMKCFRvb2xDYWxsEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSDQoFaW5wdXQYAyABKAkiQAoKVG9vbFJlc3VsdBIPCgdjYWxsX2lkGAEgASgJEg8KB2NvbnRlbnQYAiABKAkSEAoIaXNfZXJyb3IYAyABKAgiQwoIVG9vbFNwZWMSDAoEbmFtZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIUCgxpbnB1dF9zY2hlbWEYAyABKAkilAEKEUluZmVyZW5jZVJlc3BvbnNlEhQKCnRleHRfZGVsdGEYASABKAlIABIwCgl0b29sX2NhbGwYAiABKAsyGy5hY3RsZXQuZ2F0ZXdheS52MC5Ub29sQ2FsbEgAEjAKBGRvbmUYAyABKAsyIC5hY3RsZXQuZ2F0ZXdheS52MC5JbmZlcmVuY2VEb25lSABCBQoDbXNnIpQBCg1JbmZlcmVuY2VEb25lEjIKC3N0b3BfcmVhc29uGAEgASgOMh0uYWN0bGV0LmdhdGV3YXkudjAuU3RvcFJlYXNvbhInCgV1c2FnZRgCIAEoCzIYLmFjdGxldC5nYXRld2F5LnYwLlVzYWdlEhQKDGNvbnRpbnVhdGlvbhgDIAEoDBIQCghyZXBsYXllZBgEIAEoCCKLAQoFVXNhZ2USFAoMaW5wdXRfdG9rZW5zGAEgASgEEhUKDW91dHB1dF90b2tlbnMYAiABKAQSGQoRY2FjaGVfcmVhZF90b2tlbnMYAyABKAQSGgoSY2FjaGVfd3JpdGVfdG9rZW5zGAQgASgEEgwKBGNvc3QYBSABKAESEAoIY3VycmVuY3kYBiABKAkqhAEKCkJ1ZGdldEtpbmQSGwoXQlVER0VUX0tJTkRfVU5TUEVDSUZJRUQQABIUChBCVURHRVRfS0lORF9USU1FEAESFQoRQlVER0VUX0tJTkRfTU9ORVkQAhIWChJCVURHRVRfS0lORF9UT0tFTlMQAxIUChBCVURHRVRfS0lORF9ESVNLEAQqXQoMQnVkZ2V0QWN0aW9uEh0KGUJVREdFVF9BQ1RJT05fVU5TUEVDSUZJRUQQABIWChJCVURHRVRfQUNUSU9OX0tJTEwQARIWChJCVURHRVRfQUNUSU9OX1dBSVQQAippCg5CdWRnZXRXYWl0TW9kZRIgChxCVURHRVRfV0FJVF9NT0RFX1VOU1BFQ0lGSUVEEAASGgoWQlVER0VUX1dBSVRfTU9ERV9QQVVTRRABEhkKFUJVREdFVF9XQUlUX01PREVfSURMRRACKmEKEkRpc2Nvbm5lY3RCZWhhdmlvchIjCh9ESVNDT05ORUNUX0JFSEFWSU9SX1VOU1BFQ0lGSUVEEAASJgoiRElTQ09OTkVDVF9CRUhBVklPUl9DT05USU5VRV9MT0NBTBABKl4KBk9yaWdpbhIWChJPUklHSU5fVU5TUEVDSUZJRUQQABIXChNPUklHSU5fT1JDSEVTVFJBVE9SEAESEAoMT1JJR0lOX0xPQ0FMEAISEQoNT1JJR0lOX1JFTU9URRADKlcKCVBhdXNlTW9kZRIaChZQQVVTRV9NT0RFX1VOU1BFQ0lGSUVEEAASFAoQUEFVU0VfTU9ERV9EUkFJThABEhgKFFBBVVNFX01PREVfSU5URVJSVVBUEAIqaQoNQ29tbWFuZFJlc3VsdBIeChpDT01NQU5EX1JFU1VMVF9VTlNQRUNJRklFRBAAEhsKF0NPTU1BTkRfUkVTVUxUX0FDQ0VQVEVEEAESGwoXQ09NTUFORF9SRVNVTFRfUkVKRUNURUQQAirrAQoMU2Vzc2lvblN0YXRlEh0KGVNFU1NJT05fU1RBVEVfVU5TUEVDSUZJRUQQABIZChVTRVNTSU9OX1NUQVRFX1JVTk5JTkcQARIZChVTRVNTSU9OX1NUQVRFX1BBVVNJTkcQAhIaChZTRVNTSU9OX1NUQVRFX1NUT1BQSU5HEAMSGAoUU0VTU0lPTl9TVEFURV9QQVVTRUQQBBIZChVTRVNTSU9OX1NUQVRFX1NUT1BQRUQQBRIbChdTRVNTSU9OX1NUQVRFX0NPTVBMRVRFRBAGEhgKFFNFU1NJT05fU1RBVEVfRkFJTEVEEAcqPwoEUm9sZRIUChBST0xFX1VOU1BFQ0lGSUVEEAASDQoJUk9MRV9VU0VSEAESEgoOUk9MRV9BU1NJU1RBTlQQAiqSAQoKU3RvcFJlYXNvbhIbChdTVE9QX1JFQVNPTl9VTlNQRUNJRklFRBAAEhgKFFNUT1BfUkVBU09OX0VORF9UVVJOEAESGAoUU1RPUF9SRUFTT05fVE9PTF9VU0UQAhIaChZTVE9QX1JFQVNPTl9NQVhfVE9LRU5TEAMSFwoTU1RPUF9SRUFTT05fUkVGVVNBTBAEMtcCCgdHYXRld2F5ElMKCFJlZ2lzdGVyEiIuYWN0bGV0LmdhdGV3YXkudjAuUmVnaXN0ZXJSZXF1ZXN0GiMuYWN0bGV0LmdhdGV3YXkudjAuUmVnaXN0ZXJSZXNwb25zZRJLCgdDb250cm9sEhwuYWN0bGV0LmdhdGV3YXkudjAuQ29udHJvbFVwGh4uYWN0bGV0LmdhdGV3YXkudjAuQ29udHJvbERvd24oATABElQKD1B1Ymxpc2hBY3Rpdml0eRIdLmFjdGxldC5nYXRld2F5LnYwLkFjdGl2aXR5VXAaHi5hY3RsZXQuZ2F0ZXdheS52MC5BY3Rpdml0eUFjaygBMAESVAoFSW5mZXISIy5hY3RsZXQuZ2F0ZXdheS52MC5JbmZlcmVuY2VSZXF1ZXN0GiQuYWN0bGV0LmdhdGV3YXkudjAuSW5mZXJlbmNlUmVzcG9uc2UwAUI8WjpnaXRodWIuY29tL2FjdGxldC9hY3RsZXQvcHJvdG8vYWN0bGV0L2dhdGV3YXkvdjA7Z2F0ZXdheXYwYgZwcm90bzM", [file_google_protobuf_duration, file_google_protobuf_timestamp]);
+  fileDesc("Ch9hY3RsZXQvZ2F0ZXdheS92MC9nYXRld2F5LnByb3RvEhFhY3RsZXQuZ2F0ZXdheS52MCKPAQoPUmVnaXN0ZXJSZXF1ZXN0EhgKEHByb3RvY29sX3ZlcnNpb24YASABKAkSEQoJd29ya2VyX2lkGAIgASgJEhIKCnNlc3Npb25faWQYAyABKAkSDQoFZXBvY2gYBCABKAQSFAoMY2FwYWJpbGl0aWVzGAUgAygJEhYKDmFjdGxldF92ZXJzaW9uGAYgASgJInoKEFJlZ2lzdGVyUmVzcG9uc2USEgoKc2Vzc2lvbl9pZBgBIAEoCRIrCgdwcm9maWxlGAIgASgLMhouYWN0bGV0LmdhdGV3YXkudjAuUHJvZmlsZRIlCgR0YXNrGAMgASgLMhcuYWN0bGV0LmdhdGV3YXkudjAuVGFzayK2BAoHUHJvZmlsZRIKCgJpZBgBIAEoCRIPCgd2ZXJzaW9uGAIgASgJEikKBmxpbWl0cxgDIAEoCzIZLmFjdGxldC5nYXRld2F5LnYwLkxpbWl0cxI4ChJkZWZhdWx0X3BhdXNlX21vZGUYBCABKA4yHC5hY3RsZXQuZ2F0ZXdheS52MC5QYXVzZU1vZGUSLQoKc3RvcF9ncmFjZRgFIAEoCzIZLmdvb2dsZS5wcm90b2J1Zi5EdXJhdGlvbhI8Cg1vbl9kaXNjb25uZWN0GAYgASgOMiUuYWN0bGV0LmdhdGV3YXkudjAuRGlzY29ubmVjdEJlaGF2aW9yEhkKEXJlcXVpcmVkX2ZlYXR1cmVzGAcgAygJEioKB2J1ZGdldHMYCCADKAsyGS5hY3RsZXQuZ2F0ZXdheS52MC5CdWRnZXQSLwoGbW9kZWxzGAkgASgLMh8uYWN0bGV0LmdhdGV3YXkudjAuTW9kZWxDYXRhbG9nEisKBXRvb2xzGAogAygLMhwuYWN0bGV0LmdhdGV3YXkudjAuVG9vbEdyYW50EhQKDGluc3RydWN0aW9ucxgLIAEoCRITCgtiYXNlX3Byb21wdBgMIAEoCRIWCg50b29sc19tYW5pZmVzdBgNIAEoCRIeChZjaGVja3BvaW50X2V2ZXJ5X3R1cm5zGA4gASgNEjQKDGxvY2FsX2F0dGFjaBgPIAEoCzIeLmFjdGxldC5nYXRld2F5LnYwLkxvY2FsQXR0YWNoIjEKC0xvY2FsQXR0YWNoEhAKCGNvbW1hbmRzGAEgAygJEhAKCGRpc2FibGVkGAIgASgIItsBCgZCdWRnZXQSKwoEa2luZBgBIAEoDjIdLmFjdGxldC5nYXRld2F5LnYwLkJ1ZGdldEtpbmQSDQoFbGltaXQYAiABKAESEAoIY3VycmVuY3kYAyABKAkSGAoQYWxlcnRfYXRfcGVyY2VudBgEIAEoDRIzCgpvbl9leGhhdXN0GAUgASgOMh8uYWN0bGV0LmdhdGV3YXkudjAuQnVkZ2V0QWN0aW9uEjQKCXdhaXRfbW9kZRgGIAEoDjIhLmFjdGxldC5nYXRld2F5LnYwLkJ1ZGdldFdhaXRNb2RlIrsBCgxNb2RlbENhdGFsb2cSLgoHYWxpYXNlcxgBIAMoCzIdLmFjdGxldC5nYXRld2F5LnYwLk1vZGVsQWxpYXMSOQoFcm9sZXMYAiADKAsyKi5hY3RsZXQuZ2F0ZXdheS52MC5Nb2RlbENhdGFsb2cuUm9sZXNFbnRyeRISCgpzZWxlY3RhYmxlGAMgAygJGiwKClJvbGVzRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASJeCgpNb2RlbEFsaWFzEg0KBWFsaWFzGAEgASgJEhMKC2Rlc2NyaXB0aW9uGAIgASgJEhQKDGNhcGFiaWxpdGllcxgDIAMoCRIWCg5jb250ZXh0X3dpbmRvdxgEIAEoBCKIAQoJVG9vbEdyYW50EgwKBG5hbWUYASABKAkSPAoIc2V0dGluZ3MYAiADKAsyKi5hY3RsZXQuZ2F0ZXdheS52MC5Ub29sR3JhbnQuU2V0dGluZ3NFbnRyeRovCg1TZXR0aW5nc0VudHJ5EgsKA2tleRgBIAEoCRINCgV2YWx1ZRgCIAEoCToCOAEibgoGTGltaXRzEhMKC21heF93b3JrZXJzGAEgASgNEhwKFG1heF90b29sX2NvbmN1cnJlbmN5GAIgASgNEhoKEm1heF9zdWJhZ2VudF9kZXB0aBgDIAEoDRIVCg1tYXhfc3ViYWdlbnRzGAQgASgNIlMKBFRhc2sSDgoGc2NoZW1hGAEgASgJEgoKAmlkGAIgASgJEgwKBGtpbmQYAyABKAkSEgoKZGVmaW5pdGlvbhgEIAEoDBINCgVpbnB1dBgFIAEoDCLQAQoJQ29udHJvbFVwEjAKBWhlbGxvGAEgASgLMh8uYWN0bGV0LmdhdGV3YXkudjAuQ29udHJvbEhlbGxvSAASLAoDYWNrGAIgASgLMh0uYWN0bGV0LmdhdGV3YXkudjAuQ29tbWFuZEFja0gAEisKBnN0YXR1cxgDIAEoCzIZLmFjdGxldC5nYXRld2F5LnYwLlN0YXR1c0gAEi8KBGZpbGUYBCABKAsyHy5hY3RsZXQuZ2F0ZXdheS52MC5GaWxlUmVzcG9uc2VIAEIFCgNtc2ciYQoMQ29udHJvbEhlbGxvEhIKCnNlc3Npb25faWQYASABKAkSDQoFZXBvY2gYAiABKAQSLgoFc3RhdGUYAyABKA4yHy5hY3RsZXQuZ2F0ZXdheS52MC5TZXNzaW9uU3RhdGUiqwEKC0NvbnRyb2xEb3duEi0KB2NvbW1hbmQYASABKAsyGi5hY3RsZXQuZ2F0ZXdheS52MC5Db21tYW5kSAASMQoJaGVhcnRiZWF0GAIgASgLMhwuYWN0bGV0LmdhdGV3YXkudjAuSGVhcnRiZWF0SAASMwoJcmVhZF9maWxlGAMgASgLMh4uYWN0bGV0LmdhdGV3YXkudjAuRmlsZVJlcXVlc3RIAEIFCgNtc2ciJwoLRmlsZVJlcXVlc3QSCgoCaWQYASABKAkSDAoEcGF0aBgCIAEoCSKNAQoMRmlsZVJlc3BvbnNlEgoKAmlkGAEgASgJEgwKBHBhdGgYAiABKAkSDwoHY29udGVudBgDIAEoDBIMCgRzaXplGAQgASgDEhEKCXRydW5jYXRlZBgFIAEoCBIOCgZiaW5hcnkYBiABKAgSEgoKZXJyb3JfY29kZRgHIAEoBRINCgVlcnJvchgIIAEoCSI1CglIZWFydGJlYXQSKAoEdGltZRgBIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAilAIKB0NvbW1hbmQSCgoCaWQYASABKAkSKQoGb3JpZ2luGAIgASgOMhkuYWN0bGV0LmdhdGV3YXkudjAuT3JpZ2luEg0KBWFjdG9yGAMgASgJEikKBXBhdXNlGAogASgLMhguYWN0bGV0LmdhdGV3YXkudjAuUGF1c2VIABInCgRzdG9wGAsgASgLMhcuYWN0bGV0LmdhdGV3YXkudjAuU3RvcEgAEikKBXN0ZWVyGAwgASgLMhguYWN0bGV0LmdhdGV3YXkudjAuU3RlZXJIABI6Cg5wcm9maWxlX3VwZGF0ZRgNIAEoCzIgLmFjdGxldC5nYXRld2F5LnYwLlByb2ZpbGVVcGRhdGVIAEIICgZhY3Rpb24iMwoFUGF1c2USKgoEbW9kZRgBIAEoDjIcLmFjdGxldC5nYXRld2F5LnYwLlBhdXNlTW9kZSI+CgRTdG9wEigKBWdyYWNlGAEgASgLMhkuZ29vZ2xlLnByb3RvYnVmLkR1cmF0aW9uEgwKBGtpbGwYAiABKAgiFQoFU3RlZXISDAoEbm90ZRgBIAEoCSKCAQoNUHJvZmlsZVVwZGF0ZRIrCgdwcm9maWxlGAEgASgLMhouYWN0bGV0LmdhdGV3YXkudjAuUHJvZmlsZRIOCgZmaWVsZHMYAiADKAkSNAoNcmVzZXRfYnVkZ2V0cxgDIAMoDjIdLmFjdGxldC5nYXRld2F5LnYwLkJ1ZGdldEtpbmQipgEKCkNvbW1hbmRBY2sSEgoKY29tbWFuZF9pZBgBIAEoCRIwCgZyZXN1bHQYAiABKA4yIC5hY3RsZXQuZ2F0ZXdheS52MC5Db21tYW5kUmVzdWx0Eg8KB21lc3NhZ2UYAyABKAkSEQoJZHVwbGljYXRlGAQgASgIEi4KBXN0YXRlGAUgASgOMh8uYWN0bGV0LmdhdGV3YXkudjAuU2Vzc2lvblN0YXRlImIKBlN0YXR1cxIuCgVzdGF0ZRgBIAEoDjIfLmFjdGxldC5nYXRld2F5LnYwLlNlc3Npb25TdGF0ZRIoCgR0aW1lGAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCJ5CgpBY3Rpdml0eVVwEjEKBWhlbGxvGAEgASgLMiAuYWN0bGV0LmdhdGV3YXkudjAuQWN0aXZpdHlIZWxsb0gAEjEKBWJhdGNoGAIgASgLMiAuYWN0bGV0LmdhdGV3YXkudjAuQWN0aXZpdHlCYXRjaEgAQgUKA21zZyIyCg1BY3Rpdml0eUhlbGxvEhIKCnNlc3Npb25faWQYASABKAkSDQoFZXBvY2gYAiABKAQiQQoNQWN0aXZpdHlCYXRjaBIwCgZldmVudHMYASADKAsyIC5hY3RsZXQuZ2F0ZXdheS52MC5BY3Rpdml0eUV2ZW50Ii8KC0FjdGl2aXR5QWNrEg0KBWVwb2NoGAEgASgEEhEKCWFja2VkX3NlcRgCIAEoBCLIBwoNQWN0aXZpdHlFdmVudBIKCgJpZBgBIAEoCRINCgVlcG9jaBgCIAEoBBILCgNzZXEYAyABKAQSKAoEdGltZRgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDgoGd29ya2VyGAUgASgJEjQKB3N0YXJ0ZWQYCiABKAsyIS5hY3RsZXQuZ2F0ZXdheS52MC5TZXNzaW9uU3RhcnRlZEgAEi8KBXN0YXRlGAsgASgLMh4uYWN0bGV0LmdhdGV3YXkudjAuU3RhdGVDaGFuZ2VIABI1Cgdjb21tYW5kGAwgASgLMiIuYWN0bGV0LmdhdGV3YXkudjAuQ29tbWFuZFJlY2VpdmVkSAASLQoFc3RlZXIYDSABKAsyHC5hY3RsZXQuZ2F0ZXdheS52MC5TdGVlck5vdGVIABInCgR0ZXh0GA4gASgLMhcuYWN0bGV0LmdhdGV3YXkudjAuVGV4dEgAEiUKA2dhcBgPIAEoCzIWLmFjdGxldC5nYXRld2F5LnYwLkdhcEgAEjIKCm1vZGVsX3R1cm4YECABKAsyHC5hY3RsZXQuZ2F0ZXdheS52MC5Nb2RlbFR1cm5IABI2Cgx0b29sX3N0YXJ0ZWQYESABKAsyHi5hY3RsZXQuZ2F0ZXdheS52MC5Ub29sU3RhcnRlZEgAEjgKDXRvb2xfZmluaXNoZWQYEiABKAsyHy5hY3RsZXQuZ2F0ZXdheS52MC5Ub29sRmluaXNoZWRIABI0CgtmaWxlX2NoYW5nZRgTIAEoCzIdLmFjdGxldC5nYXRld2F5LnYwLkZpbGVDaGFuZ2VIABI+ChBzdWJhZ2VudF9zcGF3bmVkGBQgASgLMiIuYWN0bGV0LmdhdGV3YXkudjAuU3ViYWdlbnRTcGF3bmVkSAASQAoRc3ViYWdlbnRfZmluaXNoZWQYFSABKAsyIy5hY3RsZXQuZ2F0ZXdheS52MC5TdWJhZ2VudEZpbmlzaGVkSAASNgoMc2Vzc2lvbl9pbmZvGBYgASgLMh4uYWN0bGV0LmdhdGV3YXkudjAuU2Vzc2lvbkluZm9IABIvCghwcm9ncmVzcxgXIAEoCzIbLmFjdGxldC5nYXRld2F5LnYwLlByb2dyZXNzSAASLwoIZmVlZGJhY2sYGCABKAsyGy5hY3RsZXQuZ2F0ZXdheS52MC5GZWVkYmFja0gAEjgKDWJ1ZGdldF9zdGF0dXMYGSABKAsyHy5hY3RsZXQuZ2F0ZXdheS52MC5CdWRnZXRTdGF0dXNIAEIGCgRib2R5IuECCgtTZXNzaW9uSW5mbxIPCgd0YXNrX2lkGAEgASgJEhEKCXRhc2tfa2luZBgCIAEoCRIMCgR0YXNrGAMgASgJEg4KBmNvbmZpZxgEIAEoCRIqCgdidWRnZXRzGAUgAygLMhkuYWN0bGV0LmdhdGV3YXkudjAuQnVkZ2V0Ei8KBm1vZGVscxgGIAEoCzIfLmFjdGxldC5nYXRld2F5LnYwLk1vZGVsQ2F0YWxvZxIqCgV0b29scxgHIAMoCzIbLmFjdGxldC5nYXRld2F5LnYwLlRvb2xJbmZvEiwKBmdyYW50cxgIIAMoCzIcLmFjdGxldC5nYXRld2F5LnYwLlRvb2xHcmFudBIWCg50b29sc19tYW5pZmVzdBgJIAEoCRIRCgl3b3JrZXJfaWQYCiABKAkSFgoOYWN0bGV0X3ZlcnNpb24YCyABKAkSFgoObG9jYWxfY29tbWFuZHMYDCADKAkiPQoIVG9vbEluZm8SDAoEbmFtZRgBIAEoCRIOCgZwb2xpY3kYAiABKAkSEwoLZGVzY3JpcHRpb24YAyABKAkiXQoOU2Vzc2lvblN0YXJ0ZWQSDQoFZXBvY2gYASABKAQSEgoKcHJvZmlsZV9pZBgCIAEoCRIXCg9wcm9maWxlX3ZlcnNpb24YAyABKAkSDwoHcmVzdW1lZBgEIAEoCCJ5CgtTdGF0ZUNoYW5nZRItCgRmcm9tGAEgASgOMh8uYWN0bGV0LmdhdGV3YXkudjAuU2Vzc2lvblN0YXRlEisKAnRvGAIgASgOMh8uYWN0bGV0LmdhdGV3YXkudjAuU2Vzc2lvblN0YXRlEg4KBnJlYXNvbhgDIAEoCSKBAQoPQ29tbWFuZFJlY2VpdmVkEisKB2NvbW1hbmQYASABKAsyGi5hY3RsZXQuZ2F0ZXdheS52MC5Db21tYW5kEjAKBnJlc3VsdBgCIAEoDjIgLmFjdGxldC5nYXRld2F5LnYwLkNvbW1hbmRSZXN1bHQSDwoHbWVzc2FnZRgDIAEoCSJTCglTdGVlck5vdGUSDAoEbm90ZRgBIAEoCRIpCgZvcmlnaW4YAiABKA4yGS5hY3RsZXQuZ2F0ZXdheS52MC5PcmlnaW4SDQoFYWN0b3IYAyABKAkiFAoEVGV4dBIMCgR0ZXh0GAEgASgJImsKA0dhcBIPCgdkcm9wcGVkGAEgASgEEikKBWZpcnN0GAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIoCgRsYXN0GAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKnAQoJTW9kZWxUdXJuEgwKBHR1cm4YASABKAQSDQoFbW9kZWwYAiABKAkSDAoEdGV4dBgDIAEoCRISCgp0b29sX2NhbGxzGAQgAygJEjIKC3N0b3BfcmVhc29uGAUgASgOMh0uYWN0bGV0LmdhdGV3YXkudjAuU3RvcFJlYXNvbhInCgV1c2FnZRgGIAEoCzIYLmFjdGxldC5nYXRld2F5LnYwLlVzYWdlIjsKC1Rvb2xTdGFydGVkEg8KB2NhbGxfaWQYASABKAkSDAoEdG9vbBgCIAEoCRINCgVpbnB1dBgDIAEoCSK6AQoMVG9vbEZpbmlzaGVkEg8KB2NhbGxfaWQYASABKAkSDAoEdG9vbBgCIAEoCRIQCghpc19lcnJvchgDIAEoCBIXCg9vdXRjb21lX3Vua25vd24YBCABKAgSDgoGb3V0cHV0GAUgASgJEicKBHRvb2sYBiABKAsyGS5nb29nbGUucHJvdG9idWYuRHVyYXRpb24SJwoFdXNhZ2UYByABKAsyGC5hY3RsZXQuZ2F0ZXdheS52MC5Vc2FnZSJKCgpGaWxlQ2hhbmdlEg8KB2NhbGxfaWQYASABKAkSDAoEcGF0aBgCIAEoCRIPCgdjcmVhdGVkGAMgASgIEgwKBGRpZmYYBCABKAkiTwoPU3ViYWdlbnRTcGF3bmVkEg4KBnBhcmVudBgBIAEoCRIMCgR0YXNrGAIgASgJEg0KBW1vZGVsGAMgASgJEg8KB2NhbGxfaWQYBCABKAkiQwoQU3ViYWdlbnRGaW5pc2hlZBIQCghpc19lcnJvchgBIAEoCBIOCgZyZXN1bHQYAiABKAkSDQoFdHVybnMYAyABKAQiPQoIUHJvZ3Jlc3MSDwoHbWVzc2FnZRgBIAEoCRIUCgdwZXJjZW50GAIgASgNSACIAQFCCgoIX3BlcmNlbnQiKQoIRmVlZGJhY2sSDAoEa2luZBgBIAEoCRIPCgdtZXNzYWdlGAIgASgJIk8KDEJ1ZGdldFN0YXR1cxIvCgdidWRnZXRzGAEgAygLMh4uYWN0bGV0LmdhdGV3YXkudjAuQnVkZ2V0VXNhZ2USDgoGcmVhc29uGAIgASgJIngKC0J1ZGdldFVzYWdlEisKBGtpbmQYASABKA4yHS5hY3RsZXQuZ2F0ZXdheS52MC5CdWRnZXRLaW5kEg0KBWxpbWl0GAIgASgBEgwKBHVzZWQYAyABKAESEAoIY3VycmVuY3kYBCABKAkSDQoFc3RhdGUYBSABKAkikwIKEEluZmVyZW5jZVJlcXVlc3QSEgoKc2Vzc2lvbl9pZBgBIAEoCRINCgVlcG9jaBgCIAEoBBIRCglpbnRlbnRfaWQYAyABKAkSDQoFbW9kZWwYBCABKAkSDgoGc3lzdGVtGAUgASgJEiwKCG1lc3NhZ2VzGAYgAygLMhouYWN0bGV0LmdhdGV3YXkudjAuTWVzc2FnZRIqCgV0b29scxgHIAMoCzIbLmFjdGxldC5nYXRld2F5LnYwLlRvb2xTcGVjEhQKDGNvbnRpbnVhdGlvbhgIIAEoDBIZChFtYXhfb3V0cHV0X3Rva2VucxgJIAEoDRIPCgdwdXJwb3NlGAogASgJEg4KBndvcmtlchgLIAEoCSJYCgdNZXNzYWdlEiUKBHJvbGUYASABKA4yFy5hY3RsZXQuZ2F0ZXdheS52MC5Sb2xlEiYKBXBhcnRzGAIgAygLMhcuYWN0bGV0LmdhdGV3YXkudjAuUGFydCKGAQoEUGFydBIOCgR0ZXh0GAEgASgJSAASMAoJdG9vbF9jYWxsGAIgASgLMhsuYWN0bGV0LmdhdGV3YXkudjAuVG9vbENhbGxIABI0Cgt0b29sX3Jlc3VsdBgDIAEoCzIdLmFjdGxldC5nYXRld2F5LnYwLlRvb2xSZXN1bHRIAEIGCgRwYXJ0IjMKCFRvb2xDYWxsEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSDQoFaW5wdXQYAyABKAkiQAoKVG9vbFJlc3VsdBIPCgdjYWxsX2lkGAEgASgJEg8KB2NvbnRlbnQYAiABKAkSEAoIaXNfZXJyb3IYAyABKAgiQwoIVG9vbFNwZWMSDAoEbmFtZRgBIAEoCRITCgtkZXNjcmlwdGlvbhgCIAEoCRIUCgxpbnB1dF9zY2hlbWEYAyABKAkilAEKEUluZmVyZW5jZVJlc3BvbnNlEhQKCnRleHRfZGVsdGEYASABKAlIABIwCgl0b29sX2NhbGwYAiABKAsyGy5hY3RsZXQuZ2F0ZXdheS52MC5Ub29sQ2FsbEgAEjAKBGRvbmUYAyABKAsyIC5hY3RsZXQuZ2F0ZXdheS52MC5JbmZlcmVuY2VEb25lSABCBQoDbXNnIpQBCg1JbmZlcmVuY2VEb25lEjIKC3N0b3BfcmVhc29uGAEgASgOMh0uYWN0bGV0LmdhdGV3YXkudjAuU3RvcFJlYXNvbhInCgV1c2FnZRgCIAEoCzIYLmFjdGxldC5nYXRld2F5LnYwLlVzYWdlEhQKDGNvbnRpbnVhdGlvbhgDIAEoDBIQCghyZXBsYXllZBgEIAEoCCKLAQoFVXNhZ2USFAoMaW5wdXRfdG9rZW5zGAEgASgEEhUKDW91dHB1dF90b2tlbnMYAiABKAQSGQoRY2FjaGVfcmVhZF90b2tlbnMYAyABKAQSGgoSY2FjaGVfd3JpdGVfdG9rZW5zGAQgASgEEgwKBGNvc3QYBSABKAESEAoIY3VycmVuY3kYBiABKAkidAoPVG9vbENhbGxSZXF1ZXN0EhIKCnNlc3Npb25faWQYASABKAkSDQoFZXBvY2gYAiABKAQSEQoJaW50ZW50X2lkGAMgASgJEg4KBndvcmtlchgEIAEoCRIMCgR0b29sGAUgASgJEg0KBWlucHV0GAYgASgJIm8KEFRvb2xDYWxsUmVzcG9uc2USDgoGb3V0cHV0GAEgASgJEhAKCGlzX2Vycm9yGAIgASgIEicKBXVzYWdlGAMgASgLMhguYWN0bGV0LmdhdGV3YXkudjAuVXNhZ2USEAoIcmVwbGF5ZWQYBCABKAgqhAEKCkJ1ZGdldEtpbmQSGwoXQlVER0VUX0tJTkRfVU5TUEVDSUZJRUQQABIUChBCVURHRVRfS0lORF9USU1FEAESFQoRQlVER0VUX0tJTkRfTU9ORVkQAhIWChJCVURHRVRfS0lORF9UT0tFTlMQAxIUChBCVURHRVRfS0lORF9ESVNLEAQqXQoMQnVkZ2V0QWN0aW9uEh0KGUJVREdFVF9BQ1RJT05fVU5TUEVDSUZJRUQQABIWChJCVURHRVRfQUNUSU9OX0tJTEwQARIWChJCVURHRVRfQUNUSU9OX1dBSVQQAippCg5CdWRnZXRXYWl0TW9kZRIgChxCVURHRVRfV0FJVF9NT0RFX1VOU1BFQ0lGSUVEEAASGgoWQlVER0VUX1dBSVRfTU9ERV9QQVVTRRABEhkKFUJVREdFVF9XQUlUX01PREVfSURMRRACKmEKEkRpc2Nvbm5lY3RCZWhhdmlvchIjCh9ESVNDT05ORUNUX0JFSEFWSU9SX1VOU1BFQ0lGSUVEEAASJgoiRElTQ09OTkVDVF9CRUhBVklPUl9DT05USU5VRV9MT0NBTBABKl4KBk9yaWdpbhIWChJPUklHSU5fVU5TUEVDSUZJRUQQABIXChNPUklHSU5fT1JDSEVTVFJBVE9SEAESEAoMT1JJR0lOX0xPQ0FMEAISEQoNT1JJR0lOX1JFTU9URRADKlcKCVBhdXNlTW9kZRIaChZQQVVTRV9NT0RFX1VOU1BFQ0lGSUVEEAASFAoQUEFVU0VfTU9ERV9EUkFJThABEhgKFFBBVVNFX01PREVfSU5URVJSVVBUEAIqaQoNQ29tbWFuZFJlc3VsdBIeChpDT01NQU5EX1JFU1VMVF9VTlNQRUNJRklFRBAAEhsKF0NPTU1BTkRfUkVTVUxUX0FDQ0VQVEVEEAESGwoXQ09NTUFORF9SRVNVTFRfUkVKRUNURUQQAirrAQoMU2Vzc2lvblN0YXRlEh0KGVNFU1NJT05fU1RBVEVfVU5TUEVDSUZJRUQQABIZChVTRVNTSU9OX1NUQVRFX1JVTk5JTkcQARIZChVTRVNTSU9OX1NUQVRFX1BBVVNJTkcQAhIaChZTRVNTSU9OX1NUQVRFX1NUT1BQSU5HEAMSGAoUU0VTU0lPTl9TVEFURV9QQVVTRUQQBBIZChVTRVNTSU9OX1NUQVRFX1NUT1BQRUQQBRIbChdTRVNTSU9OX1NUQVRFX0NPTVBMRVRFRBAGEhgKFFNFU1NJT05fU1RBVEVfRkFJTEVEEAcqPwoEUm9sZRIUChBST0xFX1VOU1BFQ0lGSUVEEAASDQoJUk9MRV9VU0VSEAESEgoOUk9MRV9BU1NJU1RBTlQQAiqSAQoKU3RvcFJlYXNvbhIbChdTVE9QX1JFQVNPTl9VTlNQRUNJRklFRBAAEhgKFFNUT1BfUkVBU09OX0VORF9UVVJOEAESGAoUU1RPUF9SRUFTT05fVE9PTF9VU0UQAhIaChZTVE9QX1JFQVNPTl9NQVhfVE9LRU5TEAMSFwoTU1RPUF9SRUFTT05fUkVGVVNBTBAEMqwDCgdHYXRld2F5ElMKCFJlZ2lzdGVyEiIuYWN0bGV0LmdhdGV3YXkudjAuUmVnaXN0ZXJSZXF1ZXN0GiMuYWN0bGV0LmdhdGV3YXkudjAuUmVnaXN0ZXJSZXNwb25zZRJLCgdDb250cm9sEhwuYWN0bGV0LmdhdGV3YXkudjAuQ29udHJvbFVwGh4uYWN0bGV0LmdhdGV3YXkudjAuQ29udHJvbERvd24oATABElQKD1B1Ymxpc2hBY3Rpdml0eRIdLmFjdGxldC5nYXRld2F5LnYwLkFjdGl2aXR5VXAaHi5hY3RsZXQuZ2F0ZXdheS52MC5BY3Rpdml0eUFjaygBMAESVAoFSW5mZXISIy5hY3RsZXQuZ2F0ZXdheS52MC5JbmZlcmVuY2VSZXF1ZXN0GiQuYWN0bGV0LmdhdGV3YXkudjAuSW5mZXJlbmNlUmVzcG9uc2UwARJTCghDYWxsVG9vbBIiLmFjdGxldC5nYXRld2F5LnYwLlRvb2xDYWxsUmVxdWVzdBojLmFjdGxldC5nYXRld2F5LnYwLlRvb2xDYWxsUmVzcG9uc2VCPFo6Z2l0aHViLmNvbS9hY3RsZXQvYWN0bGV0L3Byb3RvL2FjdGxldC9nYXRld2F5L3YwO2dhdGV3YXl2MGIGcHJvdG8z", [file_google_protobuf_duration, file_google_protobuf_timestamp]);
 
 /**
  * @generated from message actlet.gateway.v0.RegisterRequest
@@ -230,7 +230,6 @@ export type Profile = Message$1<"actlet.gateway.v0.Profile"> & {
 
   /**
    * Budgets limit the session's use of time, money, tokens and disk.
-   * Not enforced by v0 workers yet.
    *
    * @generated from field: repeated actlet.gateway.v0.Budget budgets = 8;
    */
@@ -245,8 +244,10 @@ export type Profile = Message$1<"actlet.gateway.v0.Profile"> & {
   models?: ModelCatalog | undefined;
 
   /**
-   * The local tools the session may use, with their settings. Empty
-   * allows all of them with default settings.
+   * The tools the session may use, with their settings. Empty allows all
+   * the local tools with default settings. The standard tools
+   * (report_progress, send_feedback, budget_status, decide and llm) are
+   * offered only when granted by name.
    *
    * @generated from field: repeated actlet.gateway.v0.ToolGrant tools = 10;
    */
@@ -345,7 +346,6 @@ export type ProfileJson = {
 
   /**
    * Budgets limit the session's use of time, money, tokens and disk.
-   * Not enforced by v0 workers yet.
    *
    * @generated from field: repeated actlet.gateway.v0.Budget budgets = 8;
    */
@@ -360,8 +360,10 @@ export type ProfileJson = {
   models?: ModelCatalogJson;
 
   /**
-   * The local tools the session may use, with their settings. Empty
-   * allows all of them with default settings.
+   * The tools the session may use, with their settings. Empty allows all
+   * the local tools with default settings. The standard tools
+   * (report_progress, send_feedback, budget_status, decide and llm) are
+   * offered only when granted by name.
    *
    * @generated from field: repeated actlet.gateway.v0.ToolGrant tools = 10;
    */
@@ -468,6 +470,11 @@ export const LocalAttachSchema: GenMessage<LocalAttach, {jsonType: LocalAttachJs
   messageDesc(file_actlet_gateway_v0_gateway, 3);
 
 /**
+ * Budget limits the session's use of one resource, over all its runs:
+ * TIME counts active run time, MONEY the cost the gateway reports with
+ * model and bridged tool calls, TOKENS the models' input and output
+ * tokens, and DISK the session folder's size.
+ *
  * @generated from message actlet.gateway.v0.Budget
  */
 export type Budget = Message$1<"actlet.gateway.v0.Budget"> & {
@@ -514,6 +521,11 @@ export type Budget = Message$1<"actlet.gateway.v0.Budget"> & {
 };
 
 /**
+ * Budget limits the session's use of one resource, over all its runs:
+ * TIME counts active run time, MONEY the cost the gateway reports with
+ * model and bridged tool calls, TOKENS the models' input and output
+ * tokens, and DISK the session folder's size.
+ *
  * @generated from message actlet.gateway.v0.Budget
  */
 export type BudgetJson = {
@@ -1324,6 +1336,12 @@ export type Command = Message$1<"actlet.gateway.v0.Command"> & {
      */
     value: Steer;
     case: "steer";
+  } | {
+    /**
+     * @generated from field: actlet.gateway.v0.ProfileUpdate profile_update = 13;
+     */
+    value: ProfileUpdate;
+    case: "profileUpdate";
   } | { case: undefined; value?: undefined };
 };
 
@@ -1368,6 +1386,11 @@ export type CommandJson = {
    * @generated from field: actlet.gateway.v0.Steer steer = 12;
    */
   steer?: SteerJson;
+
+  /**
+   * @generated from field: actlet.gateway.v0.ProfileUpdate profile_update = 13;
+   */
+  profileUpdate?: ProfileUpdateJson;
 };
 
 /**
@@ -1499,6 +1522,79 @@ export const SteerSchema: GenMessage<Steer, {jsonType: SteerJson}> = /*@__PURE__
   messageDesc(file_actlet_gateway_v0_gateway, 19);
 
 /**
+ * ProfileUpdate changes some of the profile's fields mid-session. Only
+ * these may change: limits.max_workers, limits.max_tool_concurrency,
+ * limits.max_subagents, budgets and local_attach. A command naming any
+ * other field is rejected as a whole. The worker records the new
+ * configuration before it takes effect.
+ *
+ * @generated from message actlet.gateway.v0.ProfileUpdate
+ */
+export type ProfileUpdate = Message$1<"actlet.gateway.v0.ProfileUpdate"> & {
+  /**
+   * The new values, in a profile; only the fields named are read.
+   *
+   * @generated from field: actlet.gateway.v0.Profile profile = 1;
+   */
+  profile?: Profile | undefined;
+
+  /**
+   * The fields to change, such as "limits.max_workers" or "budgets".
+   *
+   * @generated from field: repeated string fields = 2;
+   */
+  fields: string[];
+
+  /**
+   * Budgets whose usage starts again from zero, such as at the start of a
+   * new billing period.
+   *
+   * @generated from field: repeated actlet.gateway.v0.BudgetKind reset_budgets = 3;
+   */
+  resetBudgets: BudgetKind[];
+};
+
+/**
+ * ProfileUpdate changes some of the profile's fields mid-session. Only
+ * these may change: limits.max_workers, limits.max_tool_concurrency,
+ * limits.max_subagents, budgets and local_attach. A command naming any
+ * other field is rejected as a whole. The worker records the new
+ * configuration before it takes effect.
+ *
+ * @generated from message actlet.gateway.v0.ProfileUpdate
+ */
+export type ProfileUpdateJson = {
+  /**
+   * The new values, in a profile; only the fields named are read.
+   *
+   * @generated from field: actlet.gateway.v0.Profile profile = 1;
+   */
+  profile?: ProfileJson;
+
+  /**
+   * The fields to change, such as "limits.max_workers" or "budgets".
+   *
+   * @generated from field: repeated string fields = 2;
+   */
+  fields?: string[];
+
+  /**
+   * Budgets whose usage starts again from zero, such as at the start of a
+   * new billing period.
+   *
+   * @generated from field: repeated actlet.gateway.v0.BudgetKind reset_budgets = 3;
+   */
+  resetBudgets?: BudgetKindJson[];
+};
+
+/**
+ * Describes the message actlet.gateway.v0.ProfileUpdate.
+ * Use `create(ProfileUpdateSchema)` to create a new message.
+ */
+export const ProfileUpdateSchema: GenMessage<ProfileUpdate, {jsonType: ProfileUpdateJson}> = /*@__PURE__*/
+  messageDesc(file_actlet_gateway_v0_gateway, 20);
+
+/**
  * @generated from message actlet.gateway.v0.CommandAck
  */
 export type CommandAck = Message$1<"actlet.gateway.v0.CommandAck"> & {
@@ -1571,7 +1667,7 @@ export type CommandAckJson = {
  * Use `create(CommandAckSchema)` to create a new message.
  */
 export const CommandAckSchema: GenMessage<CommandAck, {jsonType: CommandAckJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 20);
+  messageDesc(file_actlet_gateway_v0_gateway, 21);
 
 /**
  * @generated from message actlet.gateway.v0.Status
@@ -1608,7 +1704,7 @@ export type StatusJson = {
  * Use `create(StatusSchema)` to create a new message.
  */
 export const StatusSchema: GenMessage<Status, {jsonType: StatusJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 21);
+  messageDesc(file_actlet_gateway_v0_gateway, 22);
 
 /**
  * @generated from message actlet.gateway.v0.ActivityUp
@@ -1652,7 +1748,7 @@ export type ActivityUpJson = {
  * Use `create(ActivityUpSchema)` to create a new message.
  */
 export const ActivityUpSchema: GenMessage<ActivityUp, {jsonType: ActivityUpJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 22);
+  messageDesc(file_actlet_gateway_v0_gateway, 23);
 
 /**
  * @generated from message actlet.gateway.v0.ActivityHello
@@ -1693,7 +1789,7 @@ export type ActivityHelloJson = {
  * Use `create(ActivityHelloSchema)` to create a new message.
  */
 export const ActivityHelloSchema: GenMessage<ActivityHello, {jsonType: ActivityHelloJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 23);
+  messageDesc(file_actlet_gateway_v0_gateway, 24);
 
 /**
  * @generated from message actlet.gateway.v0.ActivityBatch
@@ -1724,7 +1820,7 @@ export type ActivityBatchJson = {
  * Use `create(ActivityBatchSchema)` to create a new message.
  */
 export const ActivityBatchSchema: GenMessage<ActivityBatch, {jsonType: ActivityBatchJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 24);
+  messageDesc(file_actlet_gateway_v0_gateway, 25);
 
 /**
  * ActivityAck reports the highest sequence number up to which the gateway
@@ -1767,7 +1863,7 @@ export type ActivityAckJson = {
  * Use `create(ActivityAckSchema)` to create a new message.
  */
 export const ActivityAckSchema: GenMessage<ActivityAck, {jsonType: ActivityAckJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 25);
+  messageDesc(file_actlet_gateway_v0_gateway, 26);
 
 /**
  * ActivityEvent is one semantic event. Sequence numbers start at 1 in each
@@ -1889,6 +1985,24 @@ export type ActivityEvent = Message$1<"actlet.gateway.v0.ActivityEvent"> & {
      */
     value: SessionInfo;
     case: "sessionInfo";
+  } | {
+    /**
+     * @generated from field: actlet.gateway.v0.Progress progress = 23;
+     */
+    value: Progress;
+    case: "progress";
+  } | {
+    /**
+     * @generated from field: actlet.gateway.v0.Feedback feedback = 24;
+     */
+    value: Feedback;
+    case: "feedback";
+  } | {
+    /**
+     * @generated from field: actlet.gateway.v0.BudgetStatus budget_status = 25;
+     */
+    value: BudgetStatus;
+    case: "budgetStatus";
   } | { case: undefined; value?: undefined };
 };
 
@@ -1995,6 +2109,21 @@ export type ActivityEventJson = {
    * @generated from field: actlet.gateway.v0.SessionInfo session_info = 22;
    */
   sessionInfo?: SessionInfoJson;
+
+  /**
+   * @generated from field: actlet.gateway.v0.Progress progress = 23;
+   */
+  progress?: ProgressJson;
+
+  /**
+   * @generated from field: actlet.gateway.v0.Feedback feedback = 24;
+   */
+  feedback?: FeedbackJson;
+
+  /**
+   * @generated from field: actlet.gateway.v0.BudgetStatus budget_status = 25;
+   */
+  budgetStatus?: BudgetStatusJson;
 };
 
 /**
@@ -2002,7 +2131,7 @@ export type ActivityEventJson = {
  * Use `create(ActivityEventSchema)` to create a new message.
  */
 export const ActivityEventSchema: GenMessage<ActivityEvent, {jsonType: ActivityEventJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 26);
+  messageDesc(file_actlet_gateway_v0_gateway, 27);
 
 /**
  * SessionInfo describes a run once, at its start, for viewers: its task,
@@ -2165,7 +2294,7 @@ export type SessionInfoJson = {
  * Use `create(SessionInfoSchema)` to create a new message.
  */
 export const SessionInfoSchema: GenMessage<SessionInfo, {jsonType: SessionInfoJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 27);
+  messageDesc(file_actlet_gateway_v0_gateway, 28);
 
 /**
  * @generated from message actlet.gateway.v0.ToolInfo
@@ -2218,7 +2347,7 @@ export type ToolInfoJson = {
  * Use `create(ToolInfoSchema)` to create a new message.
  */
 export const ToolInfoSchema: GenMessage<ToolInfo, {jsonType: ToolInfoJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 28);
+  messageDesc(file_actlet_gateway_v0_gateway, 29);
 
 /**
  * @generated from message actlet.gateway.v0.SessionStarted
@@ -2279,7 +2408,7 @@ export type SessionStartedJson = {
  * Use `create(SessionStartedSchema)` to create a new message.
  */
 export const SessionStartedSchema: GenMessage<SessionStarted, {jsonType: SessionStartedJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 29);
+  messageDesc(file_actlet_gateway_v0_gateway, 30);
 
 /**
  * @generated from message actlet.gateway.v0.StateChange
@@ -2326,7 +2455,7 @@ export type StateChangeJson = {
  * Use `create(StateChangeSchema)` to create a new message.
  */
 export const StateChangeSchema: GenMessage<StateChange, {jsonType: StateChangeJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 30);
+  messageDesc(file_actlet_gateway_v0_gateway, 31);
 
 /**
  * @generated from message actlet.gateway.v0.CommandReceived
@@ -2373,7 +2502,7 @@ export type CommandReceivedJson = {
  * Use `create(CommandReceivedSchema)` to create a new message.
  */
 export const CommandReceivedSchema: GenMessage<CommandReceived, {jsonType: CommandReceivedJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 31);
+  messageDesc(file_actlet_gateway_v0_gateway, 32);
 
 /**
  * @generated from message actlet.gateway.v0.SteerNote
@@ -2420,7 +2549,7 @@ export type SteerNoteJson = {
  * Use `create(SteerNoteSchema)` to create a new message.
  */
 export const SteerNoteSchema: GenMessage<SteerNote, {jsonType: SteerNoteJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 32);
+  messageDesc(file_actlet_gateway_v0_gateway, 33);
 
 /**
  * Text is a display-only line of output.
@@ -2451,7 +2580,7 @@ export type TextJson = {
  * Use `create(TextSchema)` to create a new message.
  */
 export const TextSchema: GenMessage<Text, {jsonType: TextJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 33);
+  messageDesc(file_actlet_gateway_v0_gateway, 34);
 
 /**
  * Gap marks events the worker dropped because its local buffers were full.
@@ -2502,7 +2631,7 @@ export type GapJson = {
  * Use `create(GapSchema)` to create a new message.
  */
 export const GapSchema: GenMessage<Gap, {jsonType: GapJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 34);
+  messageDesc(file_actlet_gateway_v0_gateway, 35);
 
 /**
  * ModelTurn is one completed model call of the agent.
@@ -2591,7 +2720,7 @@ export type ModelTurnJson = {
  * Use `create(ModelTurnSchema)` to create a new message.
  */
 export const ModelTurnSchema: GenMessage<ModelTurn, {jsonType: ModelTurnJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 35);
+  messageDesc(file_actlet_gateway_v0_gateway, 36);
 
 /**
  * ToolStarted is a tool call the agent is starting.
@@ -2646,7 +2775,7 @@ export type ToolStartedJson = {
  * Use `create(ToolStartedSchema)` to create a new message.
  */
 export const ToolStartedSchema: GenMessage<ToolStarted, {jsonType: ToolStartedJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 36);
+  messageDesc(file_actlet_gateway_v0_gateway, 37);
 
 /**
  * ToolFinished is the result of a tool call.
@@ -2687,6 +2816,13 @@ export type ToolFinished = Message$1<"actlet.gateway.v0.ToolFinished"> & {
    * @generated from field: google.protobuf.Duration took = 6;
    */
   took?: Duration | undefined;
+
+  /**
+   * What a call through the gateway used, such as an llm call.
+   *
+   * @generated from field: actlet.gateway.v0.Usage usage = 7;
+   */
+  usage?: Usage | undefined;
 };
 
 /**
@@ -2728,6 +2864,13 @@ export type ToolFinishedJson = {
    * @generated from field: google.protobuf.Duration took = 6;
    */
   took?: DurationJson;
+
+  /**
+   * What a call through the gateway used, such as an llm call.
+   *
+   * @generated from field: actlet.gateway.v0.Usage usage = 7;
+   */
+  usage?: UsageJson;
 };
 
 /**
@@ -2735,7 +2878,7 @@ export type ToolFinishedJson = {
  * Use `create(ToolFinishedSchema)` to create a new message.
  */
 export const ToolFinishedSchema: GenMessage<ToolFinished, {jsonType: ToolFinishedJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 37);
+  messageDesc(file_actlet_gateway_v0_gateway, 38);
 
 /**
  * FileChange is a file a tool changed.
@@ -2804,7 +2947,7 @@ export type FileChangeJson = {
  * Use `create(FileChangeSchema)` to create a new message.
  */
 export const FileChangeSchema: GenMessage<FileChange, {jsonType: FileChangeJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 38);
+  messageDesc(file_actlet_gateway_v0_gateway, 39);
 
 /**
  * SubagentSpawned is a subagent starting; the event's worker is the new
@@ -2875,7 +3018,7 @@ export type SubagentSpawnedJson = {
  * Use `create(SubagentSpawnedSchema)` to create a new message.
  */
 export const SubagentSpawnedSchema: GenMessage<SubagentSpawned, {jsonType: SubagentSpawnedJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 39);
+  messageDesc(file_actlet_gateway_v0_gateway, 40);
 
 /**
  * SubagentFinished is a subagent ending; its result goes back to its
@@ -2932,7 +3075,223 @@ export type SubagentFinishedJson = {
  * Use `create(SubagentFinishedSchema)` to create a new message.
  */
 export const SubagentFinishedSchema: GenMessage<SubagentFinished, {jsonType: SubagentFinishedJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 40);
+  messageDesc(file_actlet_gateway_v0_gateway, 41);
+
+/**
+ * Progress is the agent reporting how its task is going, with the
+ * report_progress tool.
+ *
+ * @generated from message actlet.gateway.v0.Progress
+ */
+export type Progress = Message$1<"actlet.gateway.v0.Progress"> & {
+  /**
+   * @generated from field: string message = 1;
+   */
+  message: string;
+
+  /**
+   * How far along it is, from 0 to 100; unset when it doesn't say.
+   *
+   * @generated from field: optional uint32 percent = 2;
+   */
+  percent?: number | undefined;
+};
+
+/**
+ * Progress is the agent reporting how its task is going, with the
+ * report_progress tool.
+ *
+ * @generated from message actlet.gateway.v0.Progress
+ */
+export type ProgressJson = {
+  /**
+   * @generated from field: string message = 1;
+   */
+  message?: string;
+
+  /**
+   * How far along it is, from 0 to 100; unset when it doesn't say.
+   *
+   * @generated from field: optional uint32 percent = 2;
+   */
+  percent?: number;
+};
+
+/**
+ * Describes the message actlet.gateway.v0.Progress.
+ * Use `create(ProgressSchema)` to create a new message.
+ */
+export const ProgressSchema: GenMessage<Progress, {jsonType: ProgressJson}> = /*@__PURE__*/
+  messageDesc(file_actlet_gateway_v0_gateway, 42);
+
+/**
+ * Feedback is the agent telling the orchestrator something about the
+ * task or its setup, with the send_feedback tool.
+ *
+ * @generated from message actlet.gateway.v0.Feedback
+ */
+export type Feedback = Message$1<"actlet.gateway.v0.Feedback"> & {
+  /**
+   * "problem", "suggestion", "question" or "other".
+   *
+   * @generated from field: string kind = 1;
+   */
+  kind: string;
+
+  /**
+   * @generated from field: string message = 2;
+   */
+  message: string;
+};
+
+/**
+ * Feedback is the agent telling the orchestrator something about the
+ * task or its setup, with the send_feedback tool.
+ *
+ * @generated from message actlet.gateway.v0.Feedback
+ */
+export type FeedbackJson = {
+  /**
+   * "problem", "suggestion", "question" or "other".
+   *
+   * @generated from field: string kind = 1;
+   */
+  kind?: string;
+
+  /**
+   * @generated from field: string message = 2;
+   */
+  message?: string;
+};
+
+/**
+ * Describes the message actlet.gateway.v0.Feedback.
+ * Use `create(FeedbackSchema)` to create a new message.
+ */
+export const FeedbackSchema: GenMessage<Feedback, {jsonType: FeedbackJson}> = /*@__PURE__*/
+  messageDesc(file_actlet_gateway_v0_gateway, 43);
+
+/**
+ * BudgetStatus reports the session's budgets: at the start of a run, when
+ * a budget reaches its alert threshold or its limit, and when a limit
+ * changes or a budget is reset.
+ *
+ * @generated from message actlet.gateway.v0.BudgetStatus
+ */
+export type BudgetStatus = Message$1<"actlet.gateway.v0.BudgetStatus"> & {
+  /**
+   * @generated from field: repeated actlet.gateway.v0.BudgetUsage budgets = 1;
+   */
+  budgets: BudgetUsage[];
+
+  /**
+   * Why it was sent: "start", "alert", "exhausted", "update" or "reset".
+   *
+   * @generated from field: string reason = 2;
+   */
+  reason: string;
+};
+
+/**
+ * BudgetStatus reports the session's budgets: at the start of a run, when
+ * a budget reaches its alert threshold or its limit, and when a limit
+ * changes or a budget is reset.
+ *
+ * @generated from message actlet.gateway.v0.BudgetStatus
+ */
+export type BudgetStatusJson = {
+  /**
+   * @generated from field: repeated actlet.gateway.v0.BudgetUsage budgets = 1;
+   */
+  budgets?: BudgetUsageJson[];
+
+  /**
+   * Why it was sent: "start", "alert", "exhausted", "update" or "reset".
+   *
+   * @generated from field: string reason = 2;
+   */
+  reason?: string;
+};
+
+/**
+ * Describes the message actlet.gateway.v0.BudgetStatus.
+ * Use `create(BudgetStatusSchema)` to create a new message.
+ */
+export const BudgetStatusSchema: GenMessage<BudgetStatus, {jsonType: BudgetStatusJson}> = /*@__PURE__*/
+  messageDesc(file_actlet_gateway_v0_gateway, 44);
+
+/**
+ * @generated from message actlet.gateway.v0.BudgetUsage
+ */
+export type BudgetUsage = Message$1<"actlet.gateway.v0.BudgetUsage"> & {
+  /**
+   * @generated from field: actlet.gateway.v0.BudgetKind kind = 1;
+   */
+  kind: BudgetKind;
+
+  /**
+   * @generated from field: double limit = 2;
+   */
+  limit: number;
+
+  /**
+   * @generated from field: double used = 3;
+   */
+  used: number;
+
+  /**
+   * @generated from field: string currency = 4;
+   */
+  currency: string;
+
+  /**
+   * "ok", "alerted" (past the alert threshold), "exhausted", or
+   * "waiting" (exhausted, and work waits for the budget to be raised).
+   *
+   * @generated from field: string state = 5;
+   */
+  state: string;
+};
+
+/**
+ * @generated from message actlet.gateway.v0.BudgetUsage
+ */
+export type BudgetUsageJson = {
+  /**
+   * @generated from field: actlet.gateway.v0.BudgetKind kind = 1;
+   */
+  kind?: BudgetKindJson;
+
+  /**
+   * @generated from field: double limit = 2;
+   */
+  limit?: number | "NaN" | "Infinity" | "-Infinity";
+
+  /**
+   * @generated from field: double used = 3;
+   */
+  used?: number | "NaN" | "Infinity" | "-Infinity";
+
+  /**
+   * @generated from field: string currency = 4;
+   */
+  currency?: string;
+
+  /**
+   * "ok", "alerted" (past the alert threshold), "exhausted", or
+   * "waiting" (exhausted, and work waits for the budget to be raised).
+   *
+   * @generated from field: string state = 5;
+   */
+  state?: string;
+};
+
+/**
+ * Describes the message actlet.gateway.v0.BudgetUsage.
+ * Use `create(BudgetUsageSchema)` to create a new message.
+ */
+export const BudgetUsageSchema: GenMessage<BudgetUsage, {jsonType: BudgetUsageJson}> = /*@__PURE__*/
+  messageDesc(file_actlet_gateway_v0_gateway, 45);
 
 /**
  * InferenceRequest is one model call. The conversation is provider
@@ -2998,6 +3357,21 @@ export type InferenceRequest = Message$1<"actlet.gateway.v0.InferenceRequest"> &
    * @generated from field: uint32 max_output_tokens = 9;
    */
   maxOutputTokens: number;
+
+  /**
+   * Why the model is called: "agent" for a worker's turn, "llm" for the
+   * agent's llm tool, a one-off call with no tools.
+   *
+   * @generated from field: string purpose = 10;
+   */
+  purpose: string;
+
+  /**
+   * The worker making the call: "root", "root.1", and so on.
+   *
+   * @generated from field: string worker = 11;
+   */
+  worker: string;
 };
 
 /**
@@ -3064,6 +3438,21 @@ export type InferenceRequestJson = {
    * @generated from field: uint32 max_output_tokens = 9;
    */
   maxOutputTokens?: number;
+
+  /**
+   * Why the model is called: "agent" for a worker's turn, "llm" for the
+   * agent's llm tool, a one-off call with no tools.
+   *
+   * @generated from field: string purpose = 10;
+   */
+  purpose?: string;
+
+  /**
+   * The worker making the call: "root", "root.1", and so on.
+   *
+   * @generated from field: string worker = 11;
+   */
+  worker?: string;
 };
 
 /**
@@ -3071,7 +3460,7 @@ export type InferenceRequestJson = {
  * Use `create(InferenceRequestSchema)` to create a new message.
  */
 export const InferenceRequestSchema: GenMessage<InferenceRequest, {jsonType: InferenceRequestJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 41);
+  messageDesc(file_actlet_gateway_v0_gateway, 46);
 
 /**
  * @generated from message actlet.gateway.v0.Message
@@ -3108,7 +3497,7 @@ export type MessageJson = {
  * Use `create(MessageSchema)` to create a new message.
  */
 export const MessageSchema: GenMessage<Message, {jsonType: MessageJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 42);
+  messageDesc(file_actlet_gateway_v0_gateway, 47);
 
 /**
  * @generated from message actlet.gateway.v0.Part
@@ -3163,7 +3552,7 @@ export type PartJson = {
  * Use `create(PartSchema)` to create a new message.
  */
 export const PartSchema: GenMessage<Part, {jsonType: PartJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 43);
+  messageDesc(file_actlet_gateway_v0_gateway, 48);
 
 /**
  * ToolCall is the model asking to run a tool.
@@ -3222,7 +3611,7 @@ export type ToolCallJson = {
  * Use `create(ToolCallSchema)` to create a new message.
  */
 export const ToolCallSchema: GenMessage<ToolCall, {jsonType: ToolCallJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 44);
+  messageDesc(file_actlet_gateway_v0_gateway, 49);
 
 /**
  * ToolResult answers a ToolCall, in a user message.
@@ -3273,7 +3662,7 @@ export type ToolResultJson = {
  * Use `create(ToolResultSchema)` to create a new message.
  */
 export const ToolResultSchema: GenMessage<ToolResult, {jsonType: ToolResultJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 45);
+  messageDesc(file_actlet_gateway_v0_gateway, 50);
 
 /**
  * ToolSpec describes a tool the model may call.
@@ -3328,7 +3717,7 @@ export type ToolSpecJson = {
  * Use `create(ToolSpecSchema)` to create a new message.
  */
 export const ToolSpecSchema: GenMessage<ToolSpec, {jsonType: ToolSpecJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 46);
+  messageDesc(file_actlet_gateway_v0_gateway, 51);
 
 /**
  * InferenceResponse streams the answer: text deltas and complete tool
@@ -3389,7 +3778,7 @@ export type InferenceResponseJson = {
  * Use `create(InferenceResponseSchema)` to create a new message.
  */
 export const InferenceResponseSchema: GenMessage<InferenceResponse, {jsonType: InferenceResponseJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 47);
+  messageDesc(file_actlet_gateway_v0_gateway, 52);
 
 /**
  * @generated from message actlet.gateway.v0.InferenceDone
@@ -3454,7 +3843,7 @@ export type InferenceDoneJson = {
  * Use `create(InferenceDoneSchema)` to create a new message.
  */
 export const InferenceDoneSchema: GenMessage<InferenceDone, {jsonType: InferenceDoneJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 48);
+  messageDesc(file_actlet_gateway_v0_gateway, 53);
 
 /**
  * @generated from message actlet.gateway.v0.Usage
@@ -3535,7 +3924,183 @@ export type UsageJson = {
  * Use `create(UsageSchema)` to create a new message.
  */
 export const UsageSchema: GenMessage<Usage, {jsonType: UsageJson}> = /*@__PURE__*/
-  messageDesc(file_actlet_gateway_v0_gateway, 49);
+  messageDesc(file_actlet_gateway_v0_gateway, 54);
+
+/**
+ * ToolCallRequest is one call of a bridged tool.
+ *
+ * @generated from message actlet.gateway.v0.ToolCallRequest
+ */
+export type ToolCallRequest = Message$1<"actlet.gateway.v0.ToolCallRequest"> & {
+  /**
+   * @generated from field: string session_id = 1;
+   */
+  sessionId: string;
+
+  /**
+   * @generated from field: uint64 epoch = 2;
+   */
+  epoch: bigint;
+
+  /**
+   * Identifies the call. The worker records it before calling and sends
+   * the same ID when it asks again, also after a crash, a pause or a
+   * restart, so the gateway can answer a call once: a call with an ID it
+   * has answered should get the same answer.
+   *
+   * @generated from field: string intent_id = 3;
+   */
+  intentId: string;
+
+  /**
+   * The worker making the call: "root", "root.1", and so on.
+   *
+   * @generated from field: string worker = 4;
+   */
+  worker: string;
+
+  /**
+   * The tool, such as "decide".
+   *
+   * @generated from field: string tool = 5;
+   */
+  tool: string;
+
+  /**
+   * The input, a JSON object.
+   *
+   * @generated from field: string input = 6;
+   */
+  input: string;
+};
+
+/**
+ * ToolCallRequest is one call of a bridged tool.
+ *
+ * @generated from message actlet.gateway.v0.ToolCallRequest
+ */
+export type ToolCallRequestJson = {
+  /**
+   * @generated from field: string session_id = 1;
+   */
+  sessionId?: string;
+
+  /**
+   * @generated from field: uint64 epoch = 2;
+   */
+  epoch?: string;
+
+  /**
+   * Identifies the call. The worker records it before calling and sends
+   * the same ID when it asks again, also after a crash, a pause or a
+   * restart, so the gateway can answer a call once: a call with an ID it
+   * has answered should get the same answer.
+   *
+   * @generated from field: string intent_id = 3;
+   */
+  intentId?: string;
+
+  /**
+   * The worker making the call: "root", "root.1", and so on.
+   *
+   * @generated from field: string worker = 4;
+   */
+  worker?: string;
+
+  /**
+   * The tool, such as "decide".
+   *
+   * @generated from field: string tool = 5;
+   */
+  tool?: string;
+
+  /**
+   * The input, a JSON object.
+   *
+   * @generated from field: string input = 6;
+   */
+  input?: string;
+};
+
+/**
+ * Describes the message actlet.gateway.v0.ToolCallRequest.
+ * Use `create(ToolCallRequestSchema)` to create a new message.
+ */
+export const ToolCallRequestSchema: GenMessage<ToolCallRequest, {jsonType: ToolCallRequestJson}> = /*@__PURE__*/
+  messageDesc(file_actlet_gateway_v0_gateway, 55);
+
+/**
+ * @generated from message actlet.gateway.v0.ToolCallResponse
+ */
+export type ToolCallResponse = Message$1<"actlet.gateway.v0.ToolCallResponse"> & {
+  /**
+   * The result, a JSON object.
+   *
+   * @generated from field: string output = 1;
+   */
+  output: string;
+
+  /**
+   * The tool failed; output says why.
+   *
+   * @generated from field: bool is_error = 2;
+   */
+  isError: boolean;
+
+  /**
+   * What the call used, such as tokens and cost, when it used a model.
+   *
+   * @generated from field: actlet.gateway.v0.Usage usage = 3;
+   */
+  usage?: Usage | undefined;
+
+  /**
+   * The gateway answered from an earlier call with the same intent ID.
+   *
+   * @generated from field: bool replayed = 4;
+   */
+  replayed: boolean;
+};
+
+/**
+ * @generated from message actlet.gateway.v0.ToolCallResponse
+ */
+export type ToolCallResponseJson = {
+  /**
+   * The result, a JSON object.
+   *
+   * @generated from field: string output = 1;
+   */
+  output?: string;
+
+  /**
+   * The tool failed; output says why.
+   *
+   * @generated from field: bool is_error = 2;
+   */
+  isError?: boolean;
+
+  /**
+   * What the call used, such as tokens and cost, when it used a model.
+   *
+   * @generated from field: actlet.gateway.v0.Usage usage = 3;
+   */
+  usage?: UsageJson;
+
+  /**
+   * The gateway answered from an earlier call with the same intent ID.
+   *
+   * @generated from field: bool replayed = 4;
+   */
+  replayed?: boolean;
+};
+
+/**
+ * Describes the message actlet.gateway.v0.ToolCallResponse.
+ * Use `create(ToolCallResponseSchema)` to create a new message.
+ */
+export const ToolCallResponseSchema: GenMessage<ToolCallResponse, {jsonType: ToolCallResponseJson}> = /*@__PURE__*/
+  messageDesc(file_actlet_gateway_v0_gateway, 56);
 
 /**
  * @generated from enum actlet.gateway.v0.BudgetKind
@@ -3975,6 +4540,19 @@ export const Gateway: GenService<{
     methodKind: "server_streaming";
     input: typeof InferenceRequestSchema;
     output: typeof InferenceResponseSchema;
+  },
+  /**
+   * CallTool runs a bridged tool for a session's agent: a tool the
+   * orchestrator implements, such as "decide". The intent ID is an
+   * idempotency key, as for Infer. The call may wait a long time, such as
+   * for a person to decide.
+   *
+   * @generated from rpc actlet.gateway.v0.Gateway.CallTool
+   */
+  callTool: {
+    methodKind: "unary";
+    input: typeof ToolCallRequestSchema;
+    output: typeof ToolCallResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_actlet_gateway_v0_gateway, 0);
