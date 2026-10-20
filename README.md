@@ -103,7 +103,9 @@ the summary, and the summary's model call counts towards the worker's and the se
 the compaction policy: when it compacts, which model writes the summary, and how many turns it keeps.
 
 `skill` calls show the skill and the file read (`csv-report · reference.md`). The Tools tab lists the skills the agent
-loaded and the files it read. The recording doesn't list every skill the agent had, only those it used.
+may load, from the session's start: each one's name, where it comes from (the image or the profile), its description
+and its files, with what the agent loaded and read of it. Recordings from before Actlet listed the skills show only
+the skills the agent used.
 
 ### Files
 

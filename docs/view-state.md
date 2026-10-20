@@ -35,6 +35,7 @@ nanoseconds, trailing zeros trimmed, as Go's `time.RFC3339Nano` writes them. An 
     "worker_id": "",
     "version": "",
     "local_commands": [],
+    "skills": [/* SkillInfo, Protobuf JSON with proto field names; [] when none */],
   },
   "usage": { "input": 0, "output": 0, "cache_read": 0, "cache_write": 0, "cost": 0, "currency": "" },
   "progress": { "worker": "root", "message": "Summary drafted", "percent": 40, "time": "…" }, // null before one; percent -1 when unsaid, at most 100
