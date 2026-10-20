@@ -210,8 +210,8 @@ export function recordedFile(s: Session, path: string): RecordedFile {
   return { lines, diff: true, note: `the recording holds only changes: the latest of ${h.length}` };
 }
 
-/** Marks Actlet puts where it cut content short. */
-const cutMarks = /\[\.\.\. \d+ bytes omitted \.\.\.\]|\s?\[cut\]$/;
+/** Marks Actlet, or the view model, put where content was cut short. */
+const cutMarks = /\[\.\.\. \d+ bytes omitted \.\.\.\]|\[viewer cut \d+ characters\]|\s?\[cut\]$/;
 
 /** Reports whether Actlet cut the text short. */
 export function isCut(s: string): boolean {
@@ -221,11 +221,11 @@ export function isCut(s: string): boolean {
 /** Splits text into plain parts and Actlet's cut marks, for showing truncation clearly. */
 export function splitCuts(s: string): { text: string; cut: boolean }[] {
   const out: { text: string; cut: boolean }[] = [];
-  const re = /\[\.\.\. (\d+) bytes omitted \.\.\.\]|\[cut\]$/g;
+  const re = /\[\.\.\. (\d+) bytes omitted \.\.\.\]|\[viewer cut (\d+) characters\]|\[cut\]$/g;
   let last = 0;
   for (let m = re.exec(s); m; m = re.exec(s)) {
     if (m.index > last) out.push({ text: s.slice(last, m.index), cut: false });
-    out.push({ text: m[1] ? `${m[1]} bytes omitted` : "cut short", cut: true });
+    out.push({ text: m[1] ? `${m[1]} bytes omitted` : m[2] ? `${m[2]} characters not kept` : "cut short", cut: true });
     last = m.index + m[0].length;
   }
   if (last < s.length) out.push({ text: s.slice(last), cut: false });

@@ -91,15 +91,33 @@ function Result({ call, expanded }: { call: ToolCall; expanded: boolean }) {
   );
 }
 
+/** The most of a subagent's timeline shown nested under its spawn call; the rest shows when it is shown alone. */
+export const NESTED_ITEMS = 40;
+
 function SubagentBody(props: ToolBlockProps & { child: Worker; expanded: boolean }) {
-  const { child, call, expanded, collapseSubagents } = props;
+  const { child, call, expanded, collapseSubagents, onFocusWorker } = props;
   const open = expanded || call.status === "running" || !collapseSubagents;
+  const items = child.items.slice(-NESTED_ITEMS);
+  const earlier = child.items.length - items.length + child.dropped;
   return (
     <div className="actlet-tool-body">
       {open ? (
         <div className="actlet-nested">
-          {child.items.map((it) => (
-            <ItemView key={`${it.epoch}.${it.seq}`} {...props} item={it} worker={child} />
+          {earlier > 0 && (
+            <div className="actlet-line actlet-tone-muted">
+              {`… ${plural(earlier, "earlier item")} of ${child.id}`}
+              {onFocusWorker && (
+                <>
+                  {" · "}
+                  <button type="button" className="actlet-link" onClick={() => onFocusWorker(child.id)}>
+                    {`show ${child.id} alone`}
+                  </button>
+                </>
+              )}
+            </div>
+          )}
+          {items.map((it) => (
+            <ItemView key={`${it.epoch}.${it.seq}:${it.kind}`} {...props} item={it} worker={child} />
           ))}
         </div>
       ) : (

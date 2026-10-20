@@ -1,9 +1,9 @@
-import { useCallback, useId, useMemo, useState, type CSSProperties } from "react";
+import { useCallback, useId, useState, type CSSProperties } from "react";
 import type { EventInput } from "../events";
-import { SessionState, type ActivityEvent, type CommandAck, type Origin } from "../gen/actlet/gateway/v0/gateway_pb";
+import { SessionState, type CommandAck, type Origin } from "../gen/actlet/gateway/v0/gateway_pb";
 import type { Session } from "../view/session";
 import { CommandBar, type CommandHandler } from "./CommandBar";
-import { commandOutcomes, DEFAULT_COMMANDS, type CommandKind } from "./commands";
+import { commandOutcomes, DEFAULT_COMMANDS, type CommandKind, type CommandOutcome } from "./commands";
 import { FileViewer, type FileReader } from "./FileViewer";
 import { useLiveSession, useNow, useReplay, type ReplayOptions } from "./hooks";
 import { EventsPanel, ProfilePanel, SessionPanel, TaskPanel, ToolsPanel } from "./Panels";
@@ -63,14 +63,14 @@ export function ActivityViewer(props: ActivityViewerProps) {
 }
 
 function LiveViewer(props: ActivityViewerProps) {
-  const { session, version, events } = useLiveSession(props.events, props.sessionId);
+  const { session, version, commands } = useLiveSession(props.events, props.sessionId);
   const ended = props.ended ?? false;
   const running = !ended && (session.state === SessionState.RUNNING || session.state === SessionState.UNSPECIFIED);
   const now = useNow(running);
   let connection = props.connectionLabel ?? "live";
   if (ended) connection += ", run ended";
   return (
-    <Layout {...props} session={session} version={version} events={events} now={now} connection={connection} live />
+    <Layout {...props} session={session} version={version} commands={commands} now={now} connection={connection} live />
   );
 }
 
@@ -82,7 +82,7 @@ function ReplayViewer(props: ActivityViewerProps) {
       {...props}
       session={r.session}
       version={r.version}
-      events={r.events}
+      commands={r.commands}
       now={null}
       connection={r.label}
       live={false}
@@ -104,7 +104,7 @@ function ReplayViewer(props: ActivityViewerProps) {
 interface LayoutProps extends Omit<ActivityViewerProps, "events"> {
   session: Session;
   version: number;
-  events: readonly (ActivityEvent | null)[];
+  commands: ReadonlyMap<string, CommandOutcome>;
   now: number | null;
   connection: string;
   live: boolean;
@@ -123,15 +123,8 @@ function Layout(p: LayoutProps) {
   const [separators, setSeparators] = useState(p.separators ?? false);
   const [collapseSubs, setCollapseSubs] = useState(false);
   const closeFile = useCallback(() => setFile(null), []);
-  const { events, acks } = p;
-  const outcomes = useMemo(
-    () =>
-      commandOutcomes(
-        events.filter((e): e is ActivityEvent => e !== null),
-        acks,
-      ),
-    [events, acks],
-  );
+  // Few commands are sent, so merging the acknowledgements each render is cheap.
+  const outcomes = commandOutcomes([], p.acks, p.commands);
   const theme = p.theme ?? "auto";
   const ended = (p.ended ?? false) || terminal.includes(session.state);
   const commands = p.live && p.onCommand && (p.allowedCommands ?? DEFAULT_COMMANDS).length > 0;
@@ -171,6 +164,7 @@ function Layout(p: LayoutProps) {
               expandAll={expandAll}
               separators={separators}
               collapseSubagents={collapseSubs}
+              onFocusWorker={setFocus}
             />
           </div>
           <Sidebar session={session} focus={focus} onFocus={setFocus} onOpenFile={setFile} />

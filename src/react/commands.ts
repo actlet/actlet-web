@@ -59,21 +59,33 @@ export function stopCommand(o: CommandOptions = {}): Command {
   return create(CommandSchema, { ...base(o), action: { case: "stop", value: {} } });
 }
 
+/** What happened to a command, as far as the viewer knows. */
+export interface CommandOutcome {
+  status: CommandStatus;
+  message: string;
+}
+
+/** Records what a command event or acknowledgement says happened to a command. */
+export function recordOutcome(out: Map<string, CommandOutcome>, id: string, result: CommandResult, message: string) {
+  if (result === CommandResult.ACCEPTED) out.set(id, { status: "accepted", message });
+  else if (result === CommandResult.REJECTED) out.set(id, { status: "rejected", message });
+}
+
+/** Records the outcome a command event carries; other events are ignored. */
+export function recordCommandEvent(out: Map<string, CommandOutcome>, ev: ActivityEvent) {
+  if (ev.body.case === "command" && ev.body.value.command) {
+    recordOutcome(out, ev.body.value.command.id, ev.body.value.result, ev.body.value.message);
+  }
+}
+
 /** What happened to commands, by ID: from command events, and from acknowledgements the implementor passes on. */
 export function commandOutcomes(
   events: readonly ActivityEvent[],
   acks: readonly CommandAck[] = [],
-): Map<string, { status: CommandStatus; message: string }> {
-  const out = new Map<string, { status: CommandStatus; message: string }>();
-  const set = (id: string, result: CommandResult, message: string) => {
-    if (result === CommandResult.ACCEPTED) out.set(id, { status: "accepted", message });
-    else if (result === CommandResult.REJECTED) out.set(id, { status: "rejected", message });
-  };
-  for (const ev of events) {
-    if (ev.body.case === "command" && ev.body.value.command) {
-      set(ev.body.value.command.id, ev.body.value.result, ev.body.value.message);
-    }
-  }
-  for (const a of acks) set(a.commandId, a.result, a.message);
+  known: ReadonlyMap<string, CommandOutcome> = new Map(),
+): Map<string, CommandOutcome> {
+  const out = new Map(known);
+  for (const ev of events) recordCommandEvent(out, ev);
+  for (const a of acks) recordOutcome(out, a.commandId, a.result, a.message);
   return out;
 }

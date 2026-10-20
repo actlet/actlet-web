@@ -3,6 +3,7 @@ import { toEvent, type EventInput } from "../events";
 import type { ActivityEvent } from "../gen/actlet/gateway/v0/gateway_pb";
 import { Player } from "../replay/player";
 import { apply, newSession, skip, type Session } from "../view/session";
+import { recordCommandEvent, type CommandOutcome } from "./commands";
 
 /** Decodes events; null for one that can't be decoded. */
 export function decodeEvents(inputs: readonly EventInput[]): (ActivityEvent | null)[] {
@@ -19,27 +20,39 @@ export interface SessionView {
   session: Session;
   /** Changes whenever the session does; the session itself changes in place. */
   version: number;
-  /** The events decoded so far; null for those that couldn't be. */
-  events: readonly (ActivityEvent | null)[];
+  /** What happened to commands, by ID, from the command events folded. */
+  commands: ReadonlyMap<string, CommandOutcome>;
 }
 
 interface LiveState {
   session: Session;
-  inputs: EventInput[];
-  decoded: (ActivityEvent | null)[];
+  commands: Map<string, CommandOutcome>;
+  /** How many events are folded, and the first and latest of them, to tell an appended array from a new one. */
+  count: number;
+  first: EventInput | undefined;
+  last: EventInput | undefined;
   folds: number;
   sessionId: string;
 }
 
 function liveState(sessionId: string, folds: number): LiveState {
-  return { session: newSession(sessionId), inputs: [], decoded: [], folds, sessionId };
+  return {
+    session: newSession(sessionId),
+    commands: new Map(),
+    count: 0,
+    first: undefined,
+    last: undefined,
+    folds,
+    sessionId,
+  };
 }
 
 /**
  * The session view of a live stream of events. Feed it the events so far;
  * when the array grows by appended events, only those are folded, and an
  * array that starts differently is folded from scratch. Events that can't
- * be decoded are counted as missed.
+ * be decoded are counted as missed. It keeps no reference to the events,
+ * so memory stays bounded by the view's own bounds.
  */
 export function useLiveSession(events: readonly EventInput[], sessionId = ""): SessionView {
   const ref = useRef<LiveState | null>(null);
@@ -47,24 +60,28 @@ export function useLiveSession(events: readonly EventInput[], sessionId = ""): S
   // events, so it is done during render and kept between renders.
   /* eslint-disable react-hooks/refs */
   let st = ref.current ?? liveState(sessionId, 0);
-  const n = st.inputs.length;
-  const sameStart =
-    n <= events.length && (n === 0 || (events[0] === st.inputs[0] && events[n - 1] === st.inputs[n - 1]));
+  const n = st.count;
+  const sameStart = n <= events.length && (n === 0 || (events[0] === st.first && events[n - 1] === st.last));
   if (!sameStart || st.sessionId !== sessionId) st = liveState(sessionId, st.folds + 1);
-  for (let i = st.inputs.length; i < events.length; i++) {
+  for (let i = st.count; i < events.length; i++) {
     let ev: ActivityEvent | null;
     try {
       ev = toEvent(events[i]);
     } catch {
       ev = null;
     }
-    st.inputs.push(events[i]);
-    st.decoded.push(ev);
-    if (ev) apply(st.session, ev);
-    else skip(st.session, 1);
+    if (ev) {
+      apply(st.session, ev);
+      recordCommandEvent(st.commands, ev);
+    } else skip(st.session, 1);
   }
+  if (events.length > 0) {
+    st.first = events[0];
+    st.last = events[events.length - 1];
+  }
+  st.count = events.length;
   ref.current = st;
-  return { session: st.session, version: st.folds * 1e9 + st.inputs.length, events: st.decoded };
+  return { session: st.session, version: st.folds * 1e9 + st.count, commands: st.commands };
   /* eslint-enable react-hooks/refs */
 }
 
@@ -91,6 +108,8 @@ export interface ReplayOptions {
   /** How often playback moves on, in milliseconds. */
   tick?: number;
 }
+
+const noCommands: ReadonlyMap<string, CommandOutcome> = new Map();
 
 /** Plays a fed array of events back, with play, pause, seek and speed. */
 export function useReplay(events: readonly EventInput[], opts: ReplayOptions = {}): ReplayView {
@@ -120,7 +139,7 @@ export function useReplay(events: readonly EventInput[], opts: ReplayOptions = {
   return {
     session: player.view,
     version: version * 1e6 + player.position,
-    events: decoded,
+    commands: noCommands,
     playing,
     position: player.position,
     length: player.length,

@@ -31,6 +31,12 @@ import { EPOCH, instant, nanos, type Instant } from "./time";
 export const MAX_ITEMS = 2000;
 /** Bounds the raw event log. */
 export const MAX_LOG = 5000;
+/**
+ * Bounds each piece of text a view keeps, in characters. Actlet cuts
+ * content far shorter than this; the bound only holds memory in check
+ * when an implementor feeds something larger.
+ */
+export const MAX_TEXT = 256 * 1024;
 
 /** Tokens, and what they cost when the gateway says. */
 export interface Usage {
@@ -202,7 +208,7 @@ function addUsage(u: Usage, m: UsageMessage | undefined) {
   u.cacheRead += Number(m.cacheReadTokens);
   u.cacheWrite += Number(m.cacheWriteTokens);
   u.cost += m.cost;
-  if (m.currency !== "") u.currency = sanitize(m.currency);
+  if (m.currency !== "") u.currency = keep(m.currency);
 }
 
 /** Returns an empty session view. */
@@ -287,12 +293,35 @@ function getWorker(s: Session, id: string): Worker {
   return w;
 }
 
-function addItem(owner: { items: Item[]; dropped: number }, it: Item) {
+/** The call ID each call is known by in its worker's calls, as the event gave it. */
+const callKeys = new WeakMap<ToolCall, string>();
+
+/** Sanitizes text the view keeps, and bounds it to MAX_TEXT characters, marking the cut. */
+export function keep(s: string): string {
+  if (s.length <= MAX_TEXT) return sanitize(s);
+  const clean = sanitize(s.slice(0, MAX_TEXT));
+  return `${clean}\n[viewer cut ${s.length - MAX_TEXT} characters]`;
+}
+
+function addItem(owner: { items: Item[]; dropped: number }, it: Item): Item[] {
   owner.items.push(it);
-  if (owner.items.length > MAX_ITEMS) {
-    const n = owner.items.length - MAX_ITEMS;
-    owner.items.splice(0, n);
-    owner.dropped += n;
+  if (owner.items.length <= MAX_ITEMS) return [];
+  const n = owner.items.length - MAX_ITEMS;
+  owner.dropped += n;
+  return owner.items.splice(0, n);
+}
+
+/**
+ * Adds an item to a worker's timeline. The finished calls of turns that
+ * fall off it are let go too, so a long session's memory stays bounded;
+ * a call still running stays known, to take its result.
+ */
+function addWorkerItem(w: Worker, it: Item) {
+  for (const old of addItem(w, it)) {
+    for (const c of old.turn?.calls ?? []) {
+      const key = callKeys.get(c);
+      if (c.status !== "running" && key !== undefined && w.calls.get(key) === c) w.calls.delete(key);
+    }
   }
 }
 
@@ -309,7 +338,7 @@ function item(ev: ActivityEvent | null, kind: ItemKind, fields: Partial<Item> = 
 function latestTurn(w: Worker, ev: ActivityEvent): Turn {
   if (!w.last) {
     w.last = { number: 0, model: "", text: "", usage: newUsage(), stop: "", calls: [], unseen: true };
-    addItem(w, item(ev, "turn", { turn: w.last }));
+    addWorkerItem(w, item(ev, "turn", { turn: w.last }));
   }
   return w.last;
 }
@@ -319,8 +348,8 @@ function call(w: Worker, ev: ActivityEvent, id: string, name: string): ToolCall 
   let c = w.calls.get(id);
   if (!c) {
     c = {
-      callId: sanitize(id),
-      name: sanitize(name),
+      callId: keep(id),
+      name: keep(name),
       input: "",
       status: "running",
       output: "",
@@ -332,6 +361,7 @@ function call(w: Worker, ev: ActivityEvent, id: string, name: string): ToolCall 
     };
     latestTurn(w, ev).calls.push(c);
     w.calls.set(id, c);
+    callKeys.set(c, id);
   }
   return c;
 }
@@ -351,11 +381,11 @@ export function skip(s: Session, n: number) {
 }
 
 function system(s: Session, ev: ActivityEvent | null, text: string, warn: boolean) {
-  addItem(s, item(ev, "system", { text: sanitize(text), warn }));
+  addItem(s, item(ev, "system", { text: keep(text), warn }));
 }
 
 function log(s: Session, ev: ActivityEvent, text: string) {
-  s.log.push({ ...where(ev), worker: sanitize(ev.worker), text: sanitize(text) });
+  s.log.push({ ...where(ev), worker: keep(ev.worker), text: keep(text) });
   if (s.log.length > MAX_LOG) {
     const n = s.log.length - MAX_LOG;
     s.log.splice(0, n);
@@ -379,7 +409,7 @@ export function apply(s: Session, ev: ActivityEvent) {
   switch (b.case) {
     case "started": {
       s.resumed = b.value.resumed;
-      s.profile = sanitize(b.value.profileId);
+      s.profile = keep(b.value.profileId);
       let text = `run ${b.value.epoch} started`;
       if (b.value.resumed) text += ", resuming the session";
       system(s, ev, text, false);
@@ -387,7 +417,7 @@ export function apply(s: Session, ev: ActivityEvent) {
     }
     case "state": {
       s.state = b.value.to;
-      s.reason = sanitize(b.value.reason);
+      s.reason = keep(b.value.reason);
       if (b.value.from !== SessionState.UNSPECIFIED) {
         let text = "session " + stateName(b.value.to);
         if (b.value.reason !== "") text += ": " + b.value.reason;
@@ -407,11 +437,11 @@ export function apply(s: Session, ev: ActivityEvent) {
     }
     case "steer": {
       const who = b.value.actor !== "" ? b.value.actor : originName(b.value.origin);
-      addItem(s, item(ev, "note", { text: sanitize(b.value.note), from: sanitize(who) }));
+      addItem(s, item(ev, "note", { text: keep(b.value.note), from: keep(who) }));
       break;
     }
     case "text":
-      if (w) addItem(w, item(ev, "system", { text: sanitize(b.value.text) }));
+      if (w) addWorkerItem(w, item(ev, "system", { text: keep(b.value.text) }));
       else system(s, ev, b.value.text, false);
       break;
     case "gap":
@@ -422,14 +452,14 @@ export function apply(s: Session, ev: ActivityEvent) {
       if (!w) break;
       const m = b.value;
       w.turns = Math.max(w.turns, Number(m.turn));
-      if (m.model !== "") w.model = sanitize(m.model);
+      if (m.model !== "") w.model = keep(m.model);
       w.context = Number(m.usage?.inputTokens ?? 0);
       addUsage(w.usage, m.usage);
       addUsage(s.usage, m.usage);
       const t: Turn = {
         number: Number(m.turn),
-        model: sanitize(m.model),
-        text: sanitize(m.text),
+        model: keep(m.model),
+        text: keep(m.text),
         usage: newUsage(),
         stop: enumName(StopReason, m.stopReason),
         calls: [],
@@ -437,7 +467,7 @@ export function apply(s: Session, ev: ActivityEvent) {
       };
       addUsage(t.usage, m.usage);
       w.last = t;
-      addItem(w, { ...at, kind: "turn", turn: t, text: "", from: "", warn: false });
+      addWorkerItem(w, { ...at, kind: "turn", turn: t, text: "", from: "", warn: false });
       break;
     }
     case "toolStarted": {
@@ -445,14 +475,14 @@ export function apply(s: Session, ev: ActivityEvent) {
       const t = b.value;
       const old = w.calls.get(t.callId);
       if (old && old.status !== "running") w.calls.delete(t.callId); // run again after recovery: a new call
-      call(w, ev, t.callId, t.tool).input = sanitize(t.input);
+      call(w, ev, t.callId, t.tool).input = keep(t.input);
       break;
     }
     case "toolFinished": {
       if (!w) break;
       const f = b.value;
       const c = call(w, ev, f.callId, f.tool);
-      c.output = sanitize(f.output);
+      c.output = keep(f.output);
       c.took = nanos(f.took);
       c.status = f.outcomeUnknown ? "unknown" : f.isError ? "error" : "ok";
       break;
@@ -461,26 +491,26 @@ export function apply(s: Session, ev: ActivityEvent) {
       if (!w) break;
       const f = b.value;
       call(w, ev, f.callId, "file change").diffs.push({
-        path: sanitize(f.path),
+        path: keep(f.path),
         created: f.created,
-        diff: sanitize(f.diff),
+        diff: keep(f.diff),
       });
       break;
     }
     case "subagentSpawned": {
       if (!w) break;
       const sp = b.value;
-      w.parent = sanitize(sp.parent);
-      w.task = sanitize(sp.task);
-      w.model = sanitize(sp.model);
-      w.callId = sanitize(sp.callId);
+      w.parent = keep(sp.parent);
+      w.task = keep(sp.task);
+      w.model = keep(sp.model);
+      w.callId = keep(sp.callId);
       w.status = "running";
       if (sp.parent !== "") {
         const parent = getWorker(s, sp.parent);
         const c = sp.callId !== "" ? call(parent, ev, sp.callId, "spawn_subagent") : unclaimedSpawn(parent); // an older recording
         if (c) {
           c.child = w.id;
-          if (c.input === "") c.input = sanitize(goJSON({ task: sp.task }));
+          if (c.input === "") c.input = keep(goJSON({ task: sp.task }));
         } else {
           w.parent = ""; // no call to nest it under: show it where it is
         }
@@ -491,24 +521,24 @@ export function apply(s: Session, ev: ActivityEvent) {
       if (!w) break;
       const f = b.value;
       w.status = f.isError ? "failed" : "finished";
-      w.result = sanitize(f.result);
+      w.result = keep(f.result);
       w.turns = Math.max(w.turns, Number(f.turns));
       break;
     }
     case "sessionInfo": {
       const i = b.value;
       s.info = {
-        taskId: sanitize(i.taskId),
-        taskKind: sanitize(i.taskKind),
-        task: sanitize(i.task),
-        config: sanitize(i.config),
+        taskId: keep(i.taskId),
+        taskKind: keep(i.taskKind),
+        task: keep(i.task),
+        config: keep(i.config),
         budgets: i.budgets,
         models: i.models ?? null,
         tools: i.tools,
         grants: i.grants,
-        manifest: sanitize(i.toolsManifest),
-        workerId: sanitize(i.workerId),
-        version: sanitize(i.actletVersion),
+        manifest: keep(i.toolsManifest),
+        workerId: keep(i.workerId),
+        version: keep(i.actletVersion),
         localCommands: i.localCommands.map(sanitize),
       };
       break;

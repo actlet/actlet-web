@@ -1,5 +1,14 @@
-import { useCallback, useLayoutEffect, useRef, useState, type UIEvent } from "react";
-import { conversation, tokens } from "../view/format";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type UIEvent,
+} from "react";
+import { conversation, tokens, type Entry } from "../view/format";
 import type { Item, Session, Worker } from "../view/session";
 import { clock } from "../view/time";
 import { Text } from "./Text";
@@ -13,6 +22,8 @@ export interface StreamOptions {
   collapseSubagents?: boolean;
   isExpanded: (key: string) => boolean;
   onToggle: (key: string) => void;
+  /** Shows one worker's timeline alone, such as a subagent with too many turns to nest. */
+  onFocusWorker?: (worker: string) => void;
 }
 
 export interface TurnStreamProps {
@@ -27,11 +38,21 @@ export interface TurnStreamProps {
   follow?: boolean;
   /** Changes whenever the session does, so the stream knows to redraw and follow. */
   version?: number;
+  onFocusWorker?: (worker: string) => void;
 }
+
+/** From this many items on, only the items in and near view are rendered. */
+export const VIRTUALIZE_FROM = 150;
+/** How far beyond the view items are rendered, in pixels. */
+const OVERSCAN = 1200;
+/** The view's height when the browser can't say, such as in tests. */
+const FALLBACK_HEIGHT = 900;
 
 /**
  * The main screen: the conversation grouped by model turn, each turn's
- * text first and then each tool call with its result.
+ * text first and then each tool call with its result. Long conversations
+ * are virtualised: only the items near the view are in the page. Arrow
+ * keys (or j and k) move between tool calls; Enter or Space expands one.
  */
 export function TurnStream({
   session,
@@ -41,6 +62,7 @@ export function TurnStream({
   expandAll = false,
   follow = true,
   version,
+  onFocusWorker,
 }: TurnStreamProps) {
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
   const onToggle = useCallback(
@@ -54,22 +76,78 @@ export function TurnStream({
     [],
   );
   const isExpanded = (key: string) => expandAll !== expanded.has(key);
-  const opts: StreamOptions = { separators, collapseSubagents, isExpanded, onToggle };
+  const opts: StreamOptions = { separators, collapseSubagents, isExpanded, onToggle, onFocusWorker };
+
+  // The session changes in place; version says when.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const entries = useMemo(() => conversation(session, worker), [session, worker, version]);
+  const keys = useMemo(() => entryKeys(entries), [entries]);
 
   const ref = useRef<HTMLDivElement>(null);
   const atBottom = useRef(true);
   const [behind, setBehind] = useState(false);
+  const [view, setView] = useState({ top: 0, height: 0 });
   const onScroll = (e: UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     atBottom.current = el.scrollHeight - el.scrollTop - el.clientHeight < 24;
     if (atBottom.current) setBehind(false);
+    setView({ top: el.scrollTop, height: el.clientHeight });
   };
+
+  // Measured heights of rendered items, by key.
+  const heights = useRef(new Map<string, number>());
+  const [, setMeasured] = useState(0);
+  const observer = useRef<ResizeObserver | null>(null);
+  useEffect(() => {
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver((records) => {
+      let changed = false;
+      for (const r of records) {
+        const key = (r.target as HTMLElement).dataset.key;
+        const h = (r.target as HTMLElement).offsetHeight;
+        if (key !== undefined && h > 0 && heights.current.get(key) !== h) {
+          heights.current.set(key, h);
+          changed = true;
+        }
+      }
+      if (changed) setMeasured((n) => n + 1);
+    });
+    observer.current = ro;
+    return () => ro.disconnect();
+  }, []);
+  const measure = useCallback((el: HTMLDivElement | null) => {
+    if (el) observer.current?.observe(el);
+  }, []);
+
+  const virtual = entries.length >= VIRTUALIZE_FROM;
+  /* eslint-disable react-hooks/refs */
+  let first = 0;
+  let last = entries.length;
+  let padTop = 0;
+  let padBottom = 0;
+  if (virtual) {
+    const offsets = new Float64Array(entries.length + 1);
+    for (let i = 0; i < entries.length; i++) {
+      offsets[i + 1] = offsets[i] + (heights.current.get(keys[i]) ?? estimate(entries[i]));
+    }
+    const total = offsets[entries.length];
+    const height = view.height > 0 ? view.height : FALLBACK_HEIGHT;
+    // Following the end, the view is at the bottom whatever was last scrolled.
+    const top = follow && atBottom.current ? Math.max(total - height, 0) : view.top;
+    first = Math.max(search(offsets, top - OVERSCAN) - 1, 0);
+    last = Math.min(search(offsets, top + height + OVERSCAN) + 1, entries.length);
+    padTop = offsets[first];
+    padBottom = total - offsets[last];
+  }
+  /* eslint-enable react-hooks/refs */
+
   useLayoutEffect(() => {
     const el = ref.current;
-    if (!el || !follow) return;
-    if (atBottom.current) el.scrollTop = el.scrollHeight;
-    else setBehind(true);
-  }, [follow, version, session]);
+    if (el && follow && atBottom.current) el.scrollTop = el.scrollHeight;
+  });
+  useEffect(() => {
+    if (follow && !atBottom.current) setBehind(true);
+  }, [follow, version]);
   const toLatest = () => {
     const el = ref.current;
     if (el) el.scrollTop = el.scrollHeight;
@@ -77,17 +155,31 @@ export function TurnStream({
     setBehind(false);
   };
 
-  const entries = conversation(session, worker);
   return (
     <div className="actlet-stream-wrap">
-      <div className="actlet-stream" ref={ref} onScroll={onScroll} role="log" aria-live="off">
+      <div
+        className="actlet-stream"
+        ref={ref}
+        onScroll={onScroll}
+        onKeyDown={onStreamKey}
+        role="log"
+        aria-live="off"
+        aria-label="Conversation"
+        tabIndex={0}
+        data-virtual={virtual || undefined}
+      >
         {entries.length === 0 && <div className="actlet-empty">Waiting for the agent…</div>}
-        {entries.map((e, i) => (
-          <div key={`${e.worker?.id ?? ""}:${e.item.epoch}.${e.item.seq}:${i}`}>
-            {separators && i > 0 && e.item.kind !== "system" && <hr className="actlet-sep" />}
-            <ItemView {...opts} session={session} item={e.item} worker={e.worker} />
-          </div>
-        ))}
+        {padTop > 0 && <div style={{ height: padTop }} aria-hidden="true" />}
+        {entries.slice(first, last).map((e, j) => {
+          const i = first + j;
+          return (
+            <div key={keys[i]} data-key={keys[i]} ref={virtual ? measure : undefined} className="actlet-entry">
+              {separators && i > 0 && e.item.kind !== "system" && <hr className="actlet-sep" />}
+              <ItemView {...opts} session={session} item={e.item} worker={e.worker} />
+            </div>
+          );
+        })}
+        {padBottom > 0 && <div style={{ height: padBottom }} aria-hidden="true" />}
       </div>
       {behind && (
         <button type="button" className="actlet-latest" onClick={toLatest}>
@@ -96,6 +188,67 @@ export function TurnStream({
       )}
     </div>
   );
+}
+
+/** Unique keys for the entries: whose timeline, and which event. */
+function entryKeys(entries: Entry[]): string[] {
+  const seen = new Map<string, number>();
+  return entries.map((e) => {
+    const base = `${e.worker?.id ?? ""}:${e.item.epoch}.${e.item.seq}:${e.item.kind}`;
+    const n = seen.get(base) ?? 0;
+    seen.set(base, n + 1);
+    return n === 0 ? base : `${base}#${n}`;
+  });
+}
+
+/** A first guess at an item's height in pixels, before it is measured. */
+function estimate(e: Entry): number {
+  const it = e.item;
+  if (it.kind === "system") return 26;
+  if (it.kind === "note") return 64;
+  const t = it.turn!;
+  let h = 44;
+  if (t.text !== "") h += 20 * Math.min(t.text.split("\n").length, 12);
+  for (const c of t.calls) h += c.child !== "" ? 140 : 84;
+  return h;
+}
+
+/** The index of the last offset at or before y. */
+function search(offsets: Float64Array, y: number): number {
+  let lo = 0;
+  let hi = offsets.length - 1;
+  while (lo < hi) {
+    const mid = (lo + hi + 1) >> 1;
+    if (offsets[mid] <= y) lo = mid;
+    else hi = mid - 1;
+  }
+  return lo;
+}
+
+/** Arrow keys, j and k move between tool calls; Home and End go to the first and last shown. */
+function onStreamKey(e: KeyboardEvent<HTMLDivElement>) {
+  const keys: Record<string, number> = { ArrowDown: 1, j: 1, ArrowUp: -1, k: -1, Home: -Infinity, End: Infinity };
+  if (!(e.key in keys) || e.altKey || e.ctrlKey || e.metaKey) return;
+  const target = e.target as HTMLElement;
+  if (target.matches("input, textarea, select")) return;
+  const heads = [...e.currentTarget.querySelectorAll<HTMLElement>(".actlet-tool-head")];
+  if (heads.length === 0) return;
+  const at = heads.indexOf(target);
+  const step = keys[e.key];
+  let next: number;
+  if (step === -Infinity) next = 0;
+  else if (step === Infinity) next = heads.length - 1;
+  else if (at < 0) next = step > 0 ? firstVisible(e.currentTarget, heads) : heads.length - 1;
+  else next = Math.min(Math.max(at + step, 0), heads.length - 1);
+  e.preventDefault();
+  heads[next].focus();
+  heads[next].scrollIntoView?.({ block: "nearest" });
+}
+
+function firstVisible(stream: HTMLElement, heads: HTMLElement[]): number {
+  const top = stream.getBoundingClientRect().top;
+  const i = heads.findIndex((h) => h.getBoundingClientRect().top >= top);
+  return i < 0 ? 0 : i;
 }
 
 export interface ItemViewProps extends StreamOptions {
