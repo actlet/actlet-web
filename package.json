@@ -43,7 +43,9 @@
     "bench": "node scripts/bench.mjs",
     "check:examples": "node scripts/check-examples.mjs",
     "smoke": "scripts/smoke.sh",
-    "parity": "scripts/parity.sh"
+    "parity": "scripts/parity.sh",
+    "parity:go": "scripts/parity-go.sh",
+    "check": "pnpm build && pnpm typecheck && pnpm lint && pnpm test && pnpm parity:go"
   },
   "peerDependencies": {
     "react": "^18.0.0 || ^19.0.0"
