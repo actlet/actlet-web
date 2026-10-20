@@ -59,14 +59,41 @@ version doesn't know are ignored, and an object that isn't an event counts as a 
 
 ### Commands
 
-In live mode, with `onCommand` set, the footer offers what `allowedCommands` allows: an input line for steer notes
-(`"steer"`), Pause and Interrupt (`"pause"`, drain and interrupt), and Stop with a confirmation (`"stop"`). The default
-is `["steer"]`: watching and light steering, like the terminal viewer. Replay mode never offers commands.
+In live mode, with `onCommand` set, the footer offers what `allowedCommands` allows:
+
+- `"steer"`: an input line for operator notes;
+- `"pause"`: Pause and Interrupt (drain and interrupt);
+- `"stop"`: Stop, with a confirmation;
+- `"profile_update"`: Raise a budget. Pick a budget, give its new limit, and optionally start its usage from zero.
+  This sends a profile update with every budget (fields `["budgets"]`), since an update replaces them all.
+
+The default is `["steer"]`: watching and light steering, like the terminal viewer. Replay mode never offers
+commands.
 
 Each command gets a fresh ID, and `commandOrigin` and `actor` set the origin and actor fields. The origin defaults to
-`ORIGIN_REMOTE`, a viewer that isn't on the box's machine. A sent command shows as pending until the box reports it. The viewer learns the outcome from the session's `command` events, or from `acks` you
-pass in. If `onCommand` throws or returns a rejected promise, the command shows as not delivered. For your own UI,
-`steerCommand`, `pauseCommand` and `stopCommand` build the same messages.
+`ORIGIN_REMOTE`, a viewer that isn't on the box's machine. A sent command shows as pending until the box reports it.
+The viewer learns the outcome from the session's `command` events, or from `acks` you pass in. If `onCommand` throws
+or returns a rejected promise, the command shows as not delivered. For your own UI, `steerCommand`, `pauseCommand`,
+`stopCommand` and `raiseBudgetCommand` build the same messages, and `budgetDefinitions(session)` gives the budgets a
+raise starts from.
+
+### Standard tools and budgets
+
+The agent's standard tools show in the conversation like any call, with what matters brought forward:
+
+- **`decide`**: the question, then the decision, who made it and why. While waiting, it shows the options; expanded,
+  the context the decider was given.
+- **`llm`**: the model and the prompt, then the answer and what the call used (`fast · 180 in / 45 out · 0.0012 EUR`).
+  Its cost counts towards the session's usage.
+- **`report_progress`**: each report is a call in the timeline, and the latest is also in the status line and the
+  Session tab.
+- **`send_feedback`**: the call, plus a list in the Session tab.
+
+The Session and Profile tabs show each budget's limit, what is used of it, and its state: past the alert, used up, or
+used up while work waits. The status line warns when a budget is used up, and screen readers hear it. A profile update
+shows in the timeline with what it changed and whether it was accepted.
+
+![The money budget used up and the decision waiting for it](docs/budget-waiting.png)
 
 ### Files
 
@@ -148,7 +175,7 @@ Development needs Node 24, pnpm 10 and, for `pnpm generate`, `protoc`.
 
 ```sh
 pnpm install
-pnpm dev             # the demo page; ?mode=replay|live|websocket|sse|jsonl|synthetic, ?theme=light, ?speed=8
+pnpm dev             # the demo page; ?mode=replay|standard|live|websocket|sse|jsonl|synthetic, ?theme=light, ?speed=8, ?at=27, ?tab=session
 pnpm test            # vitest
 pnpm lint            # eslint (with jsx-a11y) + prettier --check
 pnpm typecheck
@@ -182,16 +209,24 @@ where the two differ. Go's `null` for an empty slice or map counts as empty unle
 [protobuf-es](https://github.com/bufbuild/protobuf-es), with JSON types. It's checked in. `pnpm generate` needs `protoc`
 and reads `../actlet/proto` unless `PROTO_DIR` points elsewhere.
 
-### The demo fixture
+### The fixtures
 
-`fixtures/demo.jsonl` is Actlet's scripted TUI demo session (`examples/demo` in the Actlet repository), run headless and
-exported as JSON Lines. It has a root agent, three subagents, an operator note, and files written and edited. To record it
-again:
+Both are real recordings: scripted sessions run headless through Actlet's development gateway, exported as JSON Lines.
 
-1. Build Actlet's binaries into a scratch directory, from the Actlet repository:
-   `go build -o "$tmp/bin/" ./cmd/...`.
-2. Run the demo's gateway and worker without the TUI, the way `examples/demo/demo.sh` sets them up (the gateway with
-   `-task`, `-profile` and `-model` from `examples/demo`, and `actlet run -session …`).
-3. Export the recording with `scripts/export-fixture.sh "$tmp/bin/actlet-cli" <gateway-data>/<id>.actrec`. It runs
-   `actlet-cli replay export --jsonl` and replaces home directory paths.
-4. Run `UPDATE_GOLDEN=1 pnpm test` to rewrite `fixtures/demo.view.json`, the folded view state, and review the diff.
+- `fixtures/demo.jsonl` is Actlet's TUI demo (`examples/demo` in the Actlet repository). It has a root agent, three
+  subagents, an operator note, files written and edited, and a money budget past its alert.
+- `fixtures/standard.jsonl` is a release check from `fixtures/standard/`. It uses every standard tool: progress,
+  feedback, the budget, a decision and an llm call. Its money budget runs out, the work waits, and the operator raises
+  the budget with a profile update.
+
+To record them again, build Actlet's binaries into a scratch directory from the Actlet repository
+(`go build -o "$tmp/bin/" ./cmd/...`), then:
+
+```sh
+scripts/record-fixture.sh "$tmp/bin" <actlet>/examples/demo fixtures/demo.jsonl fixtures/demo.operator
+scripts/record-fixture.sh "$tmp/bin" fixtures/standard fixtures/standard.jsonl fixtures/standard.operator
+UPDATE_GOLDEN=1 pnpm test   # rewrite fixtures/*.view.json, the folded view states; review the diff
+```
+
+The operator files hold the gateway commands sent during the run, at their times. Exporting replaces home directory
+paths.

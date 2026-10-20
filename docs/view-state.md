@@ -37,6 +37,10 @@ nanoseconds, trailing zeros trimmed, as Go's `time.RFC3339Nano` writes them. An 
     "local_commands": [],
   },
   "usage": { "input": 0, "output": 0, "cache_read": 0, "cache_write": 0, "cost": 0, "currency": "" },
+  "progress": { "worker": "root", "message": "Summary drafted", "percent": 40, "time": "…" }, // null before one; percent -1 when unsaid, at most 100
+  "feedback": [{ "worker": "root", "kind": "suggestion", "message": "…", "time": "…" }], // the latest 200
+  "feedback_dropped": 0,
+  "budgets": [{ "kind": "BUDGET_KIND_MONEY", "limit": 0.04, "used": 0.05475, "currency": "EUR", "state": "waiting" }], // null before a budget status
   "items": [/* Item: the session's own timeline */],
   "dropped": 0,
   "workers": [
@@ -105,5 +109,8 @@ An item:
 Text is bounded at 256 KiB per field, with the cut marked `[viewer cut N characters]`. Actlet cuts content far shorter,
 so this matters only for events that didn't come from Actlet. Calls of turns that fall off a timeline (after 2,000 items)
 are let go. That changes nothing visible, unless the event for a dropped call that already finished arrives again.
+
+Usage includes what tool calls through the gateway (such as `llm`) report. A call's own usage is kept for display
+but isn't part of the format, as the Go model doesn't keep it per call.
 
 The Go model's internal fields, such as its per-worker call index and latest turn, aren't part of the format.

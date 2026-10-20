@@ -38,8 +38,9 @@ src/
   styles.css         theming through CSS custom properties
   gen/               generated from actlet/gateway/v0/gateway.proto
 demo/                the dev page (pnpm dev): replay, live, integration examples with mock servers, a synthetic session
-scripts/             generate, fixture export, bench, examples check, smoke test, parity
-fixtures/            demo.jsonl (Actlet's demo session) and demo.view.json (its folded state)
+scripts/             generate, record and export fixtures, bench, examples check, smoke test, parity
+fixtures/            demo.jsonl (Actlet's demo) and standard.jsonl (every standard tool), each with its folded state
+                     (*.view.json), its operator file, and standard/ (the release check's scenario)
 test/                vitest: the fold, sanitizing, components, untrusted payloads, scale, accessibility, parity
 ```
 
