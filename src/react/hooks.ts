@@ -3,7 +3,7 @@ import { toEvent, type EventInput } from "../events";
 import type { ActivityEvent } from "../gen/actlet/gateway/v0/gateway_pb";
 import { Player } from "../replay/player";
 import { apply, newSession, skip, type Session } from "../view/session";
-import { recordCommandEvent, type CommandOutcome } from "./commands";
+import { recordCommandEvent, type CommandOutcome } from "../commands";
 
 /** Decodes events; null for one that can't be decoded. */
 export function decodeEvents(inputs: readonly EventInput[]): (ActivityEvent | null)[] {

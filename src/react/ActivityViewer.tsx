@@ -3,7 +3,7 @@ import type { EventInput } from "../events";
 import { SessionState, type CommandAck, type Origin } from "../gen/actlet/gateway/v0/gateway_pb";
 import type { Session } from "../view/session";
 import { CommandBar, type CommandHandler } from "./CommandBar";
-import { commandOutcomes, DEFAULT_COMMANDS, type CommandKind, type CommandOutcome } from "./commands";
+import { commandOutcomes, DEFAULT_COMMANDS, type CommandKind, type CommandOutcome } from "../commands";
 import { FileViewer, type FileReader } from "./FileViewer";
 import { useLiveSession, useNow, useReplay, type ReplayOptions } from "./hooks";
 import { EventsPanel, ProfilePanel, SessionPanel, TaskPanel, ToolsPanel } from "./Panels";

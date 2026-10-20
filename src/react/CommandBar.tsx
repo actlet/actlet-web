@@ -10,7 +10,7 @@ import {
   type CommandOptions,
   type CommandStatus,
   type SentCommand,
-} from "./commands";
+} from "../commands";
 import { Text } from "./Text";
 
 /** Delivers a command to the session. A rejected promise marks the command as not delivered. */

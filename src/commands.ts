@@ -7,7 +7,7 @@ import {
   type ActivityEvent,
   type Command,
   type CommandAck,
-} from "../gen/actlet/gateway/v0/gateway_pb";
+} from "./gen/actlet/gateway/v0/gateway_pb";
 
 /** The commands a viewer can offer. "pause" offers both modes: drain and interrupt. */
 export type CommandKind = "steer" | "pause" | "stop";
