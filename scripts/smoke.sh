@@ -96,4 +96,6 @@ if grep -l 'react\.element\|useState\|__SECRET_INTERNALS\|react-dom' $core_js; t
 	exit 1
 fi
 echo "smoke: ok (the core page has no React: $(du -ch $core_js | tail -1 | cut -f1))"
-[ "${KEEP:-}" = 1 ] && echo "app left in $app"
+if [ "${KEEP:-}" = 1 ]; then
+	echo "app left in $app"
+fi
