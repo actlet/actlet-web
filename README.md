@@ -126,7 +126,7 @@ lines.
 | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
 | `TurnStream`                                                                     | The conversation: turns, tool blocks, nested subagents, notes, system lines, auto-follow |
 | `ToolBlock`                                                                      | One tool call with its result or diff; collapsible                                       |
-| `StatusLine`                                                                     | State, model, context %, cost, elapsed time, connection                                  |
+| `StatusLine`                                                                     | State pill, model, context %/window, cost and time against budgets, connection           |
 | `Sidebar`                                                                        | Workers (click to show one alone) and changed files with `+N −M`                         |
 | `FileViewer`                                                                     | The read-only file popup                                                                 |
 | `Tabs`, `SessionPanel`, `TaskPanel`, `ProfilePanel`, `ToolsPanel`, `EventsPanel` | The other views                                                                          |
@@ -163,15 +163,54 @@ replay, `Space` or `k` plays and pauses, `←` and `→` step one event (ten wit
 speed. Asking to stop focuses Cancel first.
 
 Icons, regions and lists have roles and labels. The status line isn't a live region, because it ticks every second;
-instead, state changes are announced. Text colours meet WCAG AA (4.5:1) in both themes, and the spinner stops for
+instead, state changes are announced. Text colours meet WCAG AA (4.5:1) in the built-in themes, and the spinner stops for
 readers who ask for less motion. jsx-a11y lints the components, axe runs over every view in the tests, and a test walks
 through the viewer by keyboard alone.
 
-### Theming
+### Themes
 
-`theme="dark" | "light" | "auto"` (the default follows the system setting). Every colour and font is a CSS custom property
-on `.actlet-viewer`, such as `--actlet-bg`, `--actlet-fg`, `--actlet-agent`, `--actlet-mono` and `--actlet-size`, so you
-can restyle the viewer without touching its CSS. See `src/styles.css`.
+The viewer takes its colours from a theme in the format of Actlet's terminal viewer, so one theme file styles both
+(`actlet attach -theme ./ocean.yaml` and the web page):
+
+```tsx
+import { parse } from "yaml"; // or JSON.parse for a .json theme
+
+<ActivityViewer events={events} />                                // "auto": dark or light, as the system is
+<ActivityViewer events={events} theme="light" />                  // a built-in theme: dark, light or plain
+<ActivityViewer events={events} theme={parse(oceanYaml)} />       // a theme file, parsed by you
+```
+
+- **Built-in themes:** `dark`, `light` and `plain`. `plain` has no colours of its own. It uses the page's own, with
+  emphasis by bold, underline and reverse video. `auto`, the default, picks dark or light by the reader's system
+  setting, and plain when they ask for more contrast or force their own colours. The built-in themes are Actlet's own
+  files, shipped as `@actlet/viewer/themes/{dark,light,plain}.yaml`. Every text colour in them meets WCAG AA (4.5:1)
+  on the background, the panels and a selected row.
+- **Theme files:** YAML or JSON, which you read and parse. The viewer checks a theme as strictly as the terminal viewer
+  does. Unknown fields, tokens and attributes are errors, as are colours that aren't `#rrggbb`, `#rgb`, `"0"` to
+  `"255"` or `none`. A theme that isn't valid leaves the viewer dark, and the status line says why. `parseTheme()`
+  checks one up front and throws a `ThemeError`.
+
+```yaml
+name: ocean
+base: dark # dark (the default), light or plain: the tokens left out come from it
+colors:
+  accent: "#4FD1C5"
+  background: none # the page's own background
+  key: "33" # an ANSI colour number, 0 to 255, as the xterm palette has it
+emphasis:
+  key: [bold] # bold, italic, underline or reverse; replaces the base's emphasis for the token
+```
+
+The tokens are `background`, `panel` (the header, sidebar, status line, tool calls and code), `selection`, `border`,
+`text`, `muted`, `faint` (decoration only, such as separators), `accent` (the title, the active tab, headings and the
+worker shown), the speakers `agent`, `subagent` and `operator`, the states `ok`, `error` and `warning`, `attach`, the
+diff's `added`, `removed` and `hunk`, and the syntax colours `keyword`, `string`, `number`, `comment`, `key`, `function`
+and `punctuation`. The web viewer has no attach badge, so it doesn't use `attach`.
+
+Each token is a CSS custom property on `.actlet-viewer`, `--actlet-<token>`, so a stylesheet can also restyle the viewer.
+The fonts are `--actlet-font`, `--actlet-mono` and `--actlet-size`. The demo's "a theme file" example edits a theme live.
+
+![The ocean theme file, edited in the demo](docs/theme-file.png)
 
 ### Untrusted content
 
@@ -190,7 +229,7 @@ Development needs Node 24, pnpm 10 and, for `pnpm generate`, `protoc`.
 
 ```sh
 pnpm install
-pnpm dev             # the demo page; ?mode=replay|standard|digest|fork|live|websocket|sse|jsonl|synthetic, ?theme=light, ?speed=8, ?at=27, ?tab=session
+pnpm dev             # the demo page; ?mode=replay|standard|digest|fork|live|websocket|sse|jsonl|themed|synthetic, ?theme=light|plain|ocean, ?speed=8, ?at=27, ?tab=session
 pnpm test            # vitest
 pnpm lint            # eslint (with jsx-a11y) + prettier --check
 pnpm typecheck
@@ -199,7 +238,7 @@ pnpm generate        # regenerate src/gen from ../actlet/proto (PROTO_DIR=… to
 pnpm bench           # the 20,000-event numbers above, in headless Chrome
 pnpm check:examples  # the integration examples end to end, in headless Chrome
 pnpm smoke           # pack, install the tarball in a fresh Vite app, type-check and build it
-pnpm parity:go       # strict parity with the Go view model on every fixture
+pnpm parity:go       # strict parity with the Go view model on every fixture, and the theme files Actlet's own
 pnpm check           # build, typecheck, lint, test and parity:go
 ```
 
@@ -209,9 +248,9 @@ library. It also installs quickly, and `packageManager` in `package.json` pins i
 ### Packaging
 
 `pnpm build` writes ES modules to `dist/`, one file per module, so bundlers keep only what an app uses. Declarations sit
-next to them, and the stylesheet is `dist/viewer.css`. The exports map has `.`, `./core`, `./styles.css` and
-`./package.json`. React 18 or 19 is the only peer dependency, and `@bufbuild/protobuf` the only dependency.
-`pnpm pack` packs `dist/`, the README and `package.json`.
+next to them, and the stylesheet is `dist/viewer.css`. The exports map has `.`, `./core`, `./styles.css`, `./themes/*`
+and `./package.json`. React 18 or 19 is the only peer dependency, and `@bufbuild/protobuf` the only dependency.
+`pnpm pack` packs `dist/`, `themes/`, the README and `package.json`.
 
 ### Parity with the Go view model
 
@@ -222,7 +261,7 @@ on every fixture, strictly:
 - **The binary:** it builds `actlet-cli` from a snapshot of the commit in `.actlet-commit` of `../actlet`, leaving that
   repository as it is. `ACTLET_CLI=<binary>`, `ACTLET_REPO` and `ACTLET_COMMIT` change that.
 - **What it does:** it dumps each `fixtures/*.jsonl` with Go, and lists every path where the dump differs from this
-  library's fold.
+  library's fold. It also checks that `themes/*.yaml` are byte for byte the built-in themes at that commit.
 - **Without Go:** with no Go toolchain or Actlet repository it says it skipped, and exits 0, unless `REQUIRE_PARITY=1`.
 
 `pnpm check` runs everything: build, typecheck, lint, test and `parity:go`. For one pair of files, run
