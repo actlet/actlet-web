@@ -56,7 +56,7 @@ export interface ActivityViewerProps {
 
   /** The tab shown first. */
   defaultTab?: TabId;
-  /** Draw a line between turns and between tool calls. */
+  /** Draw a line between turns and between tool calls; on by default, and the reader can turn it off. */
   separators?: boolean;
   className?: string;
   style?: CSSProperties;
@@ -142,7 +142,7 @@ function Layout(p: LayoutProps) {
   const [focus, setFocus] = useState("");
   const [file, setFile] = useState<string | null>(null);
   const [expandAll, setExpandAll] = useState(false);
-  const [separators, setSeparators] = useState(p.separators ?? false);
+  const [separators, setSeparators] = useState(p.separators ?? true);
   const [collapseSubs, setCollapseSubs] = useState(false);
   const closeFile = useCallback(() => setFile(null), []);
   // Few commands are sent, so merging the acknowledgements each render is cheap.

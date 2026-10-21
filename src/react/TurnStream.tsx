@@ -58,7 +58,7 @@ const FALLBACK_HEIGHT = 900;
 export function TurnStream({
   session,
   worker = "",
-  separators = false,
+  separators = true,
   collapseSubagents = false,
   expandAll = false,
   follow = true,
