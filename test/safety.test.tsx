@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it } from "vitest";
 import { ActivityViewer } from "../src/react/ActivityViewer";
 import { TABS } from "../src/react/Tabs";
 import { Origin, SessionState } from "../src/gen/actlet/gateway/v0/gateway_pb";
+import { sanitize } from "../src/view/sanitize";
 import { Events } from "./helpers";
 
 afterEach(cleanup);
@@ -224,6 +225,39 @@ describe("untrusted content", () => {
     fireEvent.click(within(r.container.querySelector(".actlet-sidebar")!).getByTitle(/^output\/<script>/));
     expect(screen.getByRole("dialog").textContent).toContain("<iframe");
     expectInert(r.container);
+  });
+
+  it("highlights JSON and YAML as text in spans", async () => {
+    const task = JSON.stringify({ id: evil, n: 1, [evil]: [true, null] }, null, 2);
+    const config = `name: ${payloads[1]} # ${payloads[0]}\nnote: |\n  ${payloads[3]}\nlist:\n  - "${payloads[4]}"\n`;
+    const e = new Events();
+    e.add("", { case: "sessionInfo", value: { taskId: "t", task, config: config + "[... 9 bytes omitted ...]" } });
+    e.add("root", {
+      case: "fileChange",
+      value: {
+        path: "../output/evil.json",
+        created: true,
+        diff: "+" + task.split("\n").join("\n+"),
+      },
+    });
+    const { container } = render(<ActivityViewer events={e.out} defaultTab="task" />);
+    const pre = () => container.querySelector<HTMLElement>(".actlet-pre")!;
+    const spansOnly = (el: HTMLElement) =>
+      expect([...new Set([...el.querySelectorAll("*")].map((x) => x.tagName))]).toEqual(["SPAN"]);
+    expect(pre().textContent).toBe(sanitize(task));
+    expect(pre().querySelectorAll(".actlet-hl-key").length).toBeGreaterThan(1);
+    spansOnly(pre());
+    expectInert(container);
+    fireEvent.click(screen.getByRole("tab", { name: "Profile" }));
+    expect(pre().textContent).toBe(sanitize(config).trimEnd() + "\n9 bytes omitted");
+    expect([...pre().querySelectorAll(".actlet-hl-comment")].map((x) => x.textContent)).toEqual([`# ${payloads[0]}`]);
+    expect(pre().querySelector(".actlet-cut")!.textContent).toBe("9 bytes omitted");
+    expectInert(container);
+    fireEvent.click(screen.getByRole("tab", { name: "Chat" }));
+    fireEvent.click(within(container.querySelector(".actlet-sidebar")!).getByTitle("output/evil.json"));
+    const code = screen.getByRole("dialog").querySelector<HTMLElement>(".actlet-code")!;
+    expect(code.querySelectorAll(".actlet-hl-string").length).toBeGreaterThan(0);
+    expectInert(container);
   });
 
   it("cuts huge text short and says so", () => {

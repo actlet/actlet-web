@@ -15,6 +15,7 @@ import {
 import { clock } from "../view/time";
 import { sanitize } from "../view/sanitize";
 import { contextWindow, firstLine, stateName, workers, type Session } from "../view/session";
+import { Code } from "./Code";
 import { Text } from "./Text";
 
 function Section({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
@@ -44,10 +45,11 @@ function KV({ rows }: { rows: [string, string][] }) {
   );
 }
 
+/** Text from the session, such as the task, highlighted if it is JSON or YAML. */
 function Pre({ text }: { text: string }) {
   return (
     <pre className="actlet-pre">
-      <Text text={text.replace(/\n+$/, "")} />
+      <Code text={text.replace(/\n+$/, "")} />
     </pre>
   );
 }

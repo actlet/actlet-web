@@ -2,6 +2,13 @@
  * @actlet/viewer styles. Every colour and font is a custom property on
  * .actlet-viewer, so an app can restyle the viewer by setting them.
  * data-theme="dark" | "light" | "auto" (the reader's system setting).
+ *
+ * The colours: bg (the screen), bg-raised (panels: the header, sidebar,
+ * status line, tool calls and code), bg-select (a selected row), border,
+ * fg, muted and faint text, accent (the title, the active tab, the
+ * selected worker and focus), the speakers (agent, subagent, operator),
+ * states (ok, err, run) and diffs (add, del), and syntax highlighting
+ * (keyword, string, number, comment, key, function, punctuation).
  */
 
 .actlet-viewer {
@@ -10,63 +17,87 @@
   --actlet-size: 13px;
   --actlet-radius: 6px;
 
-  --actlet-bg: #16181d;
-  --actlet-bg-raised: #1e2129;
-  --actlet-bg-select: #2a2e3a;
-  --actlet-fg: #d8dbe2;
-  --actlet-muted: #9ea3b0;
-  --actlet-faint: #8b909c;
-  --actlet-border: #2c303a;
-  --actlet-agent: #a194f8;
-  --actlet-subagent: #6fb3db;
-  --actlet-operator: #e5a84b;
-  --actlet-ok: #6cbf84;
-  --actlet-err: #ec8088;
-  --actlet-run: #d7ba7d;
-  --actlet-add: #6cbf84;
-  --actlet-del: #ec8088;
-  --actlet-cut-bg: rgba(215, 186, 125, 0.14);
+  --actlet-bg: #17171f;
+  --actlet-bg-raised: #21212c;
+  --actlet-bg-select: #2f2c45;
+  --actlet-fg: #dcdce6;
+  --actlet-muted: #a3a3ba;
+  --actlet-faint: #8e8ea6;
+  --actlet-border: #3a3950;
+  --actlet-accent: #a48bfa;
+  --actlet-agent: #a48bfa;
+  --actlet-subagent: #5fb8e6;
+  --actlet-operator: #f2b65e;
+  --actlet-ok: #5fd192;
+  --actlet-err: #f57d8e;
+  --actlet-run: #e9c46a;
+  --actlet-add: #5fd192;
+  --actlet-del: #f57d8e;
+  --actlet-keyword: #c79bf2;
+  --actlet-string: #a3d982;
+  --actlet-number: #f5a86e;
+  --actlet-comment: #9494ac;
+  --actlet-key: #7faaf7;
+  --actlet-function: #5ed6e3;
+  --actlet-punctuation: #a3a3ba;
+  --actlet-cut-bg: rgba(233, 196, 106, 0.14);
   --actlet-overlay: rgba(0, 0, 0, 0.55);
 }
 
 .actlet-viewer[data-theme="light"] {
   --actlet-bg: #fbfbfd;
-  --actlet-bg-raised: #f1f2f6;
-  --actlet-bg-select: #e4e6f0;
-  --actlet-fg: #1d2030;
-  --actlet-muted: #535968;
-  --actlet-faint: #646a78;
-  --actlet-border: #dfe1e8;
-  --actlet-agent: #5640d4;
-  --actlet-subagent: #226a96;
-  --actlet-operator: #8a560c;
-  --actlet-ok: #1f6e3a;
-  --actlet-err: #b0303b;
-  --actlet-run: #7f5d14;
-  --actlet-add: #1f6e3a;
-  --actlet-del: #b0303b;
-  --actlet-cut-bg: rgba(161, 122, 31, 0.12);
+  --actlet-bg-raised: #f1f2f7;
+  --actlet-bg-select: #e6e2fa;
+  --actlet-fg: #2a2c38;
+  --actlet-muted: #585b6e;
+  --actlet-faint: #62657a;
+  --actlet-border: #caccda;
+  --actlet-accent: #5d38db;
+  --actlet-agent: #5d38db;
+  --actlet-subagent: #155e96;
+  --actlet-operator: #8f4f06;
+  --actlet-ok: #1b6e3c;
+  --actlet-err: #b42840;
+  --actlet-run: #7a5300;
+  --actlet-add: #1b6e3c;
+  --actlet-del: #b42840;
+  --actlet-keyword: #6b2bc4;
+  --actlet-string: #26692a;
+  --actlet-number: #984307;
+  --actlet-comment: #62657a;
+  --actlet-key: #1a45be;
+  --actlet-function: #08626f;
+  --actlet-punctuation: #585b6e;
+  --actlet-cut-bg: rgba(122, 83, 0, 0.1);
   --actlet-overlay: rgba(20, 22, 30, 0.35);
 }
 
 @media (prefers-color-scheme: light) {
   .actlet-viewer[data-theme="auto"] {
     --actlet-bg: #fbfbfd;
-    --actlet-bg-raised: #f1f2f6;
-    --actlet-bg-select: #e4e6f0;
-    --actlet-fg: #1d2030;
-    --actlet-muted: #535968;
-    --actlet-faint: #646a78;
-    --actlet-border: #dfe1e8;
-    --actlet-agent: #5640d4;
-    --actlet-subagent: #226a96;
-    --actlet-operator: #8a560c;
-    --actlet-ok: #1f6e3a;
-    --actlet-err: #b0303b;
-    --actlet-run: #7f5d14;
-    --actlet-add: #1f6e3a;
-    --actlet-del: #b0303b;
-    --actlet-cut-bg: rgba(161, 122, 31, 0.12);
+    --actlet-bg-raised: #f1f2f7;
+    --actlet-bg-select: #e6e2fa;
+    --actlet-fg: #2a2c38;
+    --actlet-muted: #585b6e;
+    --actlet-faint: #62657a;
+    --actlet-border: #caccda;
+    --actlet-accent: #5d38db;
+    --actlet-agent: #5d38db;
+    --actlet-subagent: #155e96;
+    --actlet-operator: #8f4f06;
+    --actlet-ok: #1b6e3c;
+    --actlet-err: #b42840;
+    --actlet-run: #7a5300;
+    --actlet-add: #1b6e3c;
+    --actlet-del: #b42840;
+    --actlet-keyword: #6b2bc4;
+    --actlet-string: #26692a;
+    --actlet-number: #984307;
+    --actlet-comment: #62657a;
+    --actlet-key: #1a45be;
+    --actlet-function: #08626f;
+    --actlet-punctuation: #585b6e;
+    --actlet-cut-bg: rgba(122, 83, 0, 0.1);
     --actlet-overlay: rgba(20, 22, 30, 0.35);
   }
 }
@@ -151,12 +182,21 @@
   align-items: center;
   gap: 0.75em;
   padding: 0.4em 0.9em;
+  background: var(--actlet-bg-raised);
   border-bottom: 1px solid var(--actlet-border);
   min-width: 0;
 }
-.actlet-title {
+/* A pill: the background's colour on a colour. */
+.actlet-pill,
+.actlet-title,
+.actlet-tab-on {
+  border-radius: var(--actlet-radius);
+  background: var(--actlet-pill, var(--actlet-accent));
+  color: var(--actlet-bg);
   font-weight: 700;
-  color: var(--actlet-agent);
+}
+.actlet-title {
+  padding: 0 0.5em;
 }
 .actlet-task {
   overflow: hidden;
@@ -181,12 +221,12 @@
 }
 .actlet-tab:hover {
   color: var(--actlet-fg);
+  background: var(--actlet-bg-select);
 }
-.actlet-tab-on {
-  color: var(--actlet-fg);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 4px;
+.actlet-tab.actlet-tab-on {
+  color: var(--actlet-bg);
+  background: var(--actlet-accent);
+  font-weight: 700;
 }
 
 /* Body. */
@@ -226,7 +266,7 @@
   background: none;
   border: none;
   padding: 0;
-  color: var(--actlet-agent);
+  color: var(--actlet-accent);
   font: inherit;
   cursor: pointer;
   text-decoration: underline;
@@ -273,19 +313,30 @@
 .actlet-msg {
   margin-top: 0.8em;
   padding-left: 0.7em;
-  border-left: 3px solid var(--actlet-accent, var(--actlet-agent));
+  border-left: 3px solid var(--actlet-speaker, var(--actlet-agent));
 }
 .actlet-agent {
-  --actlet-accent: var(--actlet-agent);
+  --actlet-speaker: var(--actlet-agent);
 }
 .actlet-subagent {
-  --actlet-accent: var(--actlet-subagent);
+  --actlet-speaker: var(--actlet-subagent);
 }
 .actlet-operator {
-  --actlet-accent: var(--actlet-operator);
+  --actlet-speaker: var(--actlet-operator);
 }
+/* The speaker's name, as a pill in the speaker's colour. */
 .actlet-who strong {
-  color: var(--actlet-accent);
+  display: inline-block;
+  padding: 0 0.45em;
+  margin-right: 0.15em;
+  border-radius: 4px;
+  background: var(--actlet-speaker, var(--actlet-agent));
+  color: var(--actlet-bg);
+}
+.actlet-operator > .actlet-text {
+  padding: 0.25em 0.5em;
+  border-radius: 4px;
+  background: var(--actlet-bg-raised);
 }
 .actlet-clock {
   color: var(--actlet-faint);
@@ -310,7 +361,22 @@
 
 /* Tool blocks. */
 .actlet-tool {
-  margin: 0.2em 0 0.2em 0.6em;
+  margin: 0.3em 0 0.3em 0.6em;
+  padding: 0.15em 0.3em;
+  background: var(--actlet-bg-raised);
+  border: 1px solid var(--actlet-border);
+  border-left: 3px solid var(--actlet-tool-state, var(--actlet-border));
+  border-radius: 4px;
+}
+.actlet-tool-ok {
+  --actlet-tool-state: var(--actlet-ok);
+}
+.actlet-tool-error {
+  --actlet-tool-state: var(--actlet-err);
+}
+.actlet-tool-running,
+.actlet-tool-unknown {
+  --actlet-tool-state: var(--actlet-run);
 }
 .actlet-tool-head {
   display: flex;
@@ -333,6 +399,7 @@
 }
 .actlet-tool-name {
   font-weight: 700;
+  color: var(--actlet-key);
   white-space: nowrap;
 }
 .actlet-tool-args {
@@ -350,7 +417,7 @@
 .actlet-tool-body {
   margin-left: 0.55em;
   padding-left: 0.9em;
-  border-left: 1px solid var(--actlet-faint);
+  border-left: 1px solid var(--actlet-border);
 }
 .actlet-line {
   white-space: pre-wrap;
@@ -430,16 +497,17 @@
 .actlet-sidebar {
   width: 260px;
   flex-shrink: 0;
+  background: var(--actlet-bg-raised);
   border-left: 1px solid var(--actlet-border);
   padding: 0.5em 0.6em;
   overflow-y: auto;
 }
 .actlet-head {
   font-size: 0.8em;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--actlet-muted);
+  color: var(--actlet-accent);
   margin: 0.6em 0 0.3em;
 }
 .actlet-list,
@@ -465,9 +533,23 @@
   cursor: pointer;
   min-width: 0;
 }
-.actlet-row:hover,
-.actlet-selected {
+.actlet-row:hover {
+  background: var(--actlet-bg);
+}
+/* The worker shown alone: a marker, the accent and a background. */
+.actlet-marker {
+  width: 0.8em;
+  flex-shrink: 0;
+  color: var(--actlet-accent);
+  font-weight: 700;
+}
+.actlet-row.actlet-selected {
   background: var(--actlet-bg-select);
+  box-shadow: inset 3px 0 0 var(--actlet-accent);
+}
+.actlet-selected .actlet-row-name {
+  color: var(--actlet-accent);
+  font-weight: 700;
 }
 .actlet-row-name {
   min-width: 0;
@@ -483,20 +565,51 @@
 
 /* Footer: replay controls, commands and the status line. */
 .actlet-footer {
+  background: var(--actlet-bg-raised);
   border-top: 1px solid var(--actlet-border);
 }
 .actlet-status {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.25em;
   padding: 0.3em 0.9em;
-  color: var(--actlet-muted);
+  color: var(--actlet-fg);
   white-space: nowrap;
   overflow: hidden;
 }
-.actlet-state {
-  color: var(--actlet-fg);
+.actlet-status .actlet-pill {
+  padding: 0 0.5em;
+  margin-right: 0.6em;
+}
+.actlet-pill .actlet-icon,
+.actlet-pill .actlet-spinner::before {
+  color: inherit;
+}
+.actlet-pill-running {
+  --actlet-pill: var(--actlet-run);
+}
+.actlet-pill-done {
+  --actlet-pill: var(--actlet-ok);
+}
+.actlet-pill-failed {
+  --actlet-pill: var(--actlet-err);
+}
+.actlet-pill-paused {
+  --actlet-pill: var(--actlet-operator);
+}
+.actlet-seg-sep {
+  color: var(--actlet-faint);
+  white-space: pre;
+}
+.actlet-seg-model {
+  color: var(--actlet-accent);
+  font-weight: 700;
+}
+.actlet-seg-progress {
+  font-style: italic;
+}
+.actlet-seg-muted {
+  color: var(--actlet-muted);
 }
 .actlet-replay,
 .actlet-command-row {
@@ -512,7 +625,7 @@
 .actlet-seek {
   flex: 1;
   min-width: 120px;
-  accent-color: var(--actlet-agent);
+  accent-color: var(--actlet-accent);
 }
 .actlet-pos {
   font-family: var(--actlet-mono);
@@ -524,13 +637,16 @@
 .actlet-input {
   font: inherit;
   color: var(--actlet-fg);
-  background: var(--actlet-bg-raised);
+  background: var(--actlet-bg);
   border: 1px solid var(--actlet-border);
   border-radius: var(--actlet-radius);
   padding: 0.2em 0.6em;
 }
 .actlet-btn {
   cursor: pointer;
+}
+.actlet-btn:hover:not(:disabled) {
+  border-color: var(--actlet-accent);
 }
 .actlet-btn:disabled {
   opacity: 0.5;
@@ -547,7 +663,7 @@
   min-width: 200px;
 }
 .actlet-prompt {
-  color: var(--actlet-operator);
+  color: var(--actlet-accent);
   font-weight: 700;
 }
 .actlet-input {
@@ -577,7 +693,7 @@
   color: var(--actlet-err);
 }
 .actlet-viewer :focus-visible {
-  outline: 2px solid var(--actlet-agent);
+  outline: 2px solid var(--actlet-accent);
   outline-offset: 1px;
 }
 
@@ -592,7 +708,10 @@
 }
 .actlet-section-title {
   font-size: 1em;
-  margin: 0.4em 0;
+  margin: 0.4em 0 0.5em;
+  padding-bottom: 0.2em;
+  color: var(--actlet-accent);
+  border-bottom: 1px solid var(--actlet-border);
 }
 .actlet-kv {
   margin: 0;
@@ -605,7 +724,7 @@
 }
 .actlet-kv dt {
   width: 7em;
-  color: var(--actlet-muted);
+  color: var(--actlet-key);
   flex-shrink: 0;
 }
 .actlet-kv dd {
@@ -631,6 +750,7 @@
   margin: 0;
   padding: 0.6em 0.8em;
   background: var(--actlet-bg-raised);
+  border: 1px solid var(--actlet-border);
   border-radius: var(--actlet-radius);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -669,7 +789,7 @@
   width: min(100%, 960px);
   max-height: 100%;
   background: var(--actlet-bg);
-  border: 1px solid var(--actlet-faint);
+  border: 1px solid var(--actlet-border);
   border-radius: 10px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
@@ -682,9 +802,13 @@
   padding: 0.5em 0.9em;
 }
 .actlet-popup-head {
+  background: var(--actlet-bg-raised);
   border-bottom: 1px solid var(--actlet-border);
+  border-radius: 10px 10px 0 0;
 }
 .actlet-popup-foot {
+  background: var(--actlet-bg-raised);
+  border-radius: 0 0 10px 10px;
   border-top: 1px solid var(--actlet-border);
   font-size: 0.92em;
 }
@@ -717,16 +841,30 @@
   user-select: none;
 }
 .actlet-hl-keyword {
-  color: var(--actlet-agent);
+  color: var(--actlet-keyword);
 }
 .actlet-hl-string {
-  color: var(--actlet-ok);
+  color: var(--actlet-string);
+}
+.actlet-hl-number {
+  color: var(--actlet-number);
 }
 .actlet-hl-comment {
-  color: var(--actlet-faint);
+  color: var(--actlet-comment);
+  font-style: italic;
+}
+.actlet-hl-key {
+  color: var(--actlet-key);
+}
+.actlet-hl-function {
+  color: var(--actlet-function);
+}
+.actlet-hl-punctuation {
+  color: var(--actlet-punctuation);
 }
 .actlet-hl-heading {
   font-weight: 700;
+  color: var(--actlet-accent);
 }
 
 @media (max-width: 720px) {

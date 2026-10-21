@@ -55,6 +55,9 @@ export function Sidebar({ session, focus = "", onFocus, onOpenFile }: SidebarPro
               onFocus={() => setActive(i)}
               onClick={() => onFocus?.(w.id === focus ? "" : w.id)}
             >
+              <span className="actlet-marker" aria-hidden="true">
+                {w.id === focus ? "▸" : ""}
+              </span>
               <span className={`actlet-icon ${iconClass(w.status)}`} role="img" aria-label={w.status}>
                 {w.status === "finished" ? "✓" : w.status === "failed" ? "✗" : "●"}
               </span>

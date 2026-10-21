@@ -188,7 +188,8 @@ describe("theme contrast", () => {
     const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p);
     return (x + 0.05) / (y + 0.05);
   };
-  const text = ["fg", "muted", "faint", "agent", "subagent", "operator", "ok", "err", "run", "add", "del"];
+  const text = ["fg", "muted", "faint", "accent", "agent", "subagent", "operator", "ok", "err", "run", "add", "del"];
+  const syntax = ["keyword", "string", "number", "comment", "key", "function", "punctuation"];
 
   for (const [theme, selector] of [
     ["dark", ".actlet-viewer"],
@@ -199,11 +200,17 @@ describe("theme contrast", () => {
       const t = tokens(selector);
       const low: string[] = [];
       for (const bg of ["bg", "bg-raised"]) {
-        for (const k of text) if (ratio(t[k], t[bg]) < 4.5) low.push(`${k} on ${bg}: ${ratio(t[k], t[bg]).toFixed(2)}`);
+        for (const k of [...text, ...syntax]) {
+          if (ratio(t[k], t[bg]) < 4.5) low.push(`${k} on ${bg}: ${ratio(t[k], t[bg]).toFixed(2)}`);
+        }
       }
       // Selected rows and expanded tool calls hold the main and muted text and the speakers' colours.
-      for (const k of ["fg", "muted", "agent", "subagent", "ok", "err"]) {
+      for (const k of ["fg", "muted", "accent", "agent", "subagent", "ok", "err"]) {
         if (ratio(t[k], t["bg-select"]) < 4.5) low.push(`${k} on bg-select: ${ratio(t[k], t["bg-select"]).toFixed(2)}`);
+      }
+      // Pills: the title, the active tab, speakers and the session's state, in the background's colour.
+      for (const k of ["accent", "agent", "subagent", "operator", "ok", "err", "run"]) {
+        if (ratio(t.bg, t[k]) < 4.5) low.push(`bg on ${k}: ${ratio(t.bg, t[k]).toFixed(2)}`);
       }
       expect(low).toEqual([]);
     });

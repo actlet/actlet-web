@@ -39,6 +39,9 @@ describe("the standard tools", () => {
   it("show the question and its options while the decision waits, and the budget alarm", () => {
     render(<ActivityViewer events={waiting} />);
     expect(statusLine().textContent).toContain("waiting for the money budget");
+    // Cost against the money budget's total, in the error colour while it is used up.
+    const money = within(statusLine()).getByText(/^[\d.]+\/0\.04 EUR$/);
+    expect(money.closest(".actlet-err")).not.toBeNull();
     expect(screen.getByRole("status").textContent).toBe("Session running; waiting for the money budget");
     const decide = block("Decide");
     expect(decide.textContent).toContain("waiting for a decision: ship today · wait for undo");

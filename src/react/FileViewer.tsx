@@ -1,8 +1,9 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { diffTone, recordedFile, sizeOf } from "../view/format";
-import { highlight } from "../view/highlight";
+import { highlightFile } from "../view/highlight";
 import { sanitize } from "../view/sanitize";
 import type { Session } from "../view/session";
+import { Spans } from "./Code";
 import { Text } from "./Text";
 
 /** The most of a file the viewer shows. */
@@ -97,6 +98,12 @@ export function FileViewer({ session, path, readFile, onClose }: FileViewerProps
 
   const lines = shown.lines.slice(0, MAX_FILE_LINES);
   const more = shown.lines.length - lines.length;
+  const spans = shown.diff
+    ? []
+    : highlightFile(
+        path,
+        lines.map((l) => l.replaceAll("\t", "    ").slice(0, 2000)),
+      );
   return (
     <div className="actlet-overlay">
       <button type="button" className="actlet-backdrop" tabIndex={-1} aria-label="Close the file" onClick={onClose} />
@@ -142,7 +149,7 @@ export function FileViewer({ session, path, readFile, onClose }: FileViewerProps
                     </span>
                   )}
                   <span className="actlet-code-text">
-                    {shown.diff ? <Text text={l} max={2000} /> : <Highlighted path={path} line={l} n={i} />}
+                    {shown.diff ? <Text text={l} max={2000} /> : <Spans spans={spans[i]} />}
                   </span>
                 </div>
               ))}
@@ -178,22 +185,6 @@ function trapFocus(e: KeyboardEvent, root: HTMLElement | null) {
     e.preventDefault();
     first.focus();
   }
-}
-
-function Highlighted({ path, line, n }: { path: string; line: string; n: number }) {
-  return (
-    <>
-      {highlight(path, line.replaceAll("\t", "    ").slice(0, 2000), n).map((s, i) =>
-        s.kind === "plain" ? (
-          <span key={i}>{s.text}</span>
-        ) : (
-          <span key={i} className={`actlet-hl-${s.kind}`}>
-            {s.text}
-          </span>
-        ),
-      )}
-    </>
-  );
 }
 
 /** What a read file shows: sanitized, cut to the viewer's limits, saying so. */
