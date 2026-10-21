@@ -77,28 +77,41 @@ export function StatusLine({ session: s, connection, now = null, notice = "" }: 
   return (
     // Not a live region: it changes every second. StateAnnouncer says when the state changes.
     <div className="actlet-status" role="group" aria-label="Session status">
-      <span className={`actlet-pill actlet-pill-${stateKind(s.state)}`}>
-        <StateIcon state={s.state} /> <span className="actlet-state">{stateName(s.state)}</span>
-      </span>{" "}
-      {parts.map((p, i) => (
-        <span key={i}>
-          {i > 0 && <span className="actlet-seg-sep">{" │ "}</span>}
-          {p.label && <span className="actlet-seg-muted">{p.label}</span>}
-          <span className={p.className}>
-            <Text text={p.text} max={200} />
+      {/* Each segment starts with its separator; one that starts a line is out of sight. */}
+      <span className="actlet-segs">
+        <span className="actlet-segs-in">
+          <span className={`actlet-pill actlet-pill-${stateKind(s.state)}`}>
+            <StateIcon state={s.state} /> <span className="actlet-state">{stateName(s.state)}</span>
           </span>
+          {parts.map((p, i) => (
+            <span key={i} className="actlet-seg">
+              <Sep />
+              {p.label && <span className="actlet-seg-muted">{p.label}</span>}
+              <span className={p.className}>
+                <Text text={p.text} max={200} />
+              </span>
+            </span>
+          ))}
+          {alarm !== "" && (
+            <span className="actlet-seg actlet-alarm">
+              <Sep />
+              <span className="actlet-icon" aria-hidden="true">
+                ⚠
+              </span>
+              {alarm}
+            </span>
+          )}
         </span>
-      ))}
-      {alarm !== "" && (
-        <span className="actlet-alarm">
-          <span className="actlet-seg-sep">{" │ "}</span>
-          <span className="actlet-icon" aria-hidden="true">
-            ⚠
-          </span>
-          {alarm}
-        </span>
-      )}
+      </span>
     </div>
+  );
+}
+
+function Sep() {
+  return (
+    <span className="actlet-seg-sep" aria-hidden="true">
+      {" │ "}
+    </span>
   );
 }
 

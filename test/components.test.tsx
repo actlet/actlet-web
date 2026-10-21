@@ -22,7 +22,7 @@ describe("ActivityViewer", () => {
     expect(report.textContent).toContain("−2");
     const status = screen.getByRole("group", { name: "Session status" });
     expect(status.textContent).toMatch(
-      /^✓ completed large │ ctx \d+%\/200k │ [\d./]+ EUR │ .* │ replay at the end 1x 100%$/,
+      /^✓ completed │ large │ ctx \d+%\/200k │ [\d./]+ EUR │ .* │ replay at the end 1x 100%$/,
     );
     // Turns are grouped: the agent's turns, with their tool calls as blocks.
     expect(container.querySelectorAll(".actlet-agent").length).toBe(9);
@@ -202,7 +202,7 @@ describe("the status line", () => {
     });
     render(<ActivityViewer events={e.out} />);
     const status = screen.getByRole("group", { name: "Session status" });
-    expect(status.textContent).toMatch(/^✓ completed large │ ctx 35%\/128k │ 0\.12\/5\.00 EUR │ 2\.0s\/30m │ live$/);
+    expect(status.textContent).toMatch(/^✓ completed │ large │ ctx 35%\/128k │ 0\.12\/5\.00 EUR │ 2\.0s\/30m │ live$/);
     expect(within(status).getByText("35%/128k").className).toBe("actlet-ok");
     expect(within(status).getByText("0.12/5.00 EUR").className).toBe("actlet-warn");
   });
@@ -215,7 +215,7 @@ describe("the status line", () => {
     });
     render(<ActivityViewer events={e.out} />);
     expect(screen.getByRole("group", { name: "Session status" }).textContent).toMatch(
-      /^ starting x │ ctx 1\.2k │ 0\.50 USD │ \S+ │ live$/,
+      /^ starting │ x │ ctx 1\.2k │ 0\.50 USD │ \S+ │ live$/,
     );
   });
 });

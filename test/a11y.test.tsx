@@ -253,6 +253,24 @@ describe("theme contrast", () => {
     });
   }
 
+  it("centres pills in boxes of their own, and shows speakers as text in their colour", () => {
+    const rule = (selector: string) => {
+      const start = css.indexOf(selector + " {");
+      expect(start, selector).toBeGreaterThanOrEqual(0);
+      return css.slice(start, css.indexOf("}", start));
+    };
+    // Fonts the system falls back to can't push a pill's text or icon off-centre.
+    for (const selector of [".actlet-pill,\n.actlet-title,\n.actlet-tab-on", ".actlet-who strong", ".actlet-tab"]) {
+      expect(rule(selector), selector).toMatch(/display: inline-flex;\s+align-items: center;/);
+      expect(rule(selector), selector).toMatch(/line-height: 1;/);
+      expect(rule(selector), selector).toMatch(/height: [\d.]+em;/);
+    }
+    expect(rule(".actlet-pill .actlet-icon")).toMatch(/width: 1em;\s+height: 1em;\s+overflow: hidden;/);
+    // Speakers' names are their colour on the page's background (checked above), not a fill.
+    expect(rule(".actlet-who strong")).toMatch(/\n {2}color: var\(--actlet-speaker, var\(--actlet-agent\)\);/);
+    expect(rule(".actlet-who strong")).not.toMatch(/\n {2}background/);
+  });
+
   it("stops the spinner for readers who ask for less motion", () => {
     expect(css).toMatch(
       /@media \(prefers-reduced-motion: reduce\) \{\s*\.actlet-spinner::before \{\s*animation: none;/,

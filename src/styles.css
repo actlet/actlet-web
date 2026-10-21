@@ -11,9 +11,17 @@
  * separators, never text.
  */
 
+/*
+ * Fonts: the system's own on macOS and Windows, and on Linux the common
+ * families before the generic ones, which can resolve there to a font
+ * without bold, or one made for other scripts.
+ */
 .actlet-viewer {
-  --actlet-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --actlet-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --actlet-font:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Ubuntu, Cantarell, "DejaVu Sans", "Liberation Sans",
+    Arial, sans-serif;
+  --actlet-mono:
+    ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", "Liberation Mono", "Noto Sans Mono", monospace;
   --actlet-size: 13px;
   --actlet-radius: 6px;
 }
@@ -332,17 +340,29 @@
   border-bottom: 1px solid var(--actlet-border);
   min-width: 0;
 }
-/* A pill: the background's colour on a colour. */
+/*
+ * A pill: the background's colour on a colour. Its text and icon are
+ * centred in a box of fixed height, so fonts the system falls back to,
+ * with their own ascent and descent, can't push them off-centre.
+ */
 .actlet-pill,
 .actlet-title,
 .actlet-tab-on {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35em;
+  height: 1.7em;
+  line-height: 1;
+  vertical-align: middle;
+  white-space: nowrap;
   border-radius: var(--actlet-radius);
   background: var(--actlet-pill, var(--actlet-accent));
   color: var(--actlet-background);
   font-weight: 700;
 }
 .actlet-title {
-  padding: 0 0.5em;
+  padding: 0 0.55em;
 }
 .actlet-task {
   overflow: hidden;
@@ -364,7 +384,11 @@
   font-weight: var(--actlet-muted-weight, inherit);
   font-style: var(--actlet-muted-style, inherit);
   text-decoration-line: var(--actlet-muted-line, none);
-  padding: 0.2em 0.5em;
+  display: inline-flex;
+  align-items: center;
+  height: 1.7em;
+  line-height: 1;
+  padding: 0 0.55em;
   border-radius: var(--actlet-radius);
   cursor: pointer;
 }
@@ -499,14 +523,24 @@
   --actlet-speaker-style: var(--actlet-operator-style, normal);
   --actlet-speaker-line: var(--actlet-operator-line, none);
 }
-/* The speaker's name, as a pill in the speaker's colour. */
+/*
+ * The speaker's name, as the terminal viewer shows it: bold text in the
+ * speaker's colour, beside the speaker's bar, in a thin outline of that
+ * colour. Text on the plain background reads better than a filled pill
+ * on screens that blur.
+ */
 .actlet-who strong {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  height: 1.6em;
+  line-height: 1;
+  vertical-align: middle;
+  white-space: nowrap;
   padding: 0 0.45em;
   margin-right: 0.15em;
+  border: 1px solid color-mix(in srgb, var(--actlet-speaker, var(--actlet-agent)) 60%, transparent);
   border-radius: 4px;
-  background: var(--actlet-speaker, var(--actlet-agent));
-  color: var(--actlet-background);
+  color: var(--actlet-speaker, var(--actlet-agent));
   font-weight: var(--actlet-speaker-weight, 700);
   font-style: var(--actlet-speaker-style, normal);
   text-decoration-line: var(--actlet-speaker-line, none);
@@ -779,8 +813,7 @@
 }
 .actlet-status {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   padding: 0.3em 0.9em;
   color: var(--actlet-text);
   font-weight: var(--actlet-text-weight, inherit);
@@ -790,8 +823,18 @@
   overflow: hidden;
 }
 .actlet-status .actlet-pill {
-  padding: 0 0.5em;
-  margin-right: 0.6em;
+  padding: 0 0.55em;
+  /* First in the row, past the room kept for a separator. */
+  margin-left: 1.6em;
+}
+/* An icon in a pill sits in a box of its own, so a glyph from another font can't stretch the line. */
+.actlet-pill .actlet-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  overflow: hidden;
 }
 .actlet-pill .actlet-icon,
 .actlet-pill .actlet-spinner::before {
@@ -809,7 +852,33 @@
 .actlet-pill-paused {
   --actlet-pill: var(--actlet-operator);
 }
+/*
+ * Segments wrap on narrow screens. Each starts with its separator, and
+ * the row is shifted left by one separator inside a box that clips, so
+ * a separator that starts a line is out of sight.
+ */
+.actlet-segs {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.actlet-segs-in {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  row-gap: 0.2em;
+  margin-left: -1.6em;
+}
+.actlet-seg {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .actlet-seg-sep {
+  display: inline-block;
+  width: 1.6em;
+  text-align: center;
   color: var(--actlet-faint);
   font-weight: var(--actlet-faint-weight, inherit);
   font-style: var(--actlet-faint-style, inherit);
@@ -1163,7 +1232,7 @@
 /* The status line, with the help at its end. */
 .actlet-status-row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   min-width: 0;
 }
 .actlet-status-row .actlet-status {
