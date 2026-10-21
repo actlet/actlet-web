@@ -2,7 +2,7 @@
 // Runs the demo's integration examples end to end in headless Chrome
 // against the mock servers: each must stream events into the viewer,
 // and the live ones must deliver a note and a pause and show them
-// accepted.
+// accepted. The themed example must apply its theme file.
 //
 //   pnpm check:examples      SCREENSHOTS=<dir> saves a screenshot of each
 import { writeFileSync } from "node:fs";
@@ -109,6 +109,21 @@ try {
   await check("standard", async () => {
     await until(async () => (await status()).includes("completed"), "the replay at the end", 90_000);
     await until(() => page.evaluate("!!document.querySelector('.actlet-decision')"), "the decision shown");
+  });
+  await check("themed", async () => {
+    const look = () =>
+      page.evaluate(`(() => {
+        const v = document.querySelector('.actlet-viewer');
+        return v.dataset.theme + ' ' + getComputedStyle(v).getPropertyValue('--actlet-accent');
+      })()`);
+    await until(async () => (await look()) === "custom #4fd1c5", "the theme file applied");
+    // A theme that isn't valid leaves the viewer dark, and the status line says why.
+    await page.evaluate(`(() => {
+      const t = document.querySelector('#theme-file');
+      Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set.call(t, 'colors: {accnet: "#fff"}');
+      t.dispatchEvent(new Event('input', { bubbles: true }));
+    })()`);
+    await until(async () => (await status()).includes('unknown token "accnet"; using dark'), "the theme's notice");
   });
   await check("digest", async () => {
     await until(async () => (await status()).includes("completed"), "the replay at the end", 90_000);

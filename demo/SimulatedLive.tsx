@@ -9,10 +9,11 @@ import {
   type ActivityEvent,
   type Command,
   type EventInput,
+  type ViewerTheme,
 } from "../src";
 import { recording } from "./recording";
 
-type Theme = "auto" | "dark" | "light";
+type Theme = ViewerTheme;
 
 /**
  * Live mode as an implementor would drive it: events are appended as they

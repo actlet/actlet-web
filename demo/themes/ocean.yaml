@@ -1,0 +1,20 @@
+# A theme file in the format of Actlet's terminal viewer: the same file
+# styles `actlet attach -theme ./ocean.yaml` and this web viewer. It gives
+# only the tokens it changes and takes the rest from its base.
+name: ocean
+base: dark
+colors:
+  background: "#0F1B24"
+  panel: "#152532"
+  selection: "#1F3A4D"
+  border: "#2A4A5E"
+  text: "#D6E6F0"
+  muted: "#93AFC2"
+  accent: "#4FD1C5"
+  agent: "#4FD1C5"
+  subagent: "#7AB8F5"
+  operator: "#F6C177"
+  key: "#89B4FA"
+  string: "#A6E3A1"
+emphasis:
+  key: [bold]

@@ -13,10 +13,10 @@
  */
 import { toJson } from "@bufbuild/protobuf";
 import { useEffect, useState } from "react";
-import { ActivityViewer, CommandSchema, type Command } from "../../src";
+import { ActivityViewer, CommandSchema, type Command, type ViewerTheme } from "../../src";
 import { useEventBuffer } from "./useEventBuffer";
 
-export function SseExample({ theme }: { theme: "auto" | "dark" | "light" }) {
+export function SseExample({ theme }: { theme: ViewerTheme }) {
   const [events, push] = useEventBuffer();
   const [session] = useState(() => Math.random().toString(36).slice(2));
   const [ended, setEnded] = useState(false);

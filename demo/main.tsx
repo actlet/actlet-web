@@ -1,14 +1,17 @@
 import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { ActivityViewer, type TabId } from "../src";
+import { parse } from "yaml";
+import { ActivityViewer, type TabId, type ThemeFile, type ViewerTheme } from "../src";
 // Apps import "@actlet/viewer/styles.css".
 import "../src/styles.css";
 import { SyntheticDemo } from "./bench";
 import { JsonlExample } from "./examples/JsonlExample";
 import { SseExample } from "./examples/SseExample";
+import { ThemedExample } from "./examples/ThemedExample";
 import { WebSocketExample } from "./examples/WebSocketExample";
 import { digestRecording, forkRecording, recording, standardRecording } from "./recording";
 import { SimulatedLive } from "./SimulatedLive";
+import ocean from "./themes/ocean.yaml?raw";
 
 const modes = {
   replay: "replay the recording",
@@ -19,10 +22,14 @@ const modes = {
   websocket: "example: a WebSocket backend",
   sse: "example: server-sent events",
   jsonl: "example: a JSONL file",
+  themed: "example: a theme file",
   synthetic: "a synthetic 20,000-event session",
 } as const;
 type Mode = keyof typeof modes;
-type Theme = "auto" | "dark" | "light";
+const themes = ["auto", "dark", "light", "plain", "ocean"] as const;
+type Theme = (typeof themes)[number];
+/** ocean is a theme file, demo/themes/ocean.yaml; the others are built in. */
+const oceanTheme = parse(ocean) as ThemeFile;
 
 function Demo() {
   const params = new URLSearchParams(location.search);
@@ -30,7 +37,11 @@ function Demo() {
     const m = params.get("mode");
     return m !== null && m in modes ? (m as Mode) : "replay";
   });
-  const [theme, setTheme] = useState<Theme>((params.get("theme") as Theme | null) ?? "auto");
+  const [choice, setChoice] = useState<Theme>(() => {
+    const t = params.get("theme") as Theme | null;
+    return t !== null && themes.includes(t) ? t : "auto";
+  });
+  const theme: ViewerTheme = choice === "ocean" ? oceanTheme : choice;
   const speed = Number(params.get("speed") ?? 4);
   // ?at=<events shown> and ?tab=<view> open a replay at a given point, for screenshots.
   const at = params.get("at") === null ? undefined : Number(params.get("at"));
@@ -111,6 +122,9 @@ function Demo() {
     case "jsonl":
       body = <JsonlExample theme={theme} />;
       break;
+    case "themed":
+      body = <ThemedExample />;
+      break;
     case "synthetic":
       body = <SyntheticDemo bench={params.get("bench") === "1"} theme={theme} />;
       break;
@@ -131,10 +145,12 @@ function Demo() {
         </label>
         <label>
           {"theme "}
-          <select value={theme} onChange={(e) => setTheme(e.target.value as Theme)}>
-            <option value="auto">auto</option>
-            <option value="dark">dark</option>
-            <option value="light">light</option>
+          <select value={choice} onChange={(e) => setChoice(e.target.value as Theme)}>
+            {themes.map((t) => (
+              <option key={t} value={t}>
+                {t === "ocean" ? "ocean (a theme file)" : t}
+              </option>
+            ))}
           </select>
         </label>
       </div>

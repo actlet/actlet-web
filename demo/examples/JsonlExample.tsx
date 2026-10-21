@@ -5,9 +5,9 @@
  * parseJsonl; the viewer never reads files or .actrec recordings itself.
  */
 import { useEffect, useState } from "react";
-import { ActivityViewer, parseJsonl, type ActivityEvent } from "../../src";
+import { ActivityViewer, parseJsonl, type ActivityEvent, type ViewerTheme } from "../../src";
 
-export function JsonlExample({ theme }: { theme: "auto" | "dark" | "light" }) {
+export function JsonlExample({ theme }: { theme: ViewerTheme }) {
   const [events, setEvents] = useState<ActivityEvent[] | null>(null);
   const [source, setSource] = useState("/mock/demo.jsonl");
   const [error, setError] = useState("");

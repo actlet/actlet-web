@@ -12,10 +12,17 @@
  */
 import { fromJson, toJson } from "@bufbuild/protobuf";
 import { useEffect, useRef, useState } from "react";
-import { ActivityViewer, CommandAckSchema, CommandSchema, type Command, type CommandAck } from "../../src";
+import {
+  ActivityViewer,
+  CommandAckSchema,
+  CommandSchema,
+  type Command,
+  type CommandAck,
+  type ViewerTheme,
+} from "../../src";
 import { useEventBuffer } from "./useEventBuffer";
 
-export function WebSocketExample({ theme }: { theme: "auto" | "dark" | "light" }) {
+export function WebSocketExample({ theme }: { theme: ViewerTheme }) {
   const [events, push] = useEventBuffer();
   const [acks, setAcks] = useState<CommandAck[]>([]);
   const [status, setStatus] = useState("connecting");

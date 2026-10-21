@@ -5,7 +5,7 @@
  * runs it headless; ?mode=synthetic&bench=1 runs it by hand.
  */
 import { useEffect, useRef, useState } from "react";
-import { ActivityViewer, fold, type ActivityEvent } from "../src";
+import { ActivityViewer, fold, type ActivityEvent, type ViewerTheme } from "../src";
 import { syntheticEvents } from "../test/synthetic";
 
 export interface BenchResult {
@@ -45,7 +45,7 @@ function round(x: number) {
   return Math.round(x * 10) / 10;
 }
 
-export function SyntheticDemo({ bench, theme }: { bench: boolean; theme: "auto" | "dark" | "light" }) {
+export function SyntheticDemo({ bench, theme }: { bench: boolean; theme: ViewerTheme }) {
   const [all] = useState(() => syntheticEvents(N));
   const [shown, setShown] = useState<ActivityEvent[]>(() => (bench ? [] : all));
   const [result, setResult] = useState<BenchResult | null>(null);
