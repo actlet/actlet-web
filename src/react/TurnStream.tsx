@@ -13,6 +13,7 @@ import { conversation, tokens, type Entry } from "../view/format";
 import type { Item, Session, Worker } from "../view/session";
 import { clock } from "../view/time";
 import { Text } from "./Text";
+import { actionFor, STREAM_KEYS } from "./keys";
 import { ToolBlock } from "./ToolBlock";
 
 /** How the stream draws turns and tool calls. */
@@ -233,14 +234,15 @@ function search(offsets: Float64Array, y: number): number {
 
 /** Arrow keys, j and k move between tool calls; Home and End go to the first and last shown. */
 function onStreamKey(e: KeyboardEvent<HTMLDivElement>) {
-  const keys: Record<string, number> = { ArrowDown: 1, j: 1, ArrowUp: -1, k: -1, Home: -Infinity, End: Infinity };
-  if (!(e.key in keys) || e.altKey || e.ctrlKey || e.metaKey) return;
+  const steps = { next: 1, previous: -1, first: -Infinity, last: Infinity, expand: 0 };
+  const action = actionFor(STREAM_KEYS, e);
+  if (!action || steps[action] === 0) return;
   const target = e.target as HTMLElement;
   if (target.matches("input, textarea, select")) return;
   const heads = [...e.currentTarget.querySelectorAll<HTMLElement>(".actlet-tool-head")];
   if (heads.length === 0) return;
   const at = heads.indexOf(target);
-  const step = keys[e.key];
+  const step = steps[action];
   let next: number;
   if (step === -Infinity) next = 0;
   else if (step === Infinity) next = heads.length - 1;

@@ -1,4 +1,5 @@
 import { useRef, type KeyboardEvent } from "react";
+import { actionFor, TAB_KEYS } from "./keys";
 
 export const TABS = ["chat", "session", "task", "profile", "tools", "events"] as const;
 export type TabId = (typeof TABS)[number];
@@ -25,12 +26,14 @@ export interface TabsProps {
 export function Tabs({ active, onChange, tabs = TABS, idPrefix = "actlet" }: TabsProps) {
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const onKey = (e: KeyboardEvent, i: number) => {
-    let j = -1;
-    if (e.key === "ArrowRight") j = (i + 1) % tabs.length;
-    else if (e.key === "ArrowLeft") j = (i - 1 + tabs.length) % tabs.length;
-    else if (e.key === "Home") j = 0;
-    else if (e.key === "End") j = tabs.length - 1;
-    if (j < 0) return;
+    const action = actionFor(TAB_KEYS, e);
+    if (!action) return;
+    const j = {
+      next: (i + 1) % tabs.length,
+      previous: (i - 1 + tabs.length) % tabs.length,
+      first: 0,
+      last: tabs.length - 1,
+    }[action];
     e.preventDefault();
     onChange(tabs[j]);
     refs.current[j]?.focus();

@@ -160,7 +160,9 @@ The tabs, the conversation and the sidebar each take one tab stop. Inside them, 
 `Home` and `End` jump to either end. In the conversation, arrow keys move between tool calls, and `Enter` or `Space`
 expands one. A file opens in a dialog that keeps focus inside, closes on `Escape` and returns focus to the file. In a
 replay, `Space` or `k` plays and pauses, `←` and `→` step one event (ten with `Shift`), and `+` and `-` change the
-speed. Asking to stop focuses Cancel first.
+speed. Asking to stop focuses Cancel first. `?`, or `? help` at the end of the status line, opens a dialog that lists
+every shortcut and the commands on offer. It comes from the same key map the viewer's handlers use. Typed into the note
+line, `?` is just a question mark.
 
 Icons, regions and lists have roles and labels. The status line isn't a live region, because it ticks every second;
 instead, state changes are announced. Text colours meet WCAG AA (4.5:1) in the built-in themes, and the spinner stops for

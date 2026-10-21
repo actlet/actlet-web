@@ -4,6 +4,7 @@ import { highlightFile } from "../view/highlight";
 import { sanitize } from "../view/sanitize";
 import type { Session } from "../view/session";
 import { Spans } from "./Code";
+import { useDialog } from "./dialog";
 import { Text } from "./Text";
 
 /** The most of a file the viewer shows. */
@@ -73,23 +74,7 @@ export function FileViewer({ session, path, readFile, onClose }: FileViewerProps
     };
   }, [path, readFile]);
 
-  // Focus moves into the popup and stays there; Escape closes it, and
-  // focus goes back to where it was.
-  useEffect(() => {
-    const before = document.activeElement as HTMLElement | null;
-    closeRef.current?.focus();
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        onClose();
-      } else if (e.key === "Tab") trapFocus(e, dialogRef.current);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      if (before?.isConnected) before.focus();
-    };
-  }, [onClose]);
+  useDialog(dialogRef, closeRef, onClose);
 
   let shown: Shown;
   if (!readFile) shown = recordedFile(session, path);
@@ -163,28 +148,6 @@ export function FileViewer({ session, path, readFile, onClose }: FileViewerProps
       </div>
     </div>
   );
-}
-
-/** Keeps Tab and Shift+Tab within the element. */
-function trapFocus(e: KeyboardEvent, root: HTMLElement | null) {
-  if (!root) return;
-  const focusable = [
-    ...root.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'),
-  ].filter((el) => !el.hasAttribute("disabled"));
-  if (focusable.length === 0) return;
-  const first = focusable[0];
-  const last = focusable[focusable.length - 1];
-  const active = document.activeElement;
-  if (!root.contains(active)) {
-    e.preventDefault();
-    first.focus();
-  } else if (e.shiftKey && active === first) {
-    e.preventDefault();
-    last.focus();
-  } else if (!e.shiftKey && active === last) {
-    e.preventDefault();
-    first.focus();
-  }
 }
 
 /** What a read file shows: sanitized, cut to the viewer's limits, saying so. */

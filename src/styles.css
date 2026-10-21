@@ -1160,6 +1160,66 @@
   }
 }
 
+/* The status line, with the help at its end. */
+.actlet-status-row {
+  display: flex;
+  align-items: baseline;
+  min-width: 0;
+}
+.actlet-status-row .actlet-status {
+  flex: 1;
+  min-width: 0;
+}
+.actlet-help-button {
+  flex-shrink: 0;
+  margin-right: 0.9em;
+  padding: 0 0.3em;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  font: inherit;
+  font-family: var(--actlet-mono);
+  color: var(--actlet-muted);
+  cursor: pointer;
+}
+.actlet-help-button:hover {
+  color: var(--actlet-text);
+}
+
+/* The help: keys and commands. */
+.actlet-help {
+  width: min(100%, 640px);
+}
+.actlet-keys {
+  margin: 0;
+  display: grid;
+  gap: 0.2em;
+}
+.actlet-keys > div {
+  display: flex;
+  gap: 1em;
+}
+.actlet-keys dt {
+  width: 13em;
+  flex-shrink: 0;
+}
+.actlet-keys dd {
+  margin: 0;
+}
+.actlet-keys kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0 0.35em;
+  border: 1px solid var(--actlet-border);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  background: var(--actlet-panel);
+  color: var(--actlet-key);
+  font-family: var(--actlet-mono);
+  font-size: 0.92em;
+  text-align: center;
+}
+
 /* Budgets, progress and feedback. */
 .actlet-alarm {
   color: var(--actlet-error);

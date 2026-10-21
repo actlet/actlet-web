@@ -6,6 +6,7 @@ import axe from "axe-core";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { SessionState } from "../src/gen/actlet/gateway/v0/gateway_pb";
 import { ActivityViewer } from "../src/react/ActivityViewer";
+import { keyGroups } from "../src/react/keys";
 import { TABS } from "../src/react/Tabs";
 import { BUILTIN_THEMES, THEME_TOKENS, type ThemeToken } from "../src/view/theme";
 import { Events, demoEvents } from "./helpers";
@@ -154,6 +155,52 @@ describe("keyboard only", () => {
     await user.keyboard("{Enter}");
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Stop…" }));
     expect(onCommand).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("the help", () => {
+  it("opens with ?, keeps focus inside, closes with Escape, and lists the keys the handlers use", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<ActivityViewer events={demo} mode="replay" />);
+    const stream = screen.getByRole("log", { name: "Conversation" });
+    stream.focus();
+    await user.keyboard("?");
+    const dialog = screen.getByRole("dialog", { name: "Keys and commands" });
+    expect(document.activeElement).toBe(within(dialog).getByRole("button", { name: "Close" }));
+    for (let i = 0; i < 4; i++) {
+      await user.tab();
+      expect(dialog.contains(document.activeElement)).toBe(true);
+    }
+    // Every shortcut of every group, from the key map, with the replay's.
+    for (const g of keyGroups(true)) {
+      expect(within(dialog).getByText(g.title)).toBeTruthy();
+      for (const b of g.bindings) expect(within(dialog).getByText(b.does)).toBeTruthy();
+    }
+    expect(dialog.textContent).toContain("None: this viewer only watches.");
+    const result = await axe.run(container, { rules: { "color-contrast": { enabled: false } } });
+    expect(result.violations.map((v) => v.id)).toEqual([]);
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(document.activeElement).toBe(stream);
+  });
+
+  it("is a question mark in the note line, and lists the commands offered", async () => {
+    const user = userEvent.setup();
+    render(<ActivityViewer events={running()} onCommand={() => {}} allowedCommands={["steer", "pause", "stop"]} />);
+    const input = screen.getByLabelText("Note for the agent") as HTMLInputElement;
+    input.focus();
+    await user.keyboard("why?");
+    expect(input.value).toBe("why?");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    await user.click(screen.getByRole("button", { name: "Keys and commands" }));
+    const dialog = screen.getByRole("dialog", { name: "Keys and commands" });
+    expect(dialog.textContent).not.toContain("Replay");
+    for (const what of ["the note line, then Enter", "Pause", "Interrupt", "Stop…"]) {
+      expect(within(dialog).getByText(what)).toBeTruthy();
+    }
+    expect(within(dialog).queryByText("Raise a budget…")).toBeNull();
+    await user.click(within(dialog).getByRole("button", { name: "Close" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
   });
 });
 

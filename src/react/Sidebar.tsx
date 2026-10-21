@@ -1,6 +1,7 @@
 import { useId, useState, type KeyboardEvent } from "react";
 import { orNA, plural } from "../view/format";
 import { files, workers, type Session } from "../view/session";
+import { actionFor, SIDEBAR_KEYS } from "./keys";
 import { Text } from "./Text";
 
 export interface SidebarProps {
@@ -25,12 +26,23 @@ export function Sidebar({ session, focus = "", onFocus, onOpenFile }: SidebarPro
   const current = Math.min(active, Math.max(rows - 1, 0));
 
   const onKey = (e: KeyboardEvent<HTMLElement>) => {
-    const step: Record<string, number> = { ArrowDown: 1, j: 1, ArrowUp: -1, k: -1 };
     let next: number;
-    if (e.key in step) next = Math.min(Math.max(current + step[e.key], 0), rows - 1);
-    else if (e.key === "Home") next = 0;
-    else if (e.key === "End") next = rows - 1;
-    else return;
+    switch (actionFor(SIDEBAR_KEYS, e)) {
+      case "next":
+        next = Math.min(current + 1, rows - 1);
+        break;
+      case "previous":
+        next = Math.max(current - 1, 0);
+        break;
+      case "first":
+        next = 0;
+        break;
+      case "last":
+        next = rows - 1;
+        break;
+      default:
+        return;
+    }
     e.preventDefault();
     setActive(next);
     e.currentTarget.querySelectorAll<HTMLElement>(".actlet-row")[next]?.focus();

@@ -5,6 +5,8 @@ import type { Session } from "../view/session";
 import { CommandBar, type CommandHandler } from "./CommandBar";
 import { commandOutcomes, DEFAULT_COMMANDS, type CommandKind, type CommandOutcome } from "../commands";
 import { FileViewer, type FileReader } from "./FileViewer";
+import { HelpDialog } from "./HelpDialog";
+import { actionFor, REPLAY_KEYS, VIEWER_KEYS } from "./keys";
 import { useLiveSession, useNow, useReplay, type ReplayOptions } from "./hooks";
 import { EventsPanel, ProfilePanel, SessionPanel, TaskPanel, ToolsPanel } from "./Panels";
 import { ReplayControls } from "./ReplayControls";
@@ -103,13 +105,13 @@ function ReplayViewer(props: ActivityViewerProps) {
       now={null}
       connection={r.label}
       live={false}
-      shortcuts={(key) => {
-        // Space or k plays and pauses, arrows step (ten with Shift), + and - change the speed.
-        const steps: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1, "<": -10, ">": 10 };
-        if (key === " " || key === "k") r.toggle();
-        else if (key in steps) r.seek(r.position + steps[key]);
-        else if (key === "+" || key === "=") r.setSpeed(r.speed * 2);
-        else if (key === "-") r.setSpeed(r.speed / 2);
+      shortcuts={(e) => {
+        const steps = { back: -1, forward: 1, back10: -10, forward10: 10 };
+        const action = actionFor(REPLAY_KEYS, e);
+        if (action === "toggle") r.toggle();
+        else if (action === "faster") r.setSpeed(r.speed * 2);
+        else if (action === "slower") r.setSpeed(r.speed / 2);
+        else if (action) r.seek(r.position + steps[action]);
         else return false;
         return true;
       }}
@@ -137,7 +139,7 @@ interface LayoutProps extends Omit<ActivityViewerProps, "events"> {
   live: boolean;
   controls?: React.ReactNode;
   /** Handles a key pressed outside any control; reports whether it did. */
-  shortcuts?: (key: string) => boolean;
+  shortcuts?: (e: React.KeyboardEvent) => boolean;
 }
 
 const terminal = [SessionState.PAUSED, SessionState.STOPPED, SessionState.COMPLETED, SessionState.FAILED];
@@ -151,7 +153,9 @@ function Layout(p: LayoutProps) {
   const [expandAll, setExpandAll] = useState(false);
   const [separators, setSeparators] = useState(p.separators ?? true);
   const [collapseSubs, setCollapseSubs] = useState(false);
+  const [help, setHelp] = useState(false);
   const closeFile = useCallback(() => setFile(null), []);
+  const closeHelp = useCallback(() => setHelp(false), []);
   // Few commands are sent, so merging the acknowledgements each render is cheap.
   const outcomes = commandOutcomes([], p.acks, p.commands);
   const look = useMemo(() => themeLook(p.theme), [p.theme]);
@@ -226,11 +230,16 @@ function Layout(p: LayoutProps) {
       role="region"
       aria-label="Session activity"
       onKeyDown={(e) => {
-        if (!p.shortcuts || e.altKey || e.ctrlKey || e.metaKey || file !== null) return;
+        if (file !== null || help) return;
         const t = e.target as HTMLElement;
-        if (t.closest("input, select, textarea, button, a, [role=tab], [role=dialog]")) return;
-        const key = e.shiftKey && e.key === "ArrowLeft" ? "<" : e.shiftKey && e.key === "ArrowRight" ? ">" : e.key;
-        if (p.shortcuts(key)) e.preventDefault();
+        // ? opens the help from anywhere but a text field, where it is a question mark.
+        if (actionFor(VIEWER_KEYS, e) === "help" && !t.closest("input, select, textarea, [contenteditable]")) {
+          e.preventDefault();
+          setHelp(true);
+          return;
+        }
+        if (!p.shortcuts || t.closest("input, select, textarea, button, a, [role=tab], [role=dialog]")) return;
+        if (p.shortcuts(e)) e.preventDefault();
       }}
     >
       <div className="actlet-header">
@@ -265,10 +274,29 @@ function Layout(p: LayoutProps) {
             budgetStates={budgets(session)}
           />
         )}
-        <StatusLine session={session} connection={connection} now={now} notice={look.notice} />
+        <div className="actlet-status-row">
+          <StatusLine session={session} connection={connection} now={now} notice={look.notice} />
+          <button
+            type="button"
+            className="actlet-help-button"
+            aria-haspopup="dialog"
+            aria-keyshortcuts="?"
+            aria-label="Keys and commands"
+            onClick={() => setHelp(true)}
+          >
+            ? help
+          </button>
+        </div>
         <StateAnnouncer session={session} />
       </div>
       {file !== null && <FileViewer session={session} path={file} readFile={p.readFile} onClose={closeFile} />}
+      {help && (
+        <HelpDialog
+          replay={!p.live}
+          commands={commands ? (p.allowedCommands ?? DEFAULT_COMMANDS) : []}
+          onClose={closeHelp}
+        />
+      )}
     </div>
   );
 }
