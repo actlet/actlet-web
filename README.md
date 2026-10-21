@@ -254,6 +254,13 @@ next to them, and the stylesheet is `dist/viewer.css`. The exports map has `.`, 
 and `./package.json`. React 18 or 19 is the only peer dependency, and `@bufbuild/protobuf` the only dependency.
 `pnpm pack` packs `dist/`, `themes/`, the README and `package.json`.
 
+### CI and releases
+
+CI runs `pnpm check`, `pnpm check:examples` and `pnpm smoke` on every push to `main` and on pull requests. Go parity
+runs there too, given read access to the Actlet repository through a secret. A `v<version>` tag opens a draft GitHub
+release with the packed tarball, its SHA-256 and the version's notes from [CHANGELOG.md](CHANGELOG.md). Publishing to
+npm is manual. [RELEASING.md](RELEASING.md) has the steps.
+
 ### Parity with the Go view model
 
 `toViewState` writes the view state as JSON ([docs/view-state.md](docs/view-state.md)), and Actlet's

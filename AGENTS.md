@@ -58,5 +58,6 @@ test/                vitest: the fold, sanitizing, components, untrusted payload
 Before committing, run `pnpm check`: build, typecheck, lint, test, and strict parity with the Go view model
 (`pnpm parity:go`, which skips without Go or the Actlet repository). After regenerating the types from a new Actlet
 commit, put that commit in `.actlet-commit`. Before changing the demo, its mock
-servers or the packaging, also run `pnpm check:examples` and `pnpm smoke`. Commit messages follow Conventional
-Commits.
+servers or the packaging, also run `pnpm check:examples` and `pnpm smoke`. CI runs all of these
+(`.github/workflows/ci.yml`). Note changes in `CHANGELOG.md` under the unreleased version. Commit messages follow
+Conventional Commits. Releases are tags, and nothing publishes to npm automatically: see `RELEASING.md`.
