@@ -125,7 +125,8 @@
     "local_commands": [
       "steer"
     ],
-    "skills": []
+    "skills": [],
+    "lineage": null
   },
   "usage": {
     "input": 31580,

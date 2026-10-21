@@ -11,6 +11,10 @@
 # The binaries come from building Actlet's ./cmd/... into a scratch
 # directory. The scratch folder the session runs in shows as /work in the
 # fixture. KEEP=1 keeps the session folder and logs.
+#
+# FORK_AT=<checkpoint>, such as "turn 2", forks the finished session at
+# that checkpoint with actlet-cli fork, runs the fork through the same
+# gateway, and records the fork instead.
 set -euo pipefail
 if [ $# -lt 3 ]; then
 	echo "usage: $0 <actlet-bin-dir> <scenario-dir> <out.jsonl> [operator-file]" >&2
@@ -56,10 +60,21 @@ code=0
 ACTLET_GATEWAY=$addr ACTLET_TOKEN=record ACTLET_TOOLS_MANIFEST= "$bin/actlet" run -session "$work/session" >"$work/run.log" 2>&1 || code=$?
 echo "record: the run ended with exit code $code"
 sleep 1
-"$here/export-fixture.sh" "$bin/actlet-cli" "$work"/gateway/*.actrec "$out"
+recording=$(ls "$work"/gateway/*.actrec)
+if [ -n "${FORK_AT:-}" ]; then
+	# Fork the finished session at a checkpoint and run the fork: the
+	# fixture is the fork's recording.
+	"$bin/actlet-cli" fork "$work/session" --checkpoint "$FORK_AT" --to "$work/fork" --copy-workspace
+	code=0
+	ACTLET_GATEWAY=$addr ACTLET_TOKEN=record ACTLET_TOOLS_MANIFEST= "$bin/actlet" run -session "$work/fork" >"$work/fork.log" 2>&1 || code=$?
+	echo "record: the fork's run ended with exit code $code"
+	sleep 1
+	recording=$(ls -t "$work"/gateway/*.actrec | head -1)
+fi
+"$here/export-fixture.sh" "$bin/actlet-cli" "$recording" "$out"
 # The session ran in a scratch folder; where it was isn't part of the fixture.
 for dir in "$work" "$(cd "$work" && pwd)" "$(cd "$work" && pwd -P)"; do
 	esc=$(printf '%s' "${dir%/}" | sed 's/[.[\*^$#]/\\&/g')
 	sed -i.bak "s#$esc#/work#g" "$out" && rm -f "$out.bak"
 done
-"$bin/actlet-cli" replay inspect "$work"/gateway/*.actrec | sed -n '/^events:/,/^status:/p'
+"$bin/actlet-cli" replay inspect "$recording" | sed -n '/^events:/,/^status:/p'

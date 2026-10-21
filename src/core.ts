@@ -70,6 +70,7 @@ export {
   decideView,
   duration,
   keyArgs,
+  lineageText,
   llmView,
   progressText,
   recordedFile,

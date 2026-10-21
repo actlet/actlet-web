@@ -5,6 +5,7 @@ import {
   duration,
   elapsed,
   firstSentence,
+  lineageText,
   orNA,
   plural,
   progressText,
@@ -210,6 +211,7 @@ export function SessionPanel({ session: s, now = null, connection = "" }: PanelP
             ["viewing", orNA(connection)],
             ["events", `${s.events}${s.skipped > 0 ? `, ${s.skipped} missed` : ""}`],
             ...(s.progress ? [["progress", progressText(s.progress)] as [string, string]] : []),
+            ...(lineageText(s) !== "" ? [["forked from", lineageText(s)] as [string, string]] : []),
           ]}
         />
       </Section>

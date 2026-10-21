@@ -11,6 +11,8 @@ import { ReplayControls } from "./ReplayControls";
 import { Sidebar } from "./Sidebar";
 import { StateAnnouncer, StatusLine } from "./StatusLine";
 import { budgetDefinitions, budgets } from "../view/budgets";
+import { lineageText } from "../view/format";
+import { sanitize } from "../view/sanitize";
 import { Tabs, type TabId } from "./Tabs";
 import { Text } from "./Text";
 import { TurnStream } from "./TurnStream";
@@ -225,6 +227,12 @@ function Layout(p: LayoutProps) {
     >
       <div className="actlet-header">
         <span className="actlet-title">actlet</span>
+        {lineageText(session) !== "" && (
+          <span className="actlet-chip actlet-fork" title={`Forked from ${sanitize(lineageText(session))}`}>
+            <span aria-hidden="true">⑂ </span>
+            fork<span className="actlet-sr-only">{`, forked from ${sanitize(lineageText(session))}`}</span>
+          </span>
+        )}
         {session.info && session.info.taskId !== "" && (
           <span className="actlet-muted actlet-task">
             <Text text={session.info.taskId} max={200} />

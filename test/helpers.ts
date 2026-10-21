@@ -45,3 +45,8 @@ export function standardEvents(): ActivityEvent[] {
 export function digestEvents(): ActivityEvent[] {
   return parseJsonl(readFileSync(fixture("digest.jsonl"), "utf8"));
 }
+
+/** The digest session forked at its second turn's checkpoint, and run on from there. */
+export function forkEvents(): ActivityEvent[] {
+  return parseJsonl(readFileSync(fixture("fork.jsonl"), "utf8"));
+}

@@ -6,6 +6,7 @@ import { toJson } from "@bufbuild/protobuf";
 import {
   BudgetKind,
   BudgetSchema,
+  LineageSchema,
   ModelCatalogSchema,
   SessionState,
   SkillInfoSchema,
@@ -61,6 +62,7 @@ export function toViewState(s: Session): ViewStateJson {
       version: info.version,
       local_commands: info.localCommands,
       skills: info.skills.map((k) => toJson(SkillInfoSchema, k, opts)),
+      lineage: info.lineage && toJson(LineageSchema, info.lineage, opts),
     },
     usage: usage(s.usage),
     progress: s.progress && {

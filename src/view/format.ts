@@ -400,3 +400,10 @@ export function skillsUsed(s: Session): SkillUse[] {
   }
   return [...out.values()];
 }
+
+/** Where a forked session comes from, in a line: "p1 at checkpoint 40 (turn 2)"; "" when it isn't a fork. */
+export function lineageText(s: Session): string {
+  const l = s.info?.lineage;
+  if (!l) return "";
+  return `${l.parentSessionId} at checkpoint ${l.checkpointSeq} (turn ${l.turn})`;
+}

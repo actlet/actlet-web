@@ -139,7 +139,8 @@
       "steer",
       "pause"
     ],
-    "skills": []
+    "skills": [],
+    "lineage": null
   },
   "usage": {
     "input": 136300,

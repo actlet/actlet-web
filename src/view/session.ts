@@ -20,6 +20,7 @@ import {
   type Budget,
   type Command,
   type Compaction,
+  type Lineage,
   type ModelCatalog,
   type SkillInfo,
   type ToolGrant,
@@ -228,6 +229,8 @@ export interface Info {
   localCommands: string[];
   /** The skills the agent may load. */
   skills: SkillInfo[];
+  /** Where a session forked from another's checkpoint comes from; null when it isn't a fork. */
+  lineage: Lineage | null;
 }
 
 /** A file changed in the session. */
@@ -633,6 +636,7 @@ export function apply(s: Session, ev: ActivityEvent) {
         version: keep(i.actletVersion),
         localCommands: i.localCommands.map(sanitize),
         skills: i.skills,
+        lineage: i.lineage ?? null,
       };
       break;
     }

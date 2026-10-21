@@ -90,7 +90,8 @@
           "scripts/totals.py"
         ]
       }
-    ]
+    ],
+    "lineage": null
   },
   "usage": {
     "input": 21800,

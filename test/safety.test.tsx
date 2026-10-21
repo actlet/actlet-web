@@ -37,6 +37,7 @@ function maliciousRun() {
       grants: [{ name: evil, settings: { [evil]: evil } }],
       budgets: [{ kind: 2, limit: 1, currency: evil }],
       skills: [{ name: evil, description: evil, source: evil, files: [evil, evil] }],
+      lineage: { parentSessionId: evil, checkpointSeq: 3n, turn: 1n },
       models: {
         aliases: [{ alias: evil, description: evil, contextWindow: 1000n }],
         roles: { [evil]: evil },
