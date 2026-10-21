@@ -102,6 +102,9 @@ then says so: "context compacted at 5380 tokens: 1 turn summarised by fast, the 
 the summary, and the summary's model call counts towards the worker's and the session's usage. The Profile tab shows
 the compaction policy: when it compacts, which model writes the summary, and how many turns it keeps.
 
+A session forked from another's checkpoint (`actlet-cli fork`) has a fork marker in the header, and the Session tab
+says where it comes from: "forked from <parent> at checkpoint 10 (turn 2)".
+
 `skill` calls show the skill and the file read (`csv-report · reference.md`). The Tools tab lists the skills the agent
 may load, from the session's start: each one's name, where it comes from (the image or the profile), its description
 and its files, with what the agent loaded and read of it. Recordings from before Actlet listed the skills show only
@@ -187,7 +190,7 @@ Development needs Node 24, pnpm 10 and, for `pnpm generate`, `protoc`.
 
 ```sh
 pnpm install
-pnpm dev             # the demo page; ?mode=replay|standard|digest|live|websocket|sse|jsonl|synthetic, ?theme=light, ?speed=8, ?at=27, ?tab=session
+pnpm dev             # the demo page; ?mode=replay|standard|digest|fork|live|websocket|sse|jsonl|synthetic, ?theme=light, ?speed=8, ?at=27, ?tab=session
 pnpm test            # vitest
 pnpm lint            # eslint (with jsx-a11y) + prettier --check
 pnpm typecheck
@@ -243,6 +246,8 @@ Both are real recordings: scripted sessions run headless through Actlet's develo
   the budget with a profile update.
 - `fixtures/digest.jsonl` is a sales digest from `fixtures/digest/`. The agent loads a skill (`skills/csv-report`) and
   reads one of its files, and its context grows past a small window, so it is compacted half-way.
+- `fixtures/fork.jsonl` is that digest forked at the checkpoint of its second turn and run on from there. It's a new
+  session with its parent and checkpoint in its lineage.
 
 To record them again, build Actlet's binaries into a scratch directory from the Actlet repository
 (`go build -o "$tmp/bin/" ./cmd/...`), then:
@@ -251,6 +256,7 @@ To record them again, build Actlet's binaries into a scratch directory from the 
 scripts/record-fixture.sh "$tmp/bin" <actlet>/examples/demo fixtures/demo.jsonl fixtures/demo.operator
 scripts/record-fixture.sh "$tmp/bin" fixtures/standard fixtures/standard.jsonl fixtures/standard.operator
 scripts/record-fixture.sh "$tmp/bin" fixtures/digest fixtures/digest.jsonl
+FORK_AT="turn 2" scripts/record-fixture.sh "$tmp/bin" fixtures/digest fixtures/fork.jsonl
 UPDATE_GOLDEN=1 pnpm test   # rewrite fixtures/*.view.json, the folded view states; review the diff
 ```
 

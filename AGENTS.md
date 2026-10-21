@@ -39,8 +39,9 @@ src/
   gen/               generated from actlet/gateway/v0/gateway.proto
 demo/                the dev page (pnpm dev): replay, live, integration examples with mock servers, a synthetic session
 scripts/             generate, record and export fixtures, bench, examples check, smoke test, parity
-fixtures/            demo.jsonl (Actlet's demo), standard.jsonl (every standard tool) and digest.jsonl (a skill and a
-                     compaction), each with its folded state (*.view.json); the scenarios in standard/ and digest/
+fixtures/            demo.jsonl (Actlet's demo), standard.jsonl (every standard tool), digest.jsonl (a skill and a
+                     compaction) and fork.jsonl (the digest forked from a checkpoint), each with its folded state
+                     (*.view.json); the scenarios in standard/ and digest/
 test/                vitest: the fold, sanitizing, components, untrusted payloads, scale, accessibility, parity
 ```
 
