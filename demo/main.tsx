@@ -163,7 +163,8 @@ function Demo() {
 
 const bar: React.CSSProperties = {
   display: "flex",
-  gap: "1.5em",
+  flexWrap: "wrap",
+  gap: "0.4em 1.5em",
   alignItems: "center",
   padding: "0.5em 1em",
   color: "#c9ccd6",
