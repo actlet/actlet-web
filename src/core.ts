@@ -85,6 +85,24 @@ export {
   type Styled,
   type Tone,
 } from "./view/format";
+export {
+  BUILTIN_THEMES,
+  THEME_ATTRIBUTES,
+  THEME_TOKENS,
+  ThemeError,
+  cssColor,
+  parseTheme,
+  themeLook,
+  themeVariables,
+  xtermColor,
+  type BuiltinThemeName,
+  type Theme,
+  type ThemeAttribute,
+  type ThemeFile,
+  type ThemeLook,
+  type ThemeToken,
+  type ViewerTheme,
+} from "./view/theme";
 export { Player, MAX_IDLE, MAX_SPEED, MIN_SPEED, type PlayerState } from "./replay/player";
 
 // Commands, built for onCommand and their outcomes tracked; no React in them.

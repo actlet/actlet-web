@@ -12,6 +12,9 @@ work=$(mktemp -d "${TMPDIR:-/tmp}/actlet-smoke.XXXXXX")
 (cd "$root" && pnpm -s build >/dev/null && pnpm pack --pack-destination "$work" >/dev/null)
 tarball=$(ls "$work"/*.tgz)
 echo "packed $(basename "$tarball"): $(tar -tzf "$tarball" | wc -l | tr -d ' ') files"
+for theme in dark light plain; do
+	tar -tzf "$tarball" | grep -qx "package/themes/$theme.yaml" || { echo "smoke: themes/$theme.yaml isn't packed" >&2; exit 1; }
+done
 
 app=$work/app
 mkdir -p "$app/src" "$app/public"
@@ -61,12 +64,21 @@ function App() {
   useEffect(() => {
     fetch("/demo.jsonl").then((r) => r.text()).then((t) => setEvents(parseJsonl(t)));
   }, []);
-  return <ActivityViewer events={events} onCommand={(cmd: Command) => console.log(cmd.id)} />;
+  return (
+    <ActivityViewer
+      events={events}
+      onCommand={(cmd: Command) => console.log(cmd.id)}
+      theme={{ base: "light", colors: { accent: "#d33682" }, emphasis: { key: ["bold"] } }}
+    />
+  );
 }
 createRoot(document.getElementById("root")!).render(<App />);
 EOF
 cat >"$app/src/core.ts" <<'EOF'
-import { files, fold, parseJsonl } from "@actlet/viewer/core";
+import { files, fold, parseJsonl, parseTheme } from "@actlet/viewer/core";
+import light from "@actlet/viewer/themes/light.yaml?raw";
+
+if (!light.includes("name: light") || parseTheme({ base: "plain" }).colors.accent !== "none") throw new Error("themes");
 
 const session = fold(parseJsonl(await (await fetch("/demo.jsonl")).text()));
 document.getElementById("out")!.textContent = JSON.stringify(files(session));

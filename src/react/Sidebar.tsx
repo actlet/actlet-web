@@ -41,7 +41,7 @@ export function Sidebar({ session, focus = "", onFocus, onOpenFile }: SidebarPro
       <h3 className="actlet-head" id={`${id}-workers`}>
         Workers
       </h3>
-      {ws.length === 0 && <div className="actlet-faint">none yet</div>}
+      {ws.length === 0 && <div className="actlet-muted">none yet</div>}
       <ul className="actlet-list" aria-labelledby={`${id}-workers`}>
         {ws.map((w, i) => (
           <li key={w.id}>
@@ -72,7 +72,7 @@ export function Sidebar({ session, focus = "", onFocus, onOpenFile }: SidebarPro
       <h3 className="actlet-head" id={`${id}-files`}>
         Files
       </h3>
-      {fs.length === 0 && <div className="actlet-faint">none changed</div>}
+      {fs.length === 0 && <div className="actlet-muted">none changed</div>}
       <ul className="actlet-list" aria-labelledby={`${id}-files`}>
         {fs.map((f, j) => {
           const i = ws.length + j;

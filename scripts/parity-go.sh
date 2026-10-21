@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Checks that the TypeScript view model and Actlet's Go view model fold
 # every fixture to the same view state: dumps each fixtures/*.jsonl with
-# `actlet-cli replay view --json` and runs the parity check, strictly.
+# `actlet-cli replay view --json` and runs the parity check, strictly. It
+# also checks that themes/*.yaml are Actlet's built-in themes, byte for byte.
 #
 #   scripts/parity-go.sh
 #
@@ -38,6 +39,18 @@ if [ -z "$cli" ]; then
 fi
 
 failed=0
+# The built-in themes are Actlet's own files, byte for byte.
+if [ -n "${repo:-}" ]; then
+	for theme in "$root"/themes/*.yaml; do
+		name=$(basename "$theme")
+		if git -C "$repo" show "$commit:themes/$name" | cmp -s - "$theme"; then
+			echo "parity: theme $name equal"
+		else
+			echo "parity: theme $name DIFFERS from themes/$name at ${commit:0:12}"
+			failed=1
+		fi
+	done
+fi
 for events in "$root"/fixtures/*.jsonl; do
 	name=$(basename "$events" .jsonl)
 	if ! "$cli" replay view --json "$events" >"$work/$name.go.json" 2>"$work/$name.err"; then

@@ -15,7 +15,8 @@
     "**/*.css"
   ],
   "files": [
-    "dist"
+    "dist",
+    "themes"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -30,6 +31,7 @@
       "import": "./dist/core.js"
     },
     "./styles.css": "./dist/viewer.css",
+    "./themes/*": "./themes/*",
     "./package.json": "./package.json"
   },
   "scripts": {
@@ -79,7 +81,8 @@
     "typescript-eslint": "^8.72.0",
     "vite": "^8.3.4",
     "vitest": "^5.0.5",
-    "ws": "^8.22.0"
+    "ws": "^8.22.0",
+    "yaml": "^2.9.1"
   },
   "devEngines": {
     "runtime": {

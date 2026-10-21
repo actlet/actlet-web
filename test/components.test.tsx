@@ -150,6 +150,37 @@ describe("ActivityViewer", () => {
   });
 });
 
+describe("themes", () => {
+  const viewer = () => document.querySelector<HTMLElement>(".actlet-viewer")!;
+
+  it("takes a theme in the terminal viewer's format and sets its colours inline", () => {
+    render(
+      <ActivityViewer
+        events={demo}
+        theme={{ base: "light", colors: { accent: "#d33682" }, emphasis: { selection: ["reverse"] } }}
+      />,
+    );
+    expect(viewer().dataset.theme).toBe("custom");
+    expect(viewer().dataset.selection).toBe("reverse");
+    expect(viewer().style.getPropertyValue("--actlet-accent")).toBe("#d33682");
+    expect(viewer().style.getPropertyValue("--actlet-background")).toBe("#fbfbfd");
+  });
+
+  it("names the built-in themes", () => {
+    render(<ActivityViewer events={demo} theme="plain" />);
+    expect(viewer().dataset.theme).toBe("plain");
+    expect(viewer().getAttribute("style")).toBeNull();
+  });
+
+  it("stays dark with a theme that isn't valid, and says why", () => {
+    render(<ActivityViewer events={demo} theme={{ colors: { accnet: "#fff" } } as never} />);
+    expect(viewer().dataset.theme).toBe("dark");
+    expect(screen.getByRole("group", { name: "Session status" }).textContent).toContain(
+      'theme: colors: unknown token "accnet"; using dark',
+    );
+  });
+});
+
 describe("the status line", () => {
   it("shows context, cost and time against their totals, coloured near the limits", () => {
     const e = new Events();

@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { SessionState } from "../src/gen/actlet/gateway/v0/gateway_pb";
 import { ActivityViewer } from "../src/react/ActivityViewer";
 import { TABS } from "../src/react/Tabs";
+import { BUILTIN_THEMES, THEME_TOKENS, type ThemeToken } from "../src/view/theme";
 import { Events, demoEvents } from "./helpers";
 
 afterEach(cleanup);
@@ -169,14 +170,10 @@ describe("announcements", () => {
   });
 });
 
-// The stylesheet's text colours against its backgrounds, for WCAG AA (4.5:1).
+// The built-in themes' text colours against their backgrounds, for WCAG AA
+// (4.5:1). The stylesheet's theme blocks are made from them (test/theme.test.ts).
 describe("theme contrast", () => {
   const css = readFileSync(resolve(process.cwd(), "src/styles.css"), "utf8");
-  const tokens = (selector: string) => {
-    const start = css.indexOf(selector + " {");
-    const block = css.slice(start, css.indexOf("}", start));
-    return Object.fromEntries([...block.matchAll(/--actlet-([\w-]+):\s*(#[0-9a-f]{6})/gi)].map((m) => [m[1], m[2]]));
-  };
   const luminance = (hex: string) => {
     const [r, g, b] = [1, 3, 5].map((i) => {
       const c = parseInt(hex.slice(i, i + 2), 16) / 255;
@@ -188,29 +185,22 @@ describe("theme contrast", () => {
     const [x, y] = [luminance(a), luminance(b)].sort((p, q) => q - p);
     return (x + 0.05) / (y + 0.05);
   };
-  const text = ["fg", "muted", "faint", "accent", "agent", "subagent", "operator", "ok", "err", "run", "add", "del"];
-  const syntax = ["keyword", "string", "number", "comment", "key", "function", "punctuation"];
+  // Every token text is drawn in; faint is for decoration only.
+  const text = THEME_TOKENS.filter((t) => !["background", "panel", "selection", "border", "faint"].includes(t));
 
-  for (const [theme, selector] of [
-    ["dark", ".actlet-viewer"],
-    ["light", '.actlet-viewer[data-theme="light"]'],
-    ["auto light", '  .actlet-viewer[data-theme="auto"]'],
-  ]) {
-    it(`passes in the ${theme} theme`, () => {
-      const t = tokens(selector);
+  for (const name of ["dark", "light"] as const) {
+    it(`passes in the ${name} theme`, () => {
+      const t = BUILTIN_THEMES[name].colors;
       const low: string[] = [];
-      for (const bg of ["bg", "bg-raised"]) {
-        for (const k of [...text, ...syntax]) {
-          if (ratio(t[k], t[bg]) < 4.5) low.push(`${k} on ${bg}: ${ratio(t[k], t[bg]).toFixed(2)}`);
-        }
-      }
+      const check = (fg: ThemeToken, bg: ThemeToken) => {
+        if (ratio(t[fg], t[bg]) < 4.5) low.push(`${fg} on ${bg}: ${ratio(t[fg], t[bg]).toFixed(2)}`);
+      };
+      for (const bg of ["background", "panel"] as const) for (const k of text) check(k, bg);
       // Selected rows and expanded tool calls hold the main and muted text and the speakers' colours.
-      for (const k of ["fg", "muted", "accent", "agent", "subagent", "ok", "err"]) {
-        if (ratio(t[k], t["bg-select"]) < 4.5) low.push(`${k} on bg-select: ${ratio(t[k], t["bg-select"]).toFixed(2)}`);
-      }
+      for (const k of ["text", "muted", "accent", "agent", "subagent", "ok", "error"] as const) check(k, "selection");
       // Pills: the title, the active tab, speakers and the session's state, in the background's colour.
-      for (const k of ["accent", "agent", "subagent", "operator", "ok", "err", "run"]) {
-        if (ratio(t.bg, t[k]) < 4.5) low.push(`bg on ${k}: ${ratio(t.bg, t[k]).toFixed(2)}`);
+      for (const k of ["accent", "agent", "subagent", "operator", "ok", "error", "warning"] as const) {
+        check("background", k);
       }
       expect(low).toEqual([]);
     });

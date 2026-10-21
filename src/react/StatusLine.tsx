@@ -10,6 +10,8 @@ export interface StatusLineProps {
   connection: string;
   /** The current time in milliseconds, while a live session runs; elapsed time then counts to it. */
   now?: number | null;
+  /** Something the reader should know, such as why the theme asked for isn't used. */
+  notice?: string;
 }
 
 /** The most of the latest progress report the status line shows. */
@@ -28,7 +30,7 @@ interface Segment {
  * colour, then what is happening, the model, how full its context is,
  * cost, time and what the viewer shows.
  */
-export function StatusLine({ session: s, connection, now = null }: StatusLineProps) {
+export function StatusLine({ session: s, connection, now = null, notice = "" }: StatusLineProps) {
   const root = s.workers.get("root");
   const parts: Segment[] = [];
   if (s.progress) {
@@ -70,6 +72,7 @@ export function StatusLine({ session: s, connection, now = null }: StatusLinePro
     });
   } else parts.push({ text: took });
   parts.push({ text: connection, className: "actlet-seg-muted" });
+  if (notice !== "") parts.push({ text: notice, className: "actlet-warn" });
   const alarm = budgetAlarm(s);
   return (
     // Not a live region: it changes every second. StateAnnouncer says when the state changes.

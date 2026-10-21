@@ -1,14 +1,14 @@
 /*
- * @actlet/viewer styles. Every colour and font is a custom property on
- * .actlet-viewer, so an app can restyle the viewer by setting them.
- * data-theme="dark" | "light" | "auto" (the reader's system setting).
- *
- * The colours: bg (the screen), bg-raised (panels: the header, sidebar,
- * status line, tool calls and code), bg-select (a selected row), border,
- * fg, muted and faint text, accent (the title, the active tab, the
- * selected worker and focus), the speakers (agent, subagent, operator),
- * states (ok, err, run) and diffs (add, del), and syntax highlighting
- * (keyword, string, number, comment, key, function, punctuation).
+ * @actlet/viewer styles. Colours come from a theme in the format of
+ * Actlet's terminal viewer: a custom property on .actlet-viewer for each
+ * of its tokens, --actlet-<token> (background, panel, selection, border,
+ * text, muted, faint, accent, agent, subagent, operator, ok, error,
+ * warning, attach, added, removed, hunk, keyword, string, number,
+ * comment, key, function, punctuation), and emphasis as
+ * --actlet-<token>-weight, -style and -line. data-theme picks a built-in
+ * theme: "dark", "light", "plain" or "auto" (the reader's setting); a
+ * theme object sets the properties inline. faint is for decoration only:
+ * separators, never text.
  */
 
 .actlet-viewer {
@@ -16,89 +16,210 @@
   --actlet-mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
   --actlet-size: 13px;
   --actlet-radius: 6px;
+}
 
-  --actlet-bg: #17171f;
-  --actlet-bg-raised: #21212c;
-  --actlet-bg-select: #2f2c45;
-  --actlet-fg: #dcdce6;
-  --actlet-muted: #a3a3ba;
-  --actlet-faint: #8e8ea6;
+/* themes: written by scripts/theme-css.mjs from the built-in themes. */
+
+/* dark, the default; auto picks light or plain below when the reader asks for them. */
+.actlet-viewer:not([data-theme]),
+.actlet-viewer[data-theme="dark"],
+.actlet-viewer[data-theme="auto"] {
+  --actlet-background: #17171f;
+  --actlet-panel: #21212c;
+  --actlet-selection: #33304a;
   --actlet-border: #3a3950;
+  --actlet-text: #dcdce6;
+  --actlet-muted: #9999af;
+  --actlet-faint: #5a5a72;
   --actlet-accent: #a48bfa;
   --actlet-agent: #a48bfa;
   --actlet-subagent: #5fb8e6;
   --actlet-operator: #f2b65e;
   --actlet-ok: #5fd192;
-  --actlet-err: #f57d8e;
-  --actlet-run: #e9c46a;
-  --actlet-add: #5fd192;
-  --actlet-del: #f57d8e;
+  --actlet-error: #f37184;
+  --actlet-warning: #e9c46a;
+  --actlet-attach: #f28fb0;
+  --actlet-added: #5fd192;
+  --actlet-removed: #f37184;
+  --actlet-hunk: #5fb8e6;
   --actlet-keyword: #c79bf2;
   --actlet-string: #a3d982;
   --actlet-number: #f5a86e;
-  --actlet-comment: #9494ac;
+  --actlet-comment: #87879e;
   --actlet-key: #7faaf7;
   --actlet-function: #5ed6e3;
-  --actlet-punctuation: #a3a3ba;
-  --actlet-cut-bg: rgba(233, 196, 106, 0.14);
-  --actlet-overlay: rgba(0, 0, 0, 0.55);
+  --actlet-punctuation: #8e8ea6;
+  --actlet-accent-weight: 700;
+  --actlet-comment-style: italic;
+  color-scheme: dark;
 }
 
 .actlet-viewer[data-theme="light"] {
-  --actlet-bg: #fbfbfd;
-  --actlet-bg-raised: #f1f2f7;
-  --actlet-bg-select: #e6e2fa;
-  --actlet-fg: #2a2c38;
-  --actlet-muted: #585b6e;
-  --actlet-faint: #62657a;
+  --actlet-background: #fbfbfd;
+  --actlet-panel: #eeeff5;
+  --actlet-selection: #e6e3fa;
   --actlet-border: #caccda;
-  --actlet-accent: #5d38db;
-  --actlet-agent: #5d38db;
-  --actlet-subagent: #155e96;
-  --actlet-operator: #8f4f06;
-  --actlet-ok: #1b6e3c;
-  --actlet-err: #b42840;
-  --actlet-run: #7a5300;
-  --actlet-add: #1b6e3c;
-  --actlet-del: #b42840;
-  --actlet-keyword: #6b2bc4;
-  --actlet-string: #26692a;
-  --actlet-number: #984307;
-  --actlet-comment: #62657a;
-  --actlet-key: #1a45be;
-  --actlet-function: #08626f;
-  --actlet-punctuation: #585b6e;
-  --actlet-cut-bg: rgba(122, 83, 0, 0.1);
-  --actlet-overlay: rgba(20, 22, 30, 0.35);
+  --actlet-text: #2a2c38;
+  --actlet-muted: #626578;
+  --actlet-faint: #a2a5b5;
+  --actlet-accent: #6a45e8;
+  --actlet-agent: #6a45e8;
+  --actlet-subagent: #1a6ba7;
+  --actlet-operator: #a25b0b;
+  --actlet-ok: #1f7541;
+  --actlet-error: #be2e46;
+  --actlet-warning: #916300;
+  --actlet-attach: #c2306e;
+  --actlet-added: #1f7541;
+  --actlet-removed: #be2e46;
+  --actlet-hunk: #1a6ba7;
+  --actlet-keyword: #7a35d9;
+  --actlet-string: #2d7b31;
+  --actlet-number: #b0500b;
+  --actlet-comment: #696c7f;
+  --actlet-key: #1d4fd6;
+  --actlet-function: #0b7488;
+  --actlet-punctuation: #626578;
+  --actlet-accent-weight: 700;
+  --actlet-comment-style: italic;
+  color-scheme: light;
+}
+
+.actlet-viewer[data-theme="plain"] {
+  --actlet-background: Canvas;
+  --actlet-panel: Canvas;
+  --actlet-selection: CanvasText;
+  --actlet-border: CanvasText;
+  --actlet-text: CanvasText;
+  --actlet-muted: CanvasText;
+  --actlet-faint: CanvasText;
+  --actlet-accent: CanvasText;
+  --actlet-agent: CanvasText;
+  --actlet-subagent: CanvasText;
+  --actlet-operator: CanvasText;
+  --actlet-ok: CanvasText;
+  --actlet-error: CanvasText;
+  --actlet-warning: CanvasText;
+  --actlet-attach: CanvasText;
+  --actlet-added: CanvasText;
+  --actlet-removed: CanvasText;
+  --actlet-hunk: CanvasText;
+  --actlet-keyword: CanvasText;
+  --actlet-string: CanvasText;
+  --actlet-number: CanvasText;
+  --actlet-comment: CanvasText;
+  --actlet-key: CanvasText;
+  --actlet-function: CanvasText;
+  --actlet-punctuation: CanvasText;
+  --actlet-selection-text: Canvas;
+  --actlet-accent-weight: 700;
+  --actlet-agent-weight: 700;
+  --actlet-subagent-weight: 700;
+  --actlet-operator-weight: 700;
+  --actlet-keyword-weight: 700;
+  --actlet-key-line: underline;
+  color-scheme: light dark;
 }
 
 @media (prefers-color-scheme: light) {
   .actlet-viewer[data-theme="auto"] {
-    --actlet-bg: #fbfbfd;
-    --actlet-bg-raised: #f1f2f7;
-    --actlet-bg-select: #e6e2fa;
-    --actlet-fg: #2a2c38;
-    --actlet-muted: #585b6e;
-    --actlet-faint: #62657a;
+    --actlet-background: #fbfbfd;
+    --actlet-panel: #eeeff5;
+    --actlet-selection: #e6e3fa;
     --actlet-border: #caccda;
-    --actlet-accent: #5d38db;
-    --actlet-agent: #5d38db;
-    --actlet-subagent: #155e96;
-    --actlet-operator: #8f4f06;
-    --actlet-ok: #1b6e3c;
-    --actlet-err: #b42840;
-    --actlet-run: #7a5300;
-    --actlet-add: #1b6e3c;
-    --actlet-del: #b42840;
-    --actlet-keyword: #6b2bc4;
-    --actlet-string: #26692a;
-    --actlet-number: #984307;
-    --actlet-comment: #62657a;
-    --actlet-key: #1a45be;
-    --actlet-function: #08626f;
-    --actlet-punctuation: #585b6e;
-    --actlet-cut-bg: rgba(122, 83, 0, 0.1);
-    --actlet-overlay: rgba(20, 22, 30, 0.35);
+    --actlet-text: #2a2c38;
+    --actlet-muted: #626578;
+    --actlet-faint: #a2a5b5;
+    --actlet-accent: #6a45e8;
+    --actlet-agent: #6a45e8;
+    --actlet-subagent: #1a6ba7;
+    --actlet-operator: #a25b0b;
+    --actlet-ok: #1f7541;
+    --actlet-error: #be2e46;
+    --actlet-warning: #916300;
+    --actlet-attach: #c2306e;
+    --actlet-added: #1f7541;
+    --actlet-removed: #be2e46;
+    --actlet-hunk: #1a6ba7;
+    --actlet-keyword: #7a35d9;
+    --actlet-string: #2d7b31;
+    --actlet-number: #b0500b;
+    --actlet-comment: #696c7f;
+    --actlet-key: #1d4fd6;
+    --actlet-function: #0b7488;
+    --actlet-punctuation: #626578;
+    --actlet-accent-weight: 700;
+    --actlet-comment-style: italic;
+    color-scheme: light;
+  }
+}
+
+/* Readers who ask for more contrast, or force their own colours, get plain. */
+@media (prefers-contrast: more), (forced-colors: active) {
+  .actlet-viewer[data-theme="auto"] {
+    --actlet-background: Canvas;
+    --actlet-panel: Canvas;
+    --actlet-selection: CanvasText;
+    --actlet-border: CanvasText;
+    --actlet-text: CanvasText;
+    --actlet-muted: CanvasText;
+    --actlet-faint: CanvasText;
+    --actlet-accent: CanvasText;
+    --actlet-agent: CanvasText;
+    --actlet-subagent: CanvasText;
+    --actlet-operator: CanvasText;
+    --actlet-ok: CanvasText;
+    --actlet-error: CanvasText;
+    --actlet-warning: CanvasText;
+    --actlet-attach: CanvasText;
+    --actlet-added: CanvasText;
+    --actlet-removed: CanvasText;
+    --actlet-hunk: CanvasText;
+    --actlet-keyword: CanvasText;
+    --actlet-string: CanvasText;
+    --actlet-number: CanvasText;
+    --actlet-comment: CanvasText;
+    --actlet-key: CanvasText;
+    --actlet-function: CanvasText;
+    --actlet-punctuation: CanvasText;
+    --actlet-selection-text: Canvas;
+    --actlet-accent-weight: 700;
+    --actlet-agent-weight: 700;
+    --actlet-subagent-weight: 700;
+    --actlet-operator-weight: 700;
+    --actlet-keyword-weight: 700;
+    --actlet-key-line: underline;
+    color-scheme: light dark;
+  }
+}
+
+/* end of themes */
+
+/* A selection in reverse video, as plain has it: the selected row's text in the background's colour. */
+.actlet-viewer:is([data-theme="plain"], [data-selection="reverse"])
+  :is(.actlet-row.actlet-selected, .actlet-tab:hover, .actlet-tool-head:hover, .actlet-tool-head[aria-expanded="true"]),
+.actlet-viewer:is([data-theme="plain"], [data-selection="reverse"])
+  :is(.actlet-row.actlet-selected, .actlet-tab:hover, .actlet-tool-head:hover, .actlet-tool-head[aria-expanded="true"])
+  * {
+  color: var(--actlet-selection-text);
+}
+@media (prefers-contrast: more), (forced-colors: active) {
+  .actlet-viewer[data-theme="auto"]
+    :is(
+      .actlet-row.actlet-selected,
+      .actlet-tab:hover,
+      .actlet-tool-head:hover,
+      .actlet-tool-head[aria-expanded="true"]
+    ),
+  .actlet-viewer[data-theme="auto"]
+    :is(
+      .actlet-row.actlet-selected,
+      .actlet-tab:hover,
+      .actlet-tool-head:hover,
+      .actlet-tool-head[aria-expanded="true"]
+    )
+    * {
+    color: var(--actlet-selection-text);
   }
 }
 
@@ -108,16 +229,15 @@
   flex-direction: column;
   height: 100%;
   min-height: 320px;
-  background: var(--actlet-bg);
-  color: var(--actlet-fg);
+  background: var(--actlet-background);
+  color: var(--actlet-text);
+  font-weight: var(--actlet-text-weight, inherit);
+  font-style: var(--actlet-text-style, inherit);
+  text-decoration-line: var(--actlet-text-line, none);
   font-family: var(--actlet-font);
   font-size: var(--actlet-size);
   line-height: 1.45;
   overflow: hidden;
-  color-scheme: dark;
-}
-.actlet-viewer[data-theme="light"] {
-  color-scheme: light;
 }
 .actlet-viewer *,
 .actlet-viewer *::before,
@@ -127,6 +247,9 @@
 
 .actlet-muted {
   color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
 }
 /* Text for screen readers only. */
 .actlet-sr-only {
@@ -140,9 +263,6 @@
   white-space: nowrap;
   border: 0;
 }
-.actlet-faint {
-  color: var(--actlet-faint);
-}
 .actlet-mono,
 .actlet-pre,
 .actlet-tool,
@@ -152,28 +272,54 @@
   font-family: var(--actlet-mono);
 }
 .actlet-ok {
-  color: var(--actlet-ok);
+  color: var(--actlet-ok-fg, var(--actlet-ok));
+  background-color: var(--actlet-ok-bg, transparent);
+  font-weight: var(--actlet-ok-weight, inherit);
+  font-style: var(--actlet-ok-style, inherit);
+  text-decoration-line: var(--actlet-ok-line, none);
 }
 .actlet-err {
-  color: var(--actlet-err);
+  color: var(--actlet-error-fg, var(--actlet-error));
+  background-color: var(--actlet-error-bg, transparent);
+  font-weight: var(--actlet-error-weight, inherit);
+  font-style: var(--actlet-error-style, inherit);
+  text-decoration-line: var(--actlet-error-line, none);
 }
 .actlet-warn {
-  color: var(--actlet-run);
+  color: var(--actlet-warning-fg, var(--actlet-warning));
+  background-color: var(--actlet-warning-bg, transparent);
+  font-weight: var(--actlet-warning-weight, inherit);
+  font-style: var(--actlet-warning-style, inherit);
+  text-decoration-line: var(--actlet-warning-line, none);
 }
 .actlet-add,
 .actlet-tone-add {
-  color: var(--actlet-add);
+  color: var(--actlet-added);
+  font-weight: var(--actlet-added-weight, inherit);
+  font-style: var(--actlet-added-style, inherit);
+  text-decoration-line: var(--actlet-added-line, none);
 }
 .actlet-del,
 .actlet-tone-del,
 .actlet-tone-error {
-  color: var(--actlet-del);
+  color: var(--actlet-removed);
+  font-weight: var(--actlet-removed-weight, inherit);
+  font-style: var(--actlet-removed-style, inherit);
+  text-decoration-line: var(--actlet-removed-line, none);
 }
 .actlet-tone-hunk {
-  color: var(--actlet-faint);
+  color: var(--actlet-hunk-fg, var(--actlet-hunk));
+  background-color: var(--actlet-hunk-bg, transparent);
+  font-weight: var(--actlet-hunk-weight, inherit);
+  font-style: var(--actlet-hunk-style, inherit);
+  text-decoration-line: var(--actlet-hunk-line, none);
 }
 .actlet-tone-muted {
-  color: var(--actlet-muted);
+  color: var(--actlet-muted-fg, var(--actlet-muted));
+  background-color: var(--actlet-muted-bg, transparent);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
 }
 
 /* Header and tabs. */
@@ -182,7 +328,7 @@
   align-items: center;
   gap: 0.75em;
   padding: 0.4em 0.9em;
-  background: var(--actlet-bg-raised);
+  background: var(--actlet-panel);
   border-bottom: 1px solid var(--actlet-border);
   min-width: 0;
 }
@@ -192,7 +338,7 @@
 .actlet-tab-on {
   border-radius: var(--actlet-radius);
   background: var(--actlet-pill, var(--actlet-accent));
-  color: var(--actlet-bg);
+  color: var(--actlet-background);
   font-weight: 700;
 }
 .actlet-title {
@@ -213,18 +359,24 @@
 .actlet-tab {
   background: none;
   border: none;
-  color: var(--actlet-muted);
   font: inherit;
+  color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
   padding: 0.2em 0.5em;
   border-radius: var(--actlet-radius);
   cursor: pointer;
 }
 .actlet-tab:hover {
-  color: var(--actlet-fg);
-  background: var(--actlet-bg-select);
+  color: var(--actlet-text);
+  font-weight: var(--actlet-text-weight, inherit);
+  font-style: var(--actlet-text-style, inherit);
+  text-decoration-line: var(--actlet-text-line, none);
+  background: var(--actlet-selection);
 }
 .actlet-tab.actlet-tab-on {
-  color: var(--actlet-bg);
+  color: var(--actlet-background);
   background: var(--actlet-accent);
   font-weight: 700;
 }
@@ -253,6 +405,9 @@
   gap: 1em;
   padding: 0.3em 0.9em;
   color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
   font-size: 0.92em;
   border-bottom: 1px solid var(--actlet-border);
 }
@@ -260,16 +415,21 @@
   cursor: pointer;
 }
 .actlet-focus {
-  color: var(--actlet-fg);
+  color: var(--actlet-text);
+  font-weight: var(--actlet-text-weight, inherit);
+  font-style: var(--actlet-text-style, inherit);
+  text-decoration-line: var(--actlet-text-line, none);
 }
 .actlet-link {
   background: none;
   border: none;
   padding: 0;
-  color: var(--actlet-accent);
   font: inherit;
+  color: var(--actlet-accent);
+  font-weight: var(--actlet-accent-weight, inherit);
+  font-style: var(--actlet-accent-style, inherit);
+  text-decoration-line: var(--actlet-accent-line, underline);
   cursor: pointer;
-  text-decoration: underline;
 }
 
 /* The stream. */
@@ -287,6 +447,9 @@
 }
 .actlet-empty {
   color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
   padding: 1em 0;
 }
 .actlet-latest {
@@ -294,11 +457,14 @@
   right: 1em;
   bottom: 0.8em;
   border: 1px solid var(--actlet-border);
-  background: var(--actlet-bg-raised);
-  color: var(--actlet-fg);
+  background: var(--actlet-panel);
+  font: inherit;
+  color: var(--actlet-text);
+  font-weight: var(--actlet-text-weight, inherit);
+  font-style: var(--actlet-text-style, inherit);
+  text-decoration-line: var(--actlet-text-line, none);
   border-radius: 999px;
   padding: 0.25em 0.8em;
-  font: inherit;
   cursor: pointer;
 }
 .actlet-sep {
@@ -317,12 +483,21 @@
 }
 .actlet-agent {
   --actlet-speaker: var(--actlet-agent);
+  --actlet-speaker-weight: var(--actlet-agent-weight, 700);
+  --actlet-speaker-style: var(--actlet-agent-style, normal);
+  --actlet-speaker-line: var(--actlet-agent-line, none);
 }
 .actlet-subagent {
   --actlet-speaker: var(--actlet-subagent);
+  --actlet-speaker-weight: var(--actlet-subagent-weight, 700);
+  --actlet-speaker-style: var(--actlet-subagent-style, normal);
+  --actlet-speaker-line: var(--actlet-subagent-line, none);
 }
 .actlet-operator {
   --actlet-speaker: var(--actlet-operator);
+  --actlet-speaker-weight: var(--actlet-operator-weight, 700);
+  --actlet-speaker-style: var(--actlet-operator-style, normal);
+  --actlet-speaker-line: var(--actlet-operator-line, none);
 }
 /* The speaker's name, as a pill in the speaker's colour. */
 .actlet-who strong {
@@ -331,15 +506,21 @@
   margin-right: 0.15em;
   border-radius: 4px;
   background: var(--actlet-speaker, var(--actlet-agent));
-  color: var(--actlet-bg);
+  color: var(--actlet-background);
+  font-weight: var(--actlet-speaker-weight, 700);
+  font-style: var(--actlet-speaker-style, normal);
+  text-decoration-line: var(--actlet-speaker-line, none);
 }
 .actlet-operator > .actlet-text {
   padding: 0.25em 0.5em;
   border-radius: 4px;
-  background: var(--actlet-bg-raised);
+  background: var(--actlet-panel);
 }
 .actlet-clock {
-  color: var(--actlet-faint);
+  color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
 }
 .actlet-text {
   white-space: pre-wrap;
@@ -348,12 +529,18 @@
 }
 .actlet-system {
   color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
   margin-top: 0.5em;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 .actlet-system.actlet-warn {
-  color: var(--actlet-run);
+  color: var(--actlet-warning);
+  font-weight: var(--actlet-warning-weight, inherit);
+  font-style: var(--actlet-warning-style, inherit);
+  text-decoration-line: var(--actlet-warning-line, none);
 }
 .actlet-calls {
   margin-top: 0.3em;
@@ -363,7 +550,7 @@
 .actlet-tool {
   margin: 0.3em 0 0.3em 0.6em;
   padding: 0.15em 0.3em;
-  background: var(--actlet-bg-raised);
+  background: var(--actlet-panel);
   border: 1px solid var(--actlet-border);
   border-left: 3px solid var(--actlet-tool-state, var(--actlet-border));
   border-radius: 4px;
@@ -372,11 +559,11 @@
   --actlet-tool-state: var(--actlet-ok);
 }
 .actlet-tool-error {
-  --actlet-tool-state: var(--actlet-err);
+  --actlet-tool-state: var(--actlet-error);
 }
 .actlet-tool-running,
 .actlet-tool-unknown {
-  --actlet-tool-state: var(--actlet-run);
+  --actlet-tool-state: var(--actlet-warning);
 }
 .actlet-tool-head {
   display: flex;
@@ -395,15 +582,20 @@
 }
 .actlet-tool-head:hover,
 .actlet-tool-head[aria-expanded="true"] {
-  background: var(--actlet-bg-select);
+  background: var(--actlet-selection);
 }
 .actlet-tool-name {
-  font-weight: 700;
   color: var(--actlet-key);
+  font-weight: var(--actlet-key-weight, 700);
+  font-style: var(--actlet-key-style, inherit);
+  text-decoration-line: var(--actlet-key-line, none);
   white-space: nowrap;
 }
 .actlet-tool-args {
   color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
   flex: 1;
   min-width: 0;
   overflow: hidden;
@@ -412,6 +604,9 @@
 }
 .actlet-tool-took {
   color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
   white-space: nowrap;
 }
 .actlet-tool-body {
@@ -424,10 +619,13 @@
   overflow-wrap: anywhere;
 }
 .actlet-more {
-  color: var(--actlet-faint);
+  color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
 }
 .actlet-nested {
-  border-left: 1px dotted var(--actlet-faint);
+  border-left: 1px dotted var(--actlet-border);
   padding-left: 0.6em;
   font-family: var(--actlet-font);
 }
@@ -438,7 +636,10 @@
 }
 .actlet-spinner::before {
   content: "⠋";
-  color: var(--actlet-run);
+  color: var(--actlet-warning);
+  font-weight: var(--actlet-warning-weight, inherit);
+  font-style: var(--actlet-warning-style, inherit);
+  text-decoration-line: var(--actlet-warning-line, none);
   animation: actlet-spin 1s steps(10) infinite;
 }
 @keyframes actlet-spin {
@@ -486,28 +687,32 @@
   margin: 0 0.2em;
   padding: 0 0.4em;
   border-radius: 4px;
-  background: var(--actlet-cut-bg);
-  color: var(--actlet-run);
+  background: color-mix(in srgb, var(--actlet-warning) 14%, transparent);
+  color: var(--actlet-warning);
+  font-weight: var(--actlet-warning-weight, inherit);
+  font-style: var(--actlet-warning-style, italic);
+  text-decoration-line: var(--actlet-warning-line, none);
   font-family: var(--actlet-font);
   font-size: 0.88em;
-  font-style: italic;
 }
 
 /* Sidebar. */
 .actlet-sidebar {
   width: 260px;
   flex-shrink: 0;
-  background: var(--actlet-bg-raised);
+  background: var(--actlet-panel);
   border-left: 1px solid var(--actlet-border);
   padding: 0.5em 0.6em;
   overflow-y: auto;
 }
 .actlet-head {
   font-size: 0.8em;
-  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--actlet-accent);
+  font-weight: var(--actlet-accent-weight, 700);
+  font-style: var(--actlet-accent-style, inherit);
+  text-decoration-line: var(--actlet-accent-line, none);
   margin: 0.6em 0 0.3em;
 }
 .actlet-list,
@@ -534,22 +739,26 @@
   min-width: 0;
 }
 .actlet-row:hover {
-  background: var(--actlet-bg);
+  background: var(--actlet-background);
 }
 /* The worker shown alone: a marker, the accent and a background. */
 .actlet-marker {
   width: 0.8em;
   flex-shrink: 0;
   color: var(--actlet-accent);
-  font-weight: 700;
+  font-weight: var(--actlet-accent-weight, 700);
+  font-style: var(--actlet-accent-style, inherit);
+  text-decoration-line: var(--actlet-accent-line, none);
 }
 .actlet-row.actlet-selected {
-  background: var(--actlet-bg-select);
+  background: var(--actlet-selection);
   box-shadow: inset 3px 0 0 var(--actlet-accent);
 }
 .actlet-selected .actlet-row-name {
   color: var(--actlet-accent);
-  font-weight: 700;
+  font-weight: var(--actlet-accent-weight, 700);
+  font-style: var(--actlet-accent-style, inherit);
+  text-decoration-line: var(--actlet-accent-line, none);
 }
 .actlet-row-name {
   min-width: 0;
@@ -565,7 +774,7 @@
 
 /* Footer: replay controls, commands and the status line. */
 .actlet-footer {
-  background: var(--actlet-bg-raised);
+  background: var(--actlet-panel);
   border-top: 1px solid var(--actlet-border);
 }
 .actlet-status {
@@ -573,7 +782,10 @@
   flex-wrap: wrap;
   align-items: baseline;
   padding: 0.3em 0.9em;
-  color: var(--actlet-fg);
+  color: var(--actlet-text);
+  font-weight: var(--actlet-text-weight, inherit);
+  font-style: var(--actlet-text-style, inherit);
+  text-decoration-line: var(--actlet-text-line, none);
   white-space: nowrap;
   overflow: hidden;
 }
@@ -586,30 +798,38 @@
   color: inherit;
 }
 .actlet-pill-running {
-  --actlet-pill: var(--actlet-run);
+  --actlet-pill: var(--actlet-warning);
 }
 .actlet-pill-done {
   --actlet-pill: var(--actlet-ok);
 }
 .actlet-pill-failed {
-  --actlet-pill: var(--actlet-err);
+  --actlet-pill: var(--actlet-error);
 }
 .actlet-pill-paused {
   --actlet-pill: var(--actlet-operator);
 }
 .actlet-seg-sep {
   color: var(--actlet-faint);
+  font-weight: var(--actlet-faint-weight, inherit);
+  font-style: var(--actlet-faint-style, inherit);
+  text-decoration-line: var(--actlet-faint-line, none);
   white-space: pre;
 }
 .actlet-seg-model {
   color: var(--actlet-accent);
-  font-weight: 700;
+  font-weight: var(--actlet-accent-weight, 700);
+  font-style: var(--actlet-accent-style, inherit);
+  text-decoration-line: var(--actlet-accent-line, none);
 }
 .actlet-seg-progress {
   font-style: italic;
 }
 .actlet-seg-muted {
   color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
 }
 .actlet-replay,
 .actlet-command-row {
@@ -636,8 +856,11 @@
 .actlet-speed,
 .actlet-input {
   font: inherit;
-  color: var(--actlet-fg);
-  background: var(--actlet-bg);
+  color: var(--actlet-text);
+  font-weight: var(--actlet-text-weight, inherit);
+  font-style: var(--actlet-text-style, inherit);
+  text-decoration-line: var(--actlet-text-line, none);
+  background: var(--actlet-background);
   border: 1px solid var(--actlet-border);
   border-radius: var(--actlet-radius);
   padding: 0.2em 0.6em;
@@ -653,7 +876,10 @@
   cursor: default;
 }
 .actlet-btn-danger {
-  color: var(--actlet-err);
+  color: var(--actlet-error);
+  font-weight: var(--actlet-error-weight, inherit);
+  font-style: var(--actlet-error-style, inherit);
+  text-decoration-line: var(--actlet-error-line, none);
 }
 .actlet-note-form {
   display: flex;
@@ -664,7 +890,9 @@
 }
 .actlet-prompt {
   color: var(--actlet-accent);
-  font-weight: 700;
+  font-weight: var(--actlet-accent-weight, 700);
+  font-style: var(--actlet-accent-style, inherit);
+  text-decoration-line: var(--actlet-accent-line, none);
 }
 .actlet-input {
   flex: 1;
@@ -674,7 +902,10 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4em;
-  color: var(--actlet-err);
+  color: var(--actlet-error);
+  font-weight: var(--actlet-error-weight, inherit);
+  font-style: var(--actlet-error-style, inherit);
+  text-decoration-line: var(--actlet-error-line, none);
 }
 .actlet-sent {
   list-style: none;
@@ -683,14 +914,23 @@
   font-size: 0.92em;
 }
 .actlet-sent-pending {
-  color: var(--actlet-run);
+  color: var(--actlet-warning);
+  font-weight: var(--actlet-warning-weight, inherit);
+  font-style: var(--actlet-warning-style, inherit);
+  text-decoration-line: var(--actlet-warning-line, none);
 }
 .actlet-sent-accepted {
   color: var(--actlet-ok);
+  font-weight: var(--actlet-ok-weight, inherit);
+  font-style: var(--actlet-ok-style, inherit);
+  text-decoration-line: var(--actlet-ok-line, none);
 }
 .actlet-sent-rejected,
 .actlet-sent-failed {
-  color: var(--actlet-err);
+  color: var(--actlet-error);
+  font-weight: var(--actlet-error-weight, inherit);
+  font-style: var(--actlet-error-style, inherit);
+  text-decoration-line: var(--actlet-error-line, none);
 }
 .actlet-viewer :focus-visible {
   outline: 2px solid var(--actlet-accent);
@@ -711,6 +951,9 @@
   margin: 0.4em 0 0.5em;
   padding-bottom: 0.2em;
   color: var(--actlet-accent);
+  font-weight: var(--actlet-accent-weight, inherit);
+  font-style: var(--actlet-accent-style, inherit);
+  text-decoration-line: var(--actlet-accent-line, none);
   border-bottom: 1px solid var(--actlet-border);
 }
 .actlet-kv {
@@ -725,6 +968,9 @@
 .actlet-kv dt {
   width: 7em;
   color: var(--actlet-key);
+  font-weight: var(--actlet-key-weight, inherit);
+  font-style: var(--actlet-key-style, inherit);
+  text-decoration-line: var(--actlet-key-line, none);
   flex-shrink: 0;
 }
 .actlet-kv dd {
@@ -744,12 +990,14 @@
 }
 .actlet-table th {
   color: var(--actlet-muted);
-  font-weight: 400;
+  font-weight: var(--actlet-muted-weight, 400);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
 }
 .actlet-pre {
   margin: 0;
   padding: 0.6em 0.8em;
-  background: var(--actlet-bg-raised);
+  background: var(--actlet-panel);
   border: 1px solid var(--actlet-border);
   border-radius: var(--actlet-radius);
   white-space: pre-wrap;
@@ -767,7 +1015,7 @@
 .actlet-overlay {
   position: absolute;
   inset: 0;
-  background: var(--actlet-overlay);
+  background: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -788,7 +1036,7 @@
   flex-direction: column;
   width: min(100%, 960px);
   max-height: 100%;
-  background: var(--actlet-bg);
+  background: var(--actlet-background);
   border: 1px solid var(--actlet-border);
   border-radius: 10px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
@@ -802,12 +1050,12 @@
   padding: 0.5em 0.9em;
 }
 .actlet-popup-head {
-  background: var(--actlet-bg-raised);
+  background: var(--actlet-panel);
   border-bottom: 1px solid var(--actlet-border);
   border-radius: 10px 10px 0 0;
 }
 .actlet-popup-foot {
-  background: var(--actlet-bg-raised);
+  background: var(--actlet-panel);
   border-radius: 0 0 10px 10px;
   border-top: 1px solid var(--actlet-border);
   font-size: 0.92em;
@@ -835,36 +1083,69 @@
 .actlet-lineno {
   flex-shrink: 0;
   min-width: 3.5em;
-  color: var(--actlet-faint);
+  color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
   text-align: right;
   padding-right: 1em;
   user-select: none;
 }
 .actlet-hl-keyword {
-  color: var(--actlet-keyword);
+  color: var(--actlet-keyword-fg, var(--actlet-keyword));
+  background-color: var(--actlet-keyword-bg, transparent);
+  font-weight: var(--actlet-keyword-weight, inherit);
+  font-style: var(--actlet-keyword-style, inherit);
+  text-decoration-line: var(--actlet-keyword-line, none);
 }
 .actlet-hl-string {
-  color: var(--actlet-string);
+  color: var(--actlet-string-fg, var(--actlet-string));
+  background-color: var(--actlet-string-bg, transparent);
+  font-weight: var(--actlet-string-weight, inherit);
+  font-style: var(--actlet-string-style, inherit);
+  text-decoration-line: var(--actlet-string-line, none);
 }
 .actlet-hl-number {
-  color: var(--actlet-number);
+  color: var(--actlet-number-fg, var(--actlet-number));
+  background-color: var(--actlet-number-bg, transparent);
+  font-weight: var(--actlet-number-weight, inherit);
+  font-style: var(--actlet-number-style, inherit);
+  text-decoration-line: var(--actlet-number-line, none);
 }
 .actlet-hl-comment {
-  color: var(--actlet-comment);
-  font-style: italic;
+  color: var(--actlet-comment-fg, var(--actlet-comment));
+  background-color: var(--actlet-comment-bg, transparent);
+  font-weight: var(--actlet-comment-weight, inherit);
+  font-style: var(--actlet-comment-style, italic);
+  text-decoration-line: var(--actlet-comment-line, none);
 }
 .actlet-hl-key {
-  color: var(--actlet-key);
+  color: var(--actlet-key-fg, var(--actlet-key));
+  background-color: var(--actlet-key-bg, transparent);
+  font-weight: var(--actlet-key-weight, inherit);
+  font-style: var(--actlet-key-style, inherit);
+  text-decoration-line: var(--actlet-key-line, none);
 }
 .actlet-hl-function {
-  color: var(--actlet-function);
+  color: var(--actlet-function-fg, var(--actlet-function));
+  background-color: var(--actlet-function-bg, transparent);
+  font-weight: var(--actlet-function-weight, inherit);
+  font-style: var(--actlet-function-style, inherit);
+  text-decoration-line: var(--actlet-function-line, none);
 }
 .actlet-hl-punctuation {
-  color: var(--actlet-punctuation);
+  color: var(--actlet-punctuation-fg, var(--actlet-punctuation));
+  background-color: var(--actlet-punctuation-bg, transparent);
+  font-weight: var(--actlet-punctuation-weight, inherit);
+  font-style: var(--actlet-punctuation-style, inherit);
+  text-decoration-line: var(--actlet-punctuation-line, none);
 }
 .actlet-hl-heading {
-  font-weight: 700;
-  color: var(--actlet-accent);
+  color: var(--actlet-accent-fg, var(--actlet-accent));
+  background-color: var(--actlet-accent-bg, transparent);
+  font-weight: var(--actlet-accent-weight, 700);
+  font-style: var(--actlet-accent-style, inherit);
+  text-decoration-line: var(--actlet-accent-line, none);
 }
 
 @media (max-width: 720px) {
@@ -881,19 +1162,26 @@
 
 /* Budgets, progress and feedback. */
 .actlet-alarm {
-  color: var(--actlet-err);
-  font-weight: 600;
+  color: var(--actlet-error);
+  font-weight: var(--actlet-error-weight, 600);
+  font-style: var(--actlet-error-style, inherit);
+  text-decoration-line: var(--actlet-error-line, none);
 }
 .actlet-budgets td {
   vertical-align: middle;
 }
 .actlet-budget-alerted .actlet-budget-state {
-  color: var(--actlet-run);
+  color: var(--actlet-warning);
+  font-weight: var(--actlet-warning-weight, inherit);
+  font-style: var(--actlet-warning-style, inherit);
+  text-decoration-line: var(--actlet-warning-line, none);
 }
 .actlet-budget-exhausted .actlet-budget-state,
 .actlet-budget-waiting .actlet-budget-state {
-  color: var(--actlet-err);
-  font-weight: 600;
+  color: var(--actlet-error);
+  font-weight: var(--actlet-error-weight, 600);
+  font-style: var(--actlet-error-style, inherit);
+  text-decoration-line: var(--actlet-error-line, none);
 }
 .actlet-meter {
   width: 7em;
@@ -904,18 +1192,30 @@
   padding: 0 0.45em;
   border-radius: 999px;
   border: 1px solid var(--actlet-border);
-  background: var(--actlet-bg-raised);
+  background: var(--actlet-panel);
   color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
   font-size: 0.88em;
 }
 .actlet-feedback-problem {
-  color: var(--actlet-err);
+  color: var(--actlet-error);
+  font-weight: var(--actlet-error-weight, inherit);
+  font-style: var(--actlet-error-style, inherit);
+  text-decoration-line: var(--actlet-error-line, none);
 }
 .actlet-feedback-suggestion {
   color: var(--actlet-ok);
+  font-weight: var(--actlet-ok-weight, inherit);
+  font-style: var(--actlet-ok-style, inherit);
+  text-decoration-line: var(--actlet-ok-line, none);
 }
 .actlet-feedback-question {
   color: var(--actlet-operator);
+  font-weight: var(--actlet-operator-weight, inherit);
+  font-style: var(--actlet-operator-style, inherit);
+  text-decoration-line: var(--actlet-operator-line, none);
 }
 .actlet-feedback li {
   margin: 0.2em 0;
@@ -924,6 +1224,9 @@
 /* Decisions and side calls to other models. */
 .actlet-decision strong {
   color: var(--actlet-ok);
+  font-weight: var(--actlet-ok-weight, inherit);
+  font-style: var(--actlet-ok-style, inherit);
+  text-decoration-line: var(--actlet-ok-line, none);
 }
 .actlet-llm-meta {
   font-style: italic;
@@ -945,6 +1248,9 @@
 }
 .actlet-check {
   color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
   cursor: pointer;
 }
 
@@ -958,7 +1264,10 @@
 }
 .actlet-detail summary::after {
   content: " ▸";
-  color: var(--actlet-faint);
+  color: var(--actlet-muted);
+  font-weight: var(--actlet-muted-weight, inherit);
+  font-style: var(--actlet-muted-style, inherit);
+  text-decoration-line: var(--actlet-muted-line, none);
 }
 .actlet-detail[open] summary::after {
   content: " ▾";
@@ -967,11 +1276,17 @@
   margin: 0.3em 0 0.3em 1em;
   padding: 0.4em 0.7em;
   border-left: 2px solid var(--actlet-border);
-  color: var(--actlet-fg);
+  color: var(--actlet-text);
+  font-weight: var(--actlet-text-weight, inherit);
+  font-style: var(--actlet-text-style, inherit);
+  text-decoration-line: var(--actlet-text-line, none);
 }
 .actlet-skills li {
   margin: 0.35em 0;
 }
 .actlet-fork {
   color: var(--actlet-subagent);
+  font-weight: var(--actlet-subagent-weight, inherit);
+  font-style: var(--actlet-subagent-style, inherit);
+  text-decoration-line: var(--actlet-subagent-line, none);
 }

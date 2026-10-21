@@ -1,4 +1,4 @@
-import { useCallback, useId, useState, type CSSProperties } from "react";
+import { useCallback, useId, useMemo, useState, type CSSProperties } from "react";
 import type { EventInput } from "../events";
 import { SessionState, type CommandAck, type Origin } from "../gen/actlet/gateway/v0/gateway_pb";
 import type { Session } from "../view/session";
@@ -13,6 +13,7 @@ import { StateAnnouncer, StatusLine } from "./StatusLine";
 import { budgetDefinitions, budgets } from "../view/budgets";
 import { lineageText } from "../view/format";
 import { sanitize } from "../view/sanitize";
+import { themeLook, type ViewerTheme } from "../view/theme";
 import { Tabs, type TabId } from "./Tabs";
 import { Text } from "./Text";
 import { TurnStream } from "./TurnStream";
@@ -28,8 +29,14 @@ export interface ActivityViewerProps {
   mode?: "live" | "replay";
   /** The session's ID, which the events don't carry, for the Session tab. */
   sessionId?: string;
-  /** Light, dark, or the reader's system setting (the default). */
-  theme?: "light" | "dark" | "auto";
+  /**
+   * The look: "auto" (the default) follows the reader's system setting,
+   * dark or light, and plain when they ask for more contrast; or a
+   * built-in theme, "dark", "light" or "plain"; or a theme in the format
+   * of Actlet's terminal viewer, as parsed from its YAML or JSON. A theme
+   * that isn't valid leaves the viewer dark, and the status line says why.
+   */
+  theme?: ViewerTheme;
   /** What the viewer is connected to, in a few words, for the status line: "live" by default. */
   connectionLabel?: string;
   /** Live mode: the implementor's stream has ended, so no more events will come. */
@@ -147,7 +154,7 @@ function Layout(p: LayoutProps) {
   const closeFile = useCallback(() => setFile(null), []);
   // Few commands are sent, so merging the acknowledgements each render is cheap.
   const outcomes = commandOutcomes([], p.acks, p.commands);
-  const theme = p.theme ?? "auto";
+  const look = useMemo(() => themeLook(p.theme), [p.theme]);
   const ended = (p.ended ?? false) || terminal.includes(session.state);
   const commands = p.live && p.onCommand && (p.allowedCommands ?? DEFAULT_COMMANDS).length > 0;
 
@@ -213,8 +220,9 @@ function Layout(p: LayoutProps) {
   return (
     <div
       className={`actlet-viewer${p.className ? " " + p.className : ""}`}
-      data-theme={theme}
-      style={p.style}
+      data-theme={look.name}
+      data-selection={look.reverseSelection ? "reverse" : undefined}
+      style={look.variables ? { ...look.variables, colorScheme: look.colorScheme, ...p.style } : p.style}
       role="region"
       aria-label="Session activity"
       onKeyDown={(e) => {
@@ -257,7 +265,7 @@ function Layout(p: LayoutProps) {
             budgetStates={budgets(session)}
           />
         )}
-        <StatusLine session={session} connection={connection} now={now} />
+        <StatusLine session={session} connection={connection} now={now} notice={look.notice} />
         <StateAnnouncer session={session} />
       </div>
       {file !== null && <FileViewer session={session} path={file} readFile={p.readFile} onClose={closeFile} />}
