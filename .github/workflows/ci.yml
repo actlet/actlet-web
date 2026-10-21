@@ -1,0 +1,96 @@
+# Build, typecheck, lint, test, the examples in Chromium, the packaging
+# smoke test, and strict parity with Actlet's Go view model.
+#
+# Parity needs the private actlet/actlet repository at .actlet-commit. Give
+# CI read access with one repository secret:
+#   ACTLET_READ_TOKEN  a fine-grained token with read-only Contents on actlet/actlet, or
+#   ACTLET_DEPLOY_KEY  the private half of a read-only deploy key on actlet/actlet.
+# Without either, everything else runs, and parity is skipped with a warning.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_call:
+    secrets:
+      ACTLET_READ_TOKEN:
+        required: false
+      ACTLET_DEPLOY_KEY:
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      PARITY: ${{ secrets.ACTLET_READ_TOKEN != '' || secrets.ACTLET_DEPLOY_KEY != '' }}
+      # Headless Chrome on the runner, for the examples check.
+      CHROME: /usr/bin/google-chrome
+      CHROME_FLAGS: --no-sandbox
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: web
+          persist-credentials: false
+
+      - name: Find the Actlet commit
+        id: actlet
+        run: echo "commit=$(cat .actlet-commit)" >> "$GITHUB_OUTPUT"
+      # Next to this repository, where parity:go looks for it (../actlet).
+      - name: Check out Actlet for parity
+        if: env.PARITY == 'true'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: actlet/actlet
+          ref: ${{ steps.actlet.outputs.commit }}
+          path: actlet
+          token: ${{ secrets.ACTLET_READ_TOKEN || github.token }}
+          ssh-key: ${{ secrets.ACTLET_DEPLOY_KEY }}
+          persist-credentials: false
+      - name: Set up Go for parity
+        if: env.PARITY == 'true'
+        uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: actlet/go.mod
+          cache-dependency-path: actlet/go.sum
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          package_json_file: web/package.json
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: web/.nvmrc
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+
+      - name: Check (build, typecheck, lint, test, parity)
+        run: |
+          if [ "$PARITY" = true ]; then export REQUIRE_PARITY=1; fi
+          pnpm check
+      - name: Say that parity was skipped
+        if: env.PARITY != 'true'
+        run: |
+          echo "::warning title=Go parity skipped::No ACTLET_READ_TOKEN or ACTLET_DEPLOY_KEY secret, so parity with Actlet's Go view model wasn't checked. See the top of .github/workflows/ci.yml."
+          {
+            echo "### Go parity skipped"
+            echo
+            echo "Parity with Actlet's Go view model needs read access to \`actlet/actlet\` at \`.actlet-commit\`."
+            echo "Add a repository secret: \`ACTLET_READ_TOKEN\` (a fine-grained token with read-only Contents on \`actlet/actlet\`)"
+            echo "or \`ACTLET_DEPLOY_KEY\` (the private half of a read-only deploy key on \`actlet/actlet\`)."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Examples in Chromium
+        run: pnpm check:examples
+      - name: Packaging smoke test
+        run: pnpm smoke

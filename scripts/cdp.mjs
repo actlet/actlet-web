@@ -27,6 +27,8 @@ export async function launch({ port = 9339 } = {}) {
       `--remote-debugging-port=${port}`,
       "--js-flags=--expose-gc",
       "--enable-precise-memory-info",
+      // CHROME_FLAGS adds flags, such as --no-sandbox on a CI runner.
+      ...(process.env.CHROME_FLAGS ?? "").split(" ").filter(Boolean),
       "about:blank",
     ],
     { stdio: "ignore" },
