@@ -7,13 +7,14 @@ import { SyntheticDemo } from "./bench";
 import { JsonlExample } from "./examples/JsonlExample";
 import { SseExample } from "./examples/SseExample";
 import { WebSocketExample } from "./examples/WebSocketExample";
-import { digestRecording, recording, standardRecording } from "./recording";
+import { digestRecording, forkRecording, recording, standardRecording } from "./recording";
 import { SimulatedLive } from "./SimulatedLive";
 
 const modes = {
   replay: "replay the recording",
   standard: "replay: every standard tool and a budget",
   digest: "replay: a skill and a compaction",
+  fork: "replay: a session forked from a checkpoint",
   live: "live: the recording fed in over time",
   websocket: "example: a WebSocket backend",
   sse: "example: server-sent events",
@@ -79,6 +80,20 @@ function Demo() {
           speed={speed}
           theme={theme}
           sessionId="digest"
+          startAt={at}
+          defaultTab={tab}
+        />
+      );
+      break;
+    case "fork":
+      body = (
+        <ActivityViewer
+          events={forkRecording}
+          mode="replay"
+          autoPlay={params.get("autoplay") !== "0"}
+          speed={speed}
+          theme={theme}
+          sessionId="digest-fork"
           startAt={at}
           defaultTab={tab}
         />

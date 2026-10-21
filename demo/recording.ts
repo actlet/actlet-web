@@ -1,5 +1,6 @@
 import demo from "../fixtures/demo.jsonl?raw";
 import digest from "../fixtures/digest.jsonl?raw";
+import fork from "../fixtures/fork.jsonl?raw";
 import standard from "../fixtures/standard.jsonl?raw";
 import { parseJsonl } from "../src";
 
@@ -11,3 +12,6 @@ export const standardRecording = parseJsonl(standard);
 
 /** A sales digest that loads a skill and whose context is compacted half-way. */
 export const digestRecording = parseJsonl(digest);
+
+/** The digest forked at its second turn's checkpoint and run on from there. */
+export const forkRecording = parseJsonl(fork);
